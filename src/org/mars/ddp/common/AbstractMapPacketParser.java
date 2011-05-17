@@ -3,29 +3,26 @@ package org.mars.ddp.common;
 import java.io.IOException;
 import java.io.InputStream;
 
-public abstract class AbstractDdpMsParser<T extends DataStreamTypeable, S extends SubCodeDescribable> extends DdpStreamParser<AbstractDdpMs<T, S>> {
+public abstract class AbstractMapPacketParser<T extends DataStreamTypeable, S extends SubCodeDescribable> extends AbstractPacketParser<AbstractMapPacket<T, S>> {
 
-  public final static String STREAM_NAME = "DDPMS";
-  public final static int PACKET_LENGTH = 128; //but the stream is a number of packets
-
-  public AbstractDdpMsParser(InputStream is) {
+  public AbstractMapPacketParser(InputStream is) {
     super(is);
   }
 
   @Override
   public String getStreamName() {
-    return STREAM_NAME;
+    return MapStream.STREAM_NAME;
   }
 
   @Override
   public int getPacketLength() {
-    return PACKET_LENGTH;
+    return Packet.LENGTH;
   }
 
   @Override
-  protected void parse(AbstractDdpMs<T, S> ddpMs) throws IOException {
+  protected void parse(AbstractMapPacket<T, S> ddpMs) throws IOException {
     String mapPacketValid = readString(4, true);
-    if(AbstractDdpMs.MAP_PACKET_VALID.equals(mapPacketValid)) {
+    if(AbstractMapPacket.MAP_PACKET_VALID.equals(mapPacketValid)) {
       throw new IllegalArgumentException("mapPacketValid = " + mapPacketValid);
     }
     
@@ -74,11 +71,11 @@ public abstract class AbstractDdpMsParser<T extends DataStreamTypeable, S extend
     String isrc = readString(12, true);
     ddpMs.setIsrc(isrc);
     
-    int sizeOfDSI = readInt(3);
-    ddpMs.setSizeOfDSI(sizeOfDSI);
-    
-    String dataStreamIdentifier = readString(17, true);
-    ddpMs.setDataStreamIdentifier(dataStreamIdentifier);
+    Integer dsiSize = readInt(3);
+    if(dsiSize != null) {
+      String dataStreamIdentifier = readString(dsiSize, false);
+      ddpMs.setDataStreamIdentifier(dataStreamIdentifier);
+    }
   }
 
   public abstract T readDataStreamType() throws IOException;

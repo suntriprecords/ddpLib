@@ -6,7 +6,7 @@ package org.mars.ddp.common;
  * of the CD program area, but also subchannel files that may be present,
  * and other data such as ordering information.
  */
-public abstract class AbstractDdpMs<T extends DataStreamTypeable, S extends SubCodeDescribable> implements DdpStream {
+public abstract class AbstractMapPacket<T extends DataStreamTypeable, S extends SubCodeDescribable> implements MapPackable<T, S> {
 
   public static String MAP_PACKET_VALID = "VVVM";
 
@@ -25,74 +25,86 @@ public abstract class AbstractDdpMs<T extends DataStreamTypeable, S extends SubC
   private String trackNumber;
   private int indexNumber;
   private String isrc;
-  private int sizeOfDSI;
   private String dataStreamIdentifier;
 
   
+  @Override
   public T getDataStreamType() {
     return dataStreamType;
   }
 
+  @Override
   public int getDataStreamPointer() {
     return dataStreamPointer;
   }
 
+  @Override
   public int getDataStreamLength() {
     return dataStreamLength;
   }
 
+  @Override
   public int getDataStreamStart() {
     return dataStreamStart;
   }
 
+  @Override
   public S getSubCodeDescriptor() {
     return subCodeDescriptor;
   }
 
+  @Override
   public CDMode getCdMode() {
     return cdMode;
   }
 
+  @Override
   public SourceStorageMode getSourceStorageMode() {
     return sourceStorageMode;
   }
 
+  @Override
   public boolean isSourceMaterialScrambled() {
     return SourceMaterialScrambled;
   }
 
+  @Override
   public int getPreGapPart1IncludedInDataStream() {
     return preGapPart1IncludedInDataStream;
   }
 
+  @Override
   public int getPreGapPart2OrPauseInDataStream() {
     return preGapPart2OrPauseInDataStream;
   }
 
+  @Override
   public int getPostGapIncludedInDataStream() {
     return postGapIncludedInDataStream;
   }
 
+  @Override
   public int getMediaNumber() {
     return mediaNumber;
   }
 
+  @Override
   public String getTrackNumber() {
     return trackNumber;
   }
 
+  @Override
   public int getIndexNumber() {
     return indexNumber;
   }
 
+  @Override
   public String getIsrc() {
     return isrc;
   }
 
-  public int getSizeOfDSI() {
-    return sizeOfDSI;
-  }
 
+  @Override
   public String getDataStreamIdentifier() {
     return dataStreamIdentifier;
   }
@@ -155,10 +167,6 @@ public abstract class AbstractDdpMs<T extends DataStreamTypeable, S extends SubC
 
   public void setIsrc(String isrc) {
     this.isrc = isrc;
-  }
-
-  public void setSizeOfDSI(int sizeOfDSI) {
-    this.sizeOfDSI = sizeOfDSI;
   }
 
   public void setDataStreamIdentifier(String dataStreamIdentifier) {

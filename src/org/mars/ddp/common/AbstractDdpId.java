@@ -4,7 +4,10 @@ package org.mars.ddp.common;
 /**
  * DDPID identifies the presence and level of DDP.
  */
-public abstract class AbstractDdpId implements DdpStream {
+public abstract class AbstractDdpId implements Packet {
+  
+  public final static String STREAM_NAME = "DDPID";
+
   private DdpLevel ddpLevel;
   private String upcEan;
   private Long mapStreamStart;

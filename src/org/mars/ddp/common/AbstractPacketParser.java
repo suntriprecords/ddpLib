@@ -5,7 +5,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.Charset;
 
-public abstract class DdpStreamParser<S extends DdpStream> {
+public abstract class AbstractPacketParser<S extends Packet> {
   
   public final static Charset DEFAULT_CHARSET = Charset.forName("US-ASCII");
 
@@ -13,7 +13,7 @@ public abstract class DdpStreamParser<S extends DdpStream> {
   private int bytesRead;
   private boolean complete;
   
-  public DdpStreamParser(InputStream is) {
+  public AbstractPacketParser(InputStream is) {
     this.dis = new DataInputStream(is);
   }
   

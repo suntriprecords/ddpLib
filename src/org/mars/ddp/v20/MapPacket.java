@@ -1,9 +1,9 @@
 package org.mars.ddp.v20;
 
-import org.mars.ddp.common.AbstractDdpMs;
+import org.mars.ddp.common.AbstractMapPacket;
 
 
-public class DdpMs extends AbstractDdpMs<DataStreamType, SubCodeDescriptor> {
+public class MapPacket extends AbstractMapPacket<DataStreamType, SubCodeDescriptor> {
 
   private char newReserved;
   private int preGap1NextTrackIncludedInDataStream;

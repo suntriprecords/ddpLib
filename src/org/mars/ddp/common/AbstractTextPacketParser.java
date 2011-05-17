@@ -1,30 +1,29 @@
-package org.mars.ddp.v101;
+package org.mars.ddp.common;
 
 import java.io.IOException;
 import java.io.InputStream;
 
-import org.mars.ddp.common.DdpStreamParser;
 
-public class TextStreamParser extends DdpStreamParser<TextStream> {
+public class AbstractTextPacketParser extends AbstractPacketParser<AbstractTextPacket> {
 
   public final static String STREAM_NAME = null;
   public final static int PACKET_LENGTH = 128;
 
-  public TextStreamParser(InputStream is) {
+  public AbstractTextPacketParser(InputStream is) {
     super(is);
   }
 
   @Override
-  public TextStream parse() throws IOException {
-    TextStream ts = new TextStream();
+  public AbstractTextPacket parse() throws IOException {
+    AbstractTextPacket ts = new AbstractTextPacket();
     parse(ts);
     return ts;
   }
 
   @Override
-  protected void parse(TextStream ts) throws IOException {
+  protected void parse(AbstractTextPacket ts) throws IOException {
     String textPacketValid = readString(4, true);
-    if(TextStream.TEXT_PACKET_VALID.equals(textPacketValid)) {
+    if(AbstractTextPacket.TEXT_PACKET_VALID.equals(textPacketValid)) {
       throw new IllegalArgumentException("textPacketValid = " + textPacketValid);
     }
     
@@ -36,7 +35,7 @@ public class TextStreamParser extends DdpStreamParser<TextStream> {
 
     int textInformationLength = readInt(3);
     String textInformation = readString(textInformationLength, (textInformationLength == 0));
-    ts.setTextInformation(textInformation);
+    ts.setInformation(textInformation);
   }
 
   @Override

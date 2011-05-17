@@ -1,15 +1,15 @@
-package org.mars.ddp.v101;
+package org.mars.ddp.common;
 
-import org.mars.ddp.common.DdpStream;
 
-public class TextStream implements DdpStream {
+/**
+ * T0, T1, T3 types
+ */
+public class AbstractTextPacket extends InformationPacket {
 
   public static String TEXT_PACKET_VALID = "VVVT";
 
   private String trackNumber;
   private int indexNumber;
-  private String textInformation;
-  
   
   public String getTrackNumber() {
     return trackNumber;
@@ -17,16 +17,10 @@ public class TextStream implements DdpStream {
   public int getIndexNumber() {
     return indexNumber;
   }
-  public String getTextInformation() {
-    return textInformation;
-  }
   public void setTrackNumber(String trackNumber) {
     this.trackNumber = trackNumber;
   }
   public void setIndexNumber(int indexNumber) {
     this.indexNumber = indexNumber;
-  }
-  public void setTextInformation(String textInformation) {
-    this.textInformation = textInformation;
   }
 }

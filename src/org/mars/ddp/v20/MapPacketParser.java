@@ -1,20 +1,22 @@
-package org.mars.ddp.v101;
+package org.mars.ddp.v20;
 
 import java.io.IOException;
 import java.io.InputStream;
 
-import org.mars.ddp.common.AbstractDdpMsParser;
+import org.mars.ddp.common.AbstractMapPacketParser;
+import org.mars.ddp.v20.DataStreamType;
+import org.mars.ddp.v20.SubCodeDescriptor;
 
-public class DdpMsParser extends AbstractDdpMsParser<DataStreamType, SubCodeDescriptor> {
+public class MapPacketParser extends AbstractMapPacketParser<DataStreamType, SubCodeDescriptor> {
 
-  public DdpMsParser(InputStream is) {
+  public MapPacketParser(InputStream is) {
     super(is);
   }
-
+  
   @Override
-  public DdpMs parse() throws IOException {
-    DdpMs ddpMs = new DdpMs();
-    parse(ddpMs);
+  public MapPacket parse() throws IOException {
+    MapPacket ddpMs = new MapPacket();
+    super.parse(ddpMs);
     return ddpMs;
   }
 

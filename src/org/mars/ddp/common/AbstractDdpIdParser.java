@@ -3,24 +3,20 @@ package org.mars.ddp.common;
 import java.io.IOException;
 import java.io.InputStream;
 
-public abstract class AbstractDdpIdParser<T extends AbstractDdpId> extends DdpStreamParser<T> {
+public abstract class AbstractDdpIdParser<T extends AbstractDdpId> extends AbstractPacketParser<T> {
 
-  public final static String STREAM_NAME = "DDPID";
-  public final static int PACKET_LENGTH = 128;
-
-  
   public AbstractDdpIdParser(InputStream is) {
     super(is);
   }
 
   @Override
   public String getStreamName() {
-    return STREAM_NAME;
+    return AbstractDdpId.STREAM_NAME;
   }
 
   @Override
   public int getPacketLength() {
-    return PACKET_LENGTH;
+    return Packet.LENGTH;
   }
 
   @Override
@@ -64,9 +60,11 @@ public abstract class AbstractDdpIdParser<T extends AbstractDdpId> extends DdpSt
     char directionOfTranslation = readChar(true);
     ddpId.setDirectionOfTranslation(directionOfTranslation);
     
-    int userTextLength = readInt( 2);
-    String userText = readString(userTextLength, (userTextLength == 0));
-    ddpId.setUserText(userText);
+    Integer userTextLength = readInt(2);
+    if(userTextLength != null) {
+      String userText = readString(userTextLength, false);
+      ddpId.setUserText(userText);
+    }
 
     setComplete();
   }
