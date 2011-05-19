@@ -40,6 +40,23 @@ public abstract class AbstractPacketParser<S extends Packet> {
     return bytesRead;
   }
   
+  protected byte[] readHexBytes(int length, boolean trim) throws IOException {
+    String hexAsString = readString(length*2, trim); //2 quartets to make a byte
+    if(hexAsString.length() % 2 != 0) {
+      
+    }
+    
+    int realLength = hexAsString.length() / 2;
+    byte[] bytes = new byte[realLength];
+    for(int i = 0; i < realLength; i++) {
+      String byteAsString = hexAsString.substring(i*2, i*2+2);
+      int byteAsInt = Integer.valueOf(byteAsString, 16);
+      bytes[i] = (byte)byteAsInt;
+    }
+    return bytes;
+  }
+
+  
   protected Character readChar(boolean trim) throws IOException {
     try {
       char c = dis.readChar();
@@ -119,7 +136,15 @@ public abstract class AbstractPacketParser<S extends Packet> {
     }
   }
   
-  protected IOException createIOException(Throwable cause) throws IOException {
-    throw new IOException(getStreamName() + " @ " + bytesRead, cause);
+  protected IOException createIOException(String message, Throwable cause) {
+    StringBuilder sb = new StringBuilder( getStreamName()).append(" @ ").append(bytesRead);
+    if(message != null) {
+      sb.append(": ").append(message);
+    }
+    return new IOException(sb.toString(), cause);
+  }
+
+  protected IOException createIOException(Throwable cause) {
+    return createIOException(null, cause);
   }
 }
