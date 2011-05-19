@@ -15,11 +15,6 @@ public abstract class AbstractDdpIdParser<T extends AbstractDdpId> extends Abstr
   }
 
   @Override
-  public int getPacketLength() {
-    return Packet.LENGTH;
-  }
-
-  @Override
   protected void parse(AbstractDdpId ddpId) throws IOException {
     String levelId = readString(8, true);
     ddpId.setDdpLevel( DdpLevel.levelOf(levelId));

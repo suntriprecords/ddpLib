@@ -7,6 +7,8 @@ package org.mars.ddp.common;
 public class AbstractTextPacket extends InformationPacket {
 
   public static String TEXT_PACKET_VALID = "VVVT";
+  public final static String STREAM_NAME = null;
+  public final static int PACKET_LENGTH = 128;
 
   private String trackNumber;
   private int indexNumber;

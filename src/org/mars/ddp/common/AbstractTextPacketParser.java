@@ -6,9 +6,6 @@ import java.io.InputStream;
 
 public class AbstractTextPacketParser extends AbstractPacketParser<AbstractTextPacket> {
 
-  public final static String STREAM_NAME = null;
-  public final static int PACKET_LENGTH = 128;
-
   public AbstractTextPacketParser(InputStream is) {
     super(is);
   }
@@ -42,10 +39,4 @@ public class AbstractTextPacketParser extends AbstractPacketParser<AbstractTextP
   public String getStreamName() {
     return null;
   }
-
-  @Override
-  public int getPacketLength() {
-    return PACKET_LENGTH;
-  }
-
 }

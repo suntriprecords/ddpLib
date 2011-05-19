@@ -15,11 +15,6 @@ public abstract class AbstractMapPacketParser<T extends DataStreamTypeable, S ex
   }
 
   @Override
-  public int getPacketLength() {
-    return Packet.LENGTH;
-  }
-
-  @Override
   protected void parse(AbstractMapPacket<T, S> ddpMs) throws IOException {
     String mapPacketValid = readString(4, true);
     if(AbstractMapPacket.MAP_PACKET_VALID.equals(mapPacketValid)) {

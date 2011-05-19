@@ -26,7 +26,7 @@ public abstract class AbstractPacketParser<S extends Packet> {
   }
   
   public abstract String getStreamName();
-  public abstract int getPacketLength();
+
   
   public boolean isComplete() {
     return complete;

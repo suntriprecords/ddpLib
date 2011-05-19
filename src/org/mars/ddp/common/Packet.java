@@ -1,5 +1,6 @@
 package org.mars.ddp.common;
 
 public interface Packet {
-  public final static int LENGTH = 128;
+  //nothing
+  //we could have public int getPacketLength() here
 }

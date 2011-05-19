@@ -6,6 +6,7 @@ package org.mars.ddp.common;
  */
 public abstract class AbstractDdpId implements Packet {
   
+  public final static int PACKET_LENGTH = 128;
   public final static String STREAM_NAME = "DDPID";
 
   private DdpLevel ddpLevel;
