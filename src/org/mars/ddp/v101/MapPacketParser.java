@@ -5,7 +5,7 @@ import java.io.InputStream;
 
 import org.mars.ddp.common.AbstractMapPacketParser;
 
-public class MapPacketParser extends AbstractMapPacketParser<DataStreamType, SubCodeDescriptor> {
+public class MapPacketParser extends AbstractMapPacketParser<DataStreamType, SubCodeDescriptor, MapPacket> {
 
   public MapPacketParser(InputStream is) {
     super(is);
@@ -13,9 +13,9 @@ public class MapPacketParser extends AbstractMapPacketParser<DataStreamType, Sub
 
   @Override
   public MapPacket parse() throws IOException {
-    MapPacket ddpMs = new MapPacket();
-    parse(ddpMs);
-    return ddpMs;
+    MapPacket mapPacket = new MapPacket();
+    parse(mapPacket);
+    return mapPacket;
   }
 
   @Override

@@ -12,15 +12,15 @@ public abstract class AbstractDdpId implements Packet {
   private DdpLevel ddpLevel;
   private String upcEan;
   private Long mapStreamStart;
-  private String msl;
+  private String msl; //Reserved
   private int mediaNumber;
   private String masterId;
   private char bookSpecifier;
   private String type;
-  private int numberSides;
-  private int currentSide;
-  private int numberLayers;
-  private int currentLayer;
+  private int numberSides; //Reserved
+  private int currentSide; //Reserved
+  private int numberLayers; //Reserved
+  private int currentLayer; //Reserved
   private char directionOfTranslation;
   private String userText;
 

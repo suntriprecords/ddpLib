@@ -8,12 +8,12 @@ public class AbstractPqDescriptorPacket implements Packet {
 
   private String trackNumber;
   private int indexNumber;
-  private int cdaTimeHours;
+  private int cdaTimeHours; //Reserved
   private int cdaTimeMinutes;
   private int cdaTimeSeconds;
   private int cdaTimeFrames;
-  private byte controlByte1;
-  private byte controlByte2;
+  private String controlByte1; //not byte because the lower byte may be S if the Serial Copy Management System is to be used.
+  private String controlByte2; //Reserved
   private String isrc;
   private String upcEan;
   private String userText;
@@ -37,10 +37,10 @@ public class AbstractPqDescriptorPacket implements Packet {
   public int getCdaTimeFrames() {
     return cdaTimeFrames;
   }
-  public byte getControlByte1() {
+  public String getControlByte1() {
     return controlByte1;
   }
-  public byte getControlByte2() {
+  public String getControlByte2() {
     return controlByte2;
   }
   public String getIsrc() {
@@ -70,10 +70,10 @@ public class AbstractPqDescriptorPacket implements Packet {
   public void setCdaTimeFrames(int cdaTimeFrames) {
     this.cdaTimeFrames = cdaTimeFrames;
   }
-  public void setControlByte1(byte controlByte1) {
+  public void setControlByte1(String controlByte1) {
     this.controlByte1 = controlByte1;
   }
-  public void setControlByte2(byte controlByte2) {
+  public void setControlByte2(String controlByte2) {
     this.controlByte2 = controlByte2;
   }
   public void setIsrc(String isrc) {

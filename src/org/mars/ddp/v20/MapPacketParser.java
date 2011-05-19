@@ -4,10 +4,8 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import org.mars.ddp.common.AbstractMapPacketParser;
-import org.mars.ddp.v20.DataStreamType;
-import org.mars.ddp.v20.SubCodeDescriptor;
 
-public class MapPacketParser extends AbstractMapPacketParser<DataStreamType, SubCodeDescriptor> {
+public class MapPacketParser extends AbstractMapPacketParser<DataStreamType, SubCodeDescriptor, MapPacket> {
 
   public MapPacketParser(InputStream is) {
     super(is);
@@ -15,9 +13,26 @@ public class MapPacketParser extends AbstractMapPacketParser<DataStreamType, Sub
   
   @Override
   public MapPacket parse() throws IOException {
-    MapPacket ddpMs = new MapPacket();
-    super.parse(ddpMs);
-    return ddpMs;
+    MapPacket mapPacket = new MapPacket();
+    parse(mapPacket);
+    return mapPacket;
+  }
+
+  @Override
+  protected void parse(MapPacket mapPacket) throws IOException {
+    super.parse(mapPacket);
+    
+    char newOrange = readChar(true);
+    mapPacket.setNewOrange(newOrange);
+    
+    int preGap1NextTrackIncludedInDataStream = readInt(4);
+    mapPacket.setPreGap1NextTrackIncludedInDataStream(preGap1NextTrackIncludedInDataStream);
+    
+    int numberOfBlocksOfPauseToAdd = readInt(8);
+    mapPacket.setNumberOfBlocksOfPauseToAdd(numberOfBlocksOfPauseToAdd);
+    
+    int startingFileOffSet = readInt(9);
+    mapPacket.setStartingFileOffSet(startingFileOffSet);
   }
 
   @Override

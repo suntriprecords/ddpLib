@@ -15,50 +15,50 @@ public abstract class AbstractDdpIdParser<T extends AbstractDdpId> extends Abstr
   }
 
   @Override
-  protected void parse(AbstractDdpId ddpId) throws IOException {
+  protected void parse(AbstractDdpId ddpIdPacket) throws IOException {
     String levelId = readString(8, true);
-    ddpId.setDdpLevel( DdpLevel.levelOf(levelId));
+    ddpIdPacket.setDdpLevel( DdpLevel.levelOf(levelId));
 
     String upcEan = readString(13, true);
-    ddpId.setUpcEan(upcEan);
+    ddpIdPacket.setUpcEan(upcEan);
     
     Long mapStreamStart = readLong(8);
-    ddpId.setMapStreamStart(mapStreamStart);
+    ddpIdPacket.setMapStreamStart(mapStreamStart);
     
     String msl = readString(8, true);
-    ddpId.setMsl(msl);
+    ddpIdPacket.setMsl(msl);
 
     int mediaNumber = readInt(1);
-    ddpId.setMediaNumber(mediaNumber);
+    ddpIdPacket.setMediaNumber(mediaNumber);
     
     String masterId = readString(48, true);
-    ddpId.setMasterId(masterId);
+    ddpIdPacket.setMasterId(masterId);
     
     char bookSpecifier = readChar(true);
-    ddpId.setBookSpecifier(bookSpecifier);
+    ddpIdPacket.setBookSpecifier(bookSpecifier);
     
     String type = readString(2, true);
-    ddpId.setType(type);
+    ddpIdPacket.setType(type);
     
     int numberSides = readInt(1);
-    ddpId.setNumberSides(numberSides);
+    ddpIdPacket.setNumberSides(numberSides);
     
     int currentSide = readInt(1);
-    ddpId.setCurrentSide(currentSide);
+    ddpIdPacket.setCurrentSide(currentSide);
     
     int numberLayers = readInt(1);
-    ddpId.setNumberLayers(numberLayers);
+    ddpIdPacket.setNumberLayers(numberLayers);
     
     int currentLayer = readInt(1);
-    ddpId.setCurrentLayer(currentLayer);
+    ddpIdPacket.setCurrentLayer(currentLayer);
     
     char directionOfTranslation = readChar(true);
-    ddpId.setDirectionOfTranslation(directionOfTranslation);
+    ddpIdPacket.setDirectionOfTranslation(directionOfTranslation);
     
     Integer userTextLength = readInt(2);
     if(userTextLength != null) {
       String userText = readString(userTextLength, false);
-      ddpId.setUserText(userText);
+      ddpIdPacket.setUserText(userText);
     }
 
     setComplete();

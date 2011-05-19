@@ -5,14 +5,14 @@ import org.mars.ddp.common.AbstractMapPacket;
 
 public class MapPacket extends AbstractMapPacket<DataStreamType, SubCodeDescriptor> {
 
-  private char newReserved;
+  private char newOrange; //Reserved
   private int preGap1NextTrackIncludedInDataStream;
   private int numberOfBlocksOfPauseToAdd;
   private int startingFileOffSet;
   
   
-  public char getNewReserved() {
-    return newReserved;
+  public char getNewOrange() {
+    return newOrange;
   }
   public int getPreGap1NextTrackIncludedInDataStream() {
     return preGap1NextTrackIncludedInDataStream;
@@ -23,8 +23,8 @@ public class MapPacket extends AbstractMapPacket<DataStreamType, SubCodeDescript
   public int getStartingFileOffSet() {
     return startingFileOffSet;
   }
-  public void setNewReserved(char newReserved) {
-    this.newReserved = newReserved;
+  public void setNewOrange(char newOrange) {
+    this.newOrange = newOrange;
   }
   public void setPreGap1NextTrackIncludedInDataStream(int preGap1NextTrackIncludedInDataStream) {
     this.preGap1NextTrackIncludedInDataStream = preGap1NextTrackIncludedInDataStream;

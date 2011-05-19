@@ -40,17 +40,21 @@ public abstract class AbstractPacketParser<S extends Packet> {
     return bytesRead;
   }
   
+  protected byte readHexByte(boolean trim) throws IOException {
+    return readHexBytes(1, trim)[0];
+  }
+
   protected byte[] readHexBytes(int length, boolean trim) throws IOException {
     String hexAsString = readString(length*2, trim); //2 quartets to make a byte
     if(hexAsString.length() % 2 != 0) {
-      
+      throw new IllegalArgumentException("length must be a multiple of 2");
     }
     
-    int realLength = hexAsString.length() / 2;
-    byte[] bytes = new byte[realLength];
-    for(int i = 0; i < realLength; i++) {
+    int bytesCount = hexAsString.length() / 2; //after trimming, so maybe != length
+    byte[] bytes = new byte[bytesCount];
+    for(int i = 0; i < bytesCount; i++) {
       String byteAsString = hexAsString.substring(i*2, i*2+2);
-      int byteAsInt = Integer.valueOf(byteAsString, 16);
+      int byteAsInt = Integer.valueOf(byteAsString, 16); //16 = base-16 = hex
       bytes[i] = (byte)byteAsInt;
     }
     return bytes;

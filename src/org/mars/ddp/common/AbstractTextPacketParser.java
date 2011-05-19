@@ -18,21 +18,21 @@ public class AbstractTextPacketParser extends AbstractPacketParser<AbstractTextP
   }
 
   @Override
-  protected void parse(AbstractTextPacket ts) throws IOException {
+  protected void parse(AbstractTextPacket textPacket) throws IOException {
     String textPacketValid = readString(4, true);
     if(AbstractTextPacket.TEXT_PACKET_VALID.equals(textPacketValid)) {
       throw new IllegalArgumentException("textPacketValid = " + textPacketValid);
     }
     
     String trackNumber = readString(2, true);
-    ts.setTrackNumber(trackNumber);
+    textPacket.setTrackNumber(trackNumber);
     
     int indexNumber = readInt(2);
-    ts.setIndexNumber(indexNumber);
+    textPacket.setIndexNumber(indexNumber);
 
     int textInformationLength = readInt(3);
     String textInformation = readString(textInformationLength, (textInformationLength == 0));
-    ts.setInformation(textInformation);
+    textPacket.setInformation(textInformation);
   }
 
   @Override

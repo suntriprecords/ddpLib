@@ -3,7 +3,7 @@ package org.mars.ddp.common;
 import java.io.IOException;
 import java.io.InputStream;
 
-public abstract class AbstractMapPacketParser<T extends DataStreamTypeable, S extends SubCodeDescribable> extends AbstractPacketParser<AbstractMapPacket<T, S>> {
+public abstract class AbstractMapPacketParser<T extends DataStreamTypeable, S extends SubCodeDescribable, P extends AbstractMapPacket<T, S>> extends AbstractPacketParser<P> {
 
   public AbstractMapPacketParser(InputStream is) {
     super(is);
@@ -15,61 +15,61 @@ public abstract class AbstractMapPacketParser<T extends DataStreamTypeable, S ex
   }
 
   @Override
-  protected void parse(AbstractMapPacket<T, S> ddpMs) throws IOException {
+  protected void parse(P mapPacket) throws IOException {
     String mapPacketValid = readString(4, true);
     if(AbstractMapPacket.MAP_PACKET_VALID.equals(mapPacketValid)) {
       throw new IllegalArgumentException("mapPacketValid = " + mapPacketValid);
     }
     
     T dataStreamType = readDataStreamType();
-    ddpMs.setDataStreamType(dataStreamType);
+    mapPacket.setDataStreamType(dataStreamType);
     
     int dataStreamPointer = readInt(8);
-    ddpMs.setDataStreamPointer(dataStreamPointer);
+    mapPacket.setDataStreamPointer(dataStreamPointer);
     
     int dataStreamLength = readInt(8);
-    ddpMs.setDataStreamLength(dataStreamLength);
+    mapPacket.setDataStreamLength(dataStreamLength);
     
     int dataStreamStart = readInt(8);
-    ddpMs.setDataStreamStart(dataStreamStart);
+    mapPacket.setDataStreamStart(dataStreamStart);
     
     S subCodeDescriptor = readSubCodeDescriptor();
-    ddpMs.setSubCodeDescriptor(subCodeDescriptor);
+    mapPacket.setSubCodeDescriptor(subCodeDescriptor);
     
     CDMode cdMode = CDMode.idOf( readString(2, true));
-    ddpMs.setCdMode(cdMode);
+    mapPacket.setCdMode(cdMode);
     
     SourceStorageMode sourceStorageMode = SourceStorageMode.idOf( readInt(1));
-    ddpMs.setSourceStorageMode(sourceStorageMode);
+    mapPacket.setSourceStorageMode(sourceStorageMode);
     
     boolean sourceMaterialScrambled = readBoolean(true);
-    ddpMs.setSourceMaterialScrambled(sourceMaterialScrambled);
+    mapPacket.setSourceMaterialScrambled(sourceMaterialScrambled);
     
     int preGapPart1IncludedInDataStream = readInt(4);
-    ddpMs.setPreGapPart1IncludedInDataStream(preGapPart1IncludedInDataStream);
+    mapPacket.setPreGapPart1IncludedInDataStream(preGapPart1IncludedInDataStream);
     
     int preGapPart2OrPauseInDataStream = readInt(4);
-    ddpMs.setPreGapPart2OrPauseInDataStream(preGapPart2OrPauseInDataStream);
+    mapPacket.setPreGapPart2OrPauseInDataStream(preGapPart2OrPauseInDataStream);
     
     int postGapIncludedInDataStream = readInt(4);
-    ddpMs.setPostGapIncludedInDataStream(postGapIncludedInDataStream);
+    mapPacket.setPostGapIncludedInDataStream(postGapIncludedInDataStream);
     
     int mediaNumber = readInt(1);
-    ddpMs.setMediaNumber(mediaNumber);
+    mapPacket.setMediaNumber(mediaNumber);
     
     String trackNumber = readString(2, true); //String because lead-out will be AA
-    ddpMs.setTrackNumber(trackNumber);
+    mapPacket.setTrackNumber(trackNumber);
     
     int indexNumber = readInt(2);
-    ddpMs.setIndexNumber(indexNumber);
+    mapPacket.setIndexNumber(indexNumber);
     
     String isrc = readString(12, true);
-    ddpMs.setIsrc(isrc);
+    mapPacket.setIsrc(isrc);
     
     Integer dsiSize = readInt(3);
     if(dsiSize != null) {
       String dataStreamIdentifier = readString(dsiSize, false);
-      ddpMs.setDataStreamIdentifier(dataStreamIdentifier);
+      mapPacket.setDataStreamIdentifier(dataStreamIdentifier);
     }
   }
 
