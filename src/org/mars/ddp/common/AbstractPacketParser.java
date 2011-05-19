@@ -28,6 +28,10 @@ public abstract class AbstractPacketParser<S extends Packet> {
   public abstract String getStreamName();
 
   
+  public int available() throws IOException {
+    return dis.available();
+  }
+
   public boolean isComplete() {
     return complete;
   }
@@ -97,10 +101,10 @@ public abstract class AbstractPacketParser<S extends Packet> {
       bytesRead++;
       
       if(c == '0') {
-        return false;
+        return Boolean.FALSE;
       }
       else if(c == '1') {
-        return true;
+        return Boolean.TRUE;
       }
       else if(trim && c == ' ') {
         return null;

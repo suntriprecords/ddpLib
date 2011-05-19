@@ -19,19 +19,19 @@ public abstract class AbstractPqDescriptorParser extends AbstractPacketParser<Ab
     String trackNumber = readString(2, true);
     pqPacket.setTrackNumber(trackNumber);
     
-    int indexNumber = readInt(2);
+    Integer indexNumber = readInt(2);
     pqPacket.setIndexNumber(indexNumber);
     
-    int cdaTimeHours = readInt(2);
+    Integer cdaTimeHours = readInt(2);
     pqPacket.setCdaTimeHours(cdaTimeHours);
     
-    int cdaTimeMinutes = readInt(2);
+    Integer cdaTimeMinutes = readInt(2);
     pqPacket.setCdaTimeMinutes(cdaTimeMinutes);
     
-    int cdaTimeSeconds = readInt(2);
+    Integer cdaTimeSeconds = readInt(2);
     pqPacket.setCdaTimeSeconds(cdaTimeSeconds);
     
-    int cdaTimeFrames = readInt(2);
+    Integer cdaTimeFrames = readInt(2);
     pqPacket.setCdaTimeFrames(cdaTimeFrames);
     
     String controlByte1 = readString(2, true);

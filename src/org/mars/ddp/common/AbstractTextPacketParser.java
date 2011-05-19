@@ -27,10 +27,10 @@ public class AbstractTextPacketParser extends AbstractPacketParser<AbstractTextP
     String trackNumber = readString(2, true);
     textPacket.setTrackNumber(trackNumber);
     
-    int indexNumber = readInt(2);
+    Integer indexNumber = readInt(2);
     textPacket.setIndexNumber(indexNumber);
 
-    int textInformationLength = readInt(3);
+    Integer textInformationLength = readInt(3);
     String textInformation = readString(textInformationLength, (textInformationLength == 0));
     textPacket.setInformation(textInformation);
   }

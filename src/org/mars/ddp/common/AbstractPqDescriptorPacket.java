@@ -7,11 +7,11 @@ public class AbstractPqDescriptorPacket implements Packet {
   public final static int PACKET_LENGTH = 64;
 
   private String trackNumber;
-  private int indexNumber;
-  private int cdaTimeHours; //Reserved
-  private int cdaTimeMinutes;
-  private int cdaTimeSeconds;
-  private int cdaTimeFrames;
+  private Integer indexNumber;
+  private Integer cdaTimeHours; //Reserved
+  private Integer cdaTimeMinutes;
+  private Integer cdaTimeSeconds;
+  private Integer cdaTimeFrames;
   private String controlByte1; //not byte because the lower byte may be S if the Serial Copy Management System is to be used.
   private String controlByte2; //Reserved
   private String isrc;
@@ -22,19 +22,19 @@ public class AbstractPqDescriptorPacket implements Packet {
   public String getTrackNumber() {
     return trackNumber;
   }
-  public int getIndexNumber() {
+  public Integer getIndexNumber() {
     return indexNumber;
   }
-  public int getCdaTimeHours() {
+  public Integer getCdaTimeHours() {
     return cdaTimeHours;
   }
-  public int getCdaTimeMinutes() {
+  public Integer getCdaTimeMinutes() {
     return cdaTimeMinutes;
   }
-  public int getCdaTimeSeconds() {
+  public Integer getCdaTimeSeconds() {
     return cdaTimeSeconds;
   }
-  public int getCdaTimeFrames() {
+  public Integer getCdaTimeFrames() {
     return cdaTimeFrames;
   }
   public String getControlByte1() {
@@ -55,19 +55,19 @@ public class AbstractPqDescriptorPacket implements Packet {
   public void setTrackNumber(String trackNumber) {
     this.trackNumber = trackNumber;
   }
-  public void setIndexNumber(int indexNumber) {
+  public void setIndexNumber(Integer indexNumber) {
     this.indexNumber = indexNumber;
   }
-  public void setCdaTimeHours(int cdaTimeHours) {
+  public void setCdaTimeHours(Integer cdaTimeHours) {
     this.cdaTimeHours = cdaTimeHours;
   }
-  public void setCdaTimeMinutes(int cdaTimeMinutes) {
+  public void setCdaTimeMinutes(Integer cdaTimeMinutes) {
     this.cdaTimeMinutes = cdaTimeMinutes;
   }
-  public void setCdaTimeSeconds(int cdaTimeSeconds) {
+  public void setCdaTimeSeconds(Integer cdaTimeSeconds) {
     this.cdaTimeSeconds = cdaTimeSeconds;
   }
-  public void setCdaTimeFrames(int cdaTimeFrames) {
+  public void setCdaTimeFrames(Integer cdaTimeFrames) {
     this.cdaTimeFrames = cdaTimeFrames;
   }
   public void setControlByte1(String controlByte1) {

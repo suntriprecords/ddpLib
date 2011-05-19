@@ -11,18 +11,18 @@ public class AbstractTextPacket extends InformationPacket {
   public final static int PACKET_LENGTH = 128;
 
   private String trackNumber;
-  private int indexNumber;
+  private Integer indexNumber;
   
   public String getTrackNumber() {
     return trackNumber;
   }
-  public int getIndexNumber() {
+  public Integer getIndexNumber() {
     return indexNumber;
   }
   public void setTrackNumber(String trackNumber) {
     this.trackNumber = trackNumber;
   }
-  public void setIndexNumber(int indexNumber) {
+  public void setIndexNumber(Integer indexNumber) {
     this.indexNumber = indexNumber;
   }
 }

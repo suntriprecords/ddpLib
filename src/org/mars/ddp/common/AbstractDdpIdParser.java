@@ -28,31 +28,31 @@ public abstract class AbstractDdpIdParser<T extends AbstractDdpId> extends Abstr
     String msl = readString(8, true);
     ddpIdPacket.setMsl(msl);
 
-    int mediaNumber = readInt(1);
+    Integer mediaNumber = readInt(1);
     ddpIdPacket.setMediaNumber(mediaNumber);
     
     String masterId = readString(48, true);
     ddpIdPacket.setMasterId(masterId);
     
-    char bookSpecifier = readChar(true);
+    Character bookSpecifier = readChar(true);
     ddpIdPacket.setBookSpecifier(bookSpecifier);
     
     String type = readString(2, true);
     ddpIdPacket.setType(type);
     
-    int numberSides = readInt(1);
+    Integer numberSides = readInt(1);
     ddpIdPacket.setNumberSides(numberSides);
     
-    int currentSide = readInt(1);
+    Integer currentSide = readInt(1);
     ddpIdPacket.setCurrentSide(currentSide);
     
-    int numberLayers = readInt(1);
+    Integer numberLayers = readInt(1);
     ddpIdPacket.setNumberLayers(numberLayers);
     
-    int currentLayer = readInt(1);
+    Integer currentLayer = readInt(1);
     ddpIdPacket.setCurrentLayer(currentLayer);
     
-    char directionOfTranslation = readChar(true);
+    Character directionOfTranslation = readChar(true);
     ddpIdPacket.setDirectionOfTranslation(directionOfTranslation);
     
     Integer userTextLength = readInt(2);
@@ -60,7 +60,5 @@ public abstract class AbstractDdpIdParser<T extends AbstractDdpId> extends Abstr
       String userText = readString(userTextLength, false);
       ddpIdPacket.setUserText(userText);
     }
-
-    setComplete();
   }
 }

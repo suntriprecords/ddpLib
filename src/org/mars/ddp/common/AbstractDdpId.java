@@ -13,18 +13,18 @@ public abstract class AbstractDdpId implements Packet {
   private String upcEan;
   private Long mapStreamStart;
   private String msl; //Reserved
-  private int mediaNumber;
+  private Integer mediaNumber;
   private String masterId;
-  private char bookSpecifier;
+  private Character bookSpecifier;
   private String type;
-  private int numberSides; //Reserved
-  private int currentSide; //Reserved
-  private int numberLayers; //Reserved
-  private int currentLayer; //Reserved
-  private char directionOfTranslation;
+  private Integer numberSides; //Reserved
+  private Integer currentSide; //Reserved
+  private Integer numberLayers; //Reserved
+  private Integer currentLayer; //Reserved
+  private Character directionOfTranslation;
   private String userText;
-
-
+  
+  
   public DdpLevel getDdpLevel() {
     return ddpLevel;
   }
@@ -37,31 +37,31 @@ public abstract class AbstractDdpId implements Packet {
   public String getMsl() {
     return msl;
   }
-  public int getMediaNumber() {
+  public Integer getMediaNumber() {
     return mediaNumber;
   }
   public String getMasterId() {
     return masterId;
   }
-  public char getBookSpecifier() {
+  public Character getBookSpecifier() {
     return bookSpecifier;
   }
   public String getType() {
     return type;
   }
-  public int getNumberSides() {
+  public Integer getNumberSides() {
     return numberSides;
   }
-  public int getCurrentSide() {
+  public Integer getCurrentSide() {
     return currentSide;
   }
-  public int getNumberLayers() {
+  public Integer getNumberLayers() {
     return numberLayers;
   }
-  public int getCurrentLayer() {
+  public Integer getCurrentLayer() {
     return currentLayer;
   }
-  public char getDirectionOfTranslation() {
+  public Character getDirectionOfTranslation() {
     return directionOfTranslation;
   }
   public String getUserText() {
@@ -79,31 +79,31 @@ public abstract class AbstractDdpId implements Packet {
   public void setMsl(String msl) {
     this.msl = msl;
   }
-  public void setMediaNumber(int mediaNumber) {
+  public void setMediaNumber(Integer mediaNumber) {
     this.mediaNumber = mediaNumber;
   }
   public void setMasterId(String masterId) {
     this.masterId = masterId;
   }
-  public void setBookSpecifier(char bookSpecifier) {
+  public void setBookSpecifier(Character bookSpecifier) {
     this.bookSpecifier = bookSpecifier;
   }
   public void setType(String type) {
     this.type = type;
   }
-  public void setNumberSides(int numberSides) {
+  public void setNumberSides(Integer numberSides) {
     this.numberSides = numberSides;
   }
-  public void setCurrentSide(int currentSide) {
+  public void setCurrentSide(Integer currentSide) {
     this.currentSide = currentSide;
   }
-  public void setNumberLayers(int numberLayers) {
+  public void setNumberLayers(Integer numberLayers) {
     this.numberLayers = numberLayers;
   }
-  public void setCurrentLayer(int currentLayer) {
+  public void setCurrentLayer(Integer currentLayer) {
     this.currentLayer = currentLayer;
   }
-  public void setDirectionOfTranslation(char directionOfTranslation) {
+  public void setDirectionOfTranslation(Character directionOfTranslation) {
     this.directionOfTranslation = directionOfTranslation;
   }
   public void setUserText(String userText) {

@@ -24,13 +24,13 @@ public abstract class AbstractMapPacketParser<T extends DataStreamTypeable, S ex
     T dataStreamType = readDataStreamType();
     mapPacket.setDataStreamType(dataStreamType);
     
-    int dataStreamPointer = readInt(8);
+    Integer dataStreamPointer = readInt(8);
     mapPacket.setDataStreamPointer(dataStreamPointer);
     
-    int dataStreamLength = readInt(8);
+    Integer dataStreamLength = readInt(8);
     mapPacket.setDataStreamLength(dataStreamLength);
     
-    int dataStreamStart = readInt(8);
+    Integer dataStreamStart = readInt(8);
     mapPacket.setDataStreamStart(dataStreamStart);
     
     S subCodeDescriptor = readSubCodeDescriptor();
@@ -42,25 +42,25 @@ public abstract class AbstractMapPacketParser<T extends DataStreamTypeable, S ex
     SourceStorageMode sourceStorageMode = SourceStorageMode.idOf( readInt(1));
     mapPacket.setSourceStorageMode(sourceStorageMode);
     
-    boolean sourceMaterialScrambled = readBoolean(true);
+    Boolean sourceMaterialScrambled = readBoolean(true);
     mapPacket.setSourceMaterialScrambled(sourceMaterialScrambled);
     
-    int preGapPart1IncludedInDataStream = readInt(4);
+    Integer preGapPart1IncludedInDataStream = readInt(4);
     mapPacket.setPreGapPart1IncludedInDataStream(preGapPart1IncludedInDataStream);
     
-    int preGapPart2OrPauseInDataStream = readInt(4);
+    Integer preGapPart2OrPauseInDataStream = readInt(4);
     mapPacket.setPreGapPart2OrPauseInDataStream(preGapPart2OrPauseInDataStream);
     
-    int postGapIncludedInDataStream = readInt(4);
+    Integer postGapIncludedInDataStream = readInt(4);
     mapPacket.setPostGapIncludedInDataStream(postGapIncludedInDataStream);
     
-    int mediaNumber = readInt(1);
+    Integer mediaNumber = readInt(1);
     mapPacket.setMediaNumber(mediaNumber);
     
     String trackNumber = readString(2, true); //String because lead-out will be AA
     mapPacket.setTrackNumber(trackNumber);
     
-    int indexNumber = readInt(2);
+    Integer indexNumber = readInt(2);
     mapPacket.setIndexNumber(indexNumber);
     
     String isrc = readString(12, true);

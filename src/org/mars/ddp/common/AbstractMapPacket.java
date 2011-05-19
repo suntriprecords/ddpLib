@@ -11,165 +11,136 @@ public abstract class AbstractMapPacket<T extends DataStreamTypeable, S extends 
   public static String MAP_PACKET_VALID = "VVVM";
 
   private T dataStreamType;
-  private int dataStreamPointer;
-  private int dataStreamLength;
-  private int dataStreamStart;
+  private Integer dataStreamPointer;
+  private Integer dataStreamLength;
+  private Integer dataStreamStart;
   private S subCodeDescriptor;
   private CDMode cdMode;
   private SourceStorageMode sourceStorageMode;
-  private boolean SourceMaterialScrambled;
-  private int preGapPart1IncludedInDataStream;
-  private int preGapPart2OrPauseInDataStream;
-  private int postGapIncludedInDataStream;
-  private int mediaNumber;
+  private Boolean sourceMaterialScrambled;
+  private Integer preGapPart1IncludedInDataStream;
+  private Integer preGapPart2OrPauseInDataStream;
+  private Integer postGapIncludedInDataStream;
+  private Integer mediaNumber;
   private String trackNumber;
-  private int indexNumber;
+  private Integer indexNumber;
   private String isrc;
   private String dataStreamIdentifier;
-
+  
   
   @Override
   public T getDataStreamType() {
     return dataStreamType;
   }
-
   @Override
-  public int getDataStreamPointer() {
+  public Integer getDataStreamPointer() {
     return dataStreamPointer;
   }
-
   @Override
-  public int getDataStreamLength() {
+  public Integer getDataStreamLength() {
     return dataStreamLength;
   }
-
   @Override
-  public int getDataStreamStart() {
+  public Integer getDataStreamStart() {
     return dataStreamStart;
   }
-
   @Override
   public S getSubCodeDescriptor() {
     return subCodeDescriptor;
   }
-
   @Override
   public CDMode getCdMode() {
     return cdMode;
   }
-
   @Override
   public SourceStorageMode getSourceStorageMode() {
     return sourceStorageMode;
   }
-
   @Override
-  public boolean isSourceMaterialScrambled() {
-    return SourceMaterialScrambled;
+  public Boolean isSourceMaterialScrambled() {
+    return sourceMaterialScrambled;
   }
-
   @Override
-  public int getPreGapPart1IncludedInDataStream() {
+  public Integer getPreGapPart1IncludedInDataStream() {
     return preGapPart1IncludedInDataStream;
   }
-
   @Override
-  public int getPreGapPart2OrPauseInDataStream() {
+  public Integer getPreGapPart2OrPauseInDataStream() {
     return preGapPart2OrPauseInDataStream;
   }
-
   @Override
-  public int getPostGapIncludedInDataStream() {
+  public Integer getPostGapIncludedInDataStream() {
     return postGapIncludedInDataStream;
   }
-
   @Override
-  public int getMediaNumber() {
+  public Integer getMediaNumber() {
     return mediaNumber;
   }
-
   @Override
   public String getTrackNumber() {
     return trackNumber;
   }
-
   @Override
-  public int getIndexNumber() {
+  public Integer getIndexNumber() {
     return indexNumber;
   }
-
   @Override
   public String getIsrc() {
     return isrc;
   }
-
-
   @Override
   public String getDataStreamIdentifier() {
     return dataStreamIdentifier;
   }
-
   public void setDataStreamType(T dataStreamType) {
     this.dataStreamType = dataStreamType;
   }
-
-  public void setDataStreamPointer(int dataStreamPointer) {
+  public void setDataStreamPointer(Integer dataStreamPointer) {
     this.dataStreamPointer = dataStreamPointer;
   }
-
-  public void setDataStreamLength(int dataStreamLength) {
+  public void setDataStreamLength(Integer dataStreamLength) {
     this.dataStreamLength = dataStreamLength;
   }
-
-  public void setDataStreamStart(int dataStreamStart) {
+  public void setDataStreamStart(Integer dataStreamStart) {
     this.dataStreamStart = dataStreamStart;
   }
-
   public void setSubCodeDescriptor(S subCodeDescriptor) {
     this.subCodeDescriptor = subCodeDescriptor;
   }
-
   public void setCdMode(CDMode cdMode) {
     this.cdMode = cdMode;
   }
-
   public void setSourceStorageMode(SourceStorageMode sourceStorageMode) {
     this.sourceStorageMode = sourceStorageMode;
   }
-
-  public void setSourceMaterialScrambled(boolean sourceMaterialScrambled) {
-    SourceMaterialScrambled = sourceMaterialScrambled;
+  public void setSourceMaterialScrambled(Boolean sourceMaterialScrambled) {
+    this.sourceMaterialScrambled = sourceMaterialScrambled;
   }
-
-  public void setPreGapPart1IncludedInDataStream(int preGapPart1IncludedInDataStream) {
+  public void setPreGapPart1IncludedInDataStream(Integer preGapPart1IncludedInDataStream) {
     this.preGapPart1IncludedInDataStream = preGapPart1IncludedInDataStream;
   }
-
-  public void setPreGapPart2OrPauseInDataStream(int preGapPart2OrPauseInDataStream) {
+  public void setPreGapPart2OrPauseInDataStream(Integer preGapPart2OrPauseInDataStream) {
     this.preGapPart2OrPauseInDataStream = preGapPart2OrPauseInDataStream;
   }
-
-  public void setPostGapIncludedInDataStream(int postGapIncludedInDataStream) {
+  public void setPostGapIncludedInDataStream(Integer postGapIncludedInDataStream) {
     this.postGapIncludedInDataStream = postGapIncludedInDataStream;
   }
-
-  public void setMediaNumber(int mediaNumber) {
+  public void setMediaNumber(Integer mediaNumber) {
     this.mediaNumber = mediaNumber;
   }
-
   public void setTrackNumber(String trackNumber) {
     this.trackNumber = trackNumber;
   }
-
-  public void setIndexNumber(int indexNumber) {
+  public void setIndexNumber(Integer indexNumber) {
     this.indexNumber = indexNumber;
   }
-
   public void setIsrc(String isrc) {
     this.isrc = isrc;
   }
-
   public void setDataStreamIdentifier(String dataStreamIdentifier) {
     this.dataStreamIdentifier = dataStreamIdentifier;
   }
+
+  
+  
 }
