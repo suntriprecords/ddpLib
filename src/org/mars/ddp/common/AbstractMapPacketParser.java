@@ -2,7 +2,7 @@ package org.mars.ddp.common;
 
 import java.io.IOException;
 import java.io.InputStream;
-
+CHECK IN ALL PARSERS WHICH DATA IS MANDATORY
 public abstract class AbstractMapPacketParser<T extends DataStreamTypeable, S extends SubCodeDescribable, P extends AbstractMapPacket<T, S>> extends AbstractPacketParser<P> {
 
   public AbstractMapPacketParser(InputStream is) {
@@ -17,7 +17,7 @@ public abstract class AbstractMapPacketParser<T extends DataStreamTypeable, S ex
   @Override
   protected void parse(P mapPacket) throws IOException {
     String mapPacketValid = readString(4, true);
-    if(AbstractMapPacket.MAP_PACKET_VALID.equals(mapPacketValid)) {
+    if(!AbstractMapPacket.MAP_PACKET_VALID.equals(mapPacketValid)) {
       throw new IllegalArgumentException("mapPacketValid = " + mapPacketValid);
     }
     
@@ -36,11 +36,17 @@ public abstract class AbstractMapPacketParser<T extends DataStreamTypeable, S ex
     S subCodeDescriptor = readSubCodeDescriptor();
     mapPacket.setSubCodeDescriptor(subCodeDescriptor);
     
-    CDMode cdMode = CDMode.idOf( readString(2, true));
-    mapPacket.setCdMode(cdMode);
+    String cdm = readString(2, true);
+    if(cdm != null) {
+      CDMode cdMode = CDMode.idOf(cdm);
+      mapPacket.setCdMode(cdMode);
+    }
     
-    SourceStorageMode sourceStorageMode = SourceStorageMode.idOf( readInt(1));
-    mapPacket.setSourceStorageMode(sourceStorageMode);
+    Integer ssm = readInt(1);
+    if(ssm != null) {
+      SourceStorageMode sourceStorageMode = SourceStorageMode.idOf(ssm);
+      mapPacket.setSourceStorageMode(sourceStorageMode);
+    }
     
     Boolean sourceMaterialScrambled = readBoolean(true);
     mapPacket.setSourceMaterialScrambled(sourceMaterialScrambled);

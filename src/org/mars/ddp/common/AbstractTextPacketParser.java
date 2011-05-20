@@ -20,7 +20,7 @@ public class AbstractTextPacketParser extends AbstractPacketParser<AbstractTextP
   @Override
   protected void parse(AbstractTextPacket textPacket) throws IOException {
     String textPacketValid = readString(4, true);
-    if(AbstractTextPacket.TEXT_PACKET_VALID.equals(textPacketValid)) {
+    if(!AbstractTextPacket.TEXT_PACKET_VALID.equals(textPacketValid)) {
       throw new IllegalArgumentException("textPacketValid = " + textPacketValid);
     }
     

@@ -14,7 +14,8 @@ public enum SubCodeDescriptor implements SubCodeDescribable {
   WR24XI("WR24XI"),        
   WR24PI("WR24PI"),        
   WR24PX("WR24PX"),        
-  WR18XX("WR18XX");        
+  WR18XX("WR18XX"),
+  CDTEXT("CDTEXT"); //SONY CD TEXT
 
 
   private String id;

@@ -1,7 +1,9 @@
 package org.mars.ddp.common;
 
+import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URL;
 
 public abstract class AbstractDdpIdParser<T extends AbstractDdpId> extends AbstractPacketParser<T> {
 
@@ -15,9 +17,13 @@ public abstract class AbstractDdpIdParser<T extends AbstractDdpId> extends Abstr
   }
 
   @Override
+  public T parse() throws IOException {
+    throw new UnsupportedOperationException();
+  }
+
+  @Override
   protected void parse(AbstractDdpId ddpIdPacket) throws IOException {
-    String levelId = readString(8, true);
-    ddpIdPacket.setDdpLevel( DdpLevel.levelOf(levelId));
+    ddpIdPacket.setDdpLevel( readDdpLevel());
 
     String upcEan = readString(13, true);
     ddpIdPacket.setUpcEan(upcEan);
@@ -60,5 +66,17 @@ public abstract class AbstractDdpIdParser<T extends AbstractDdpId> extends Abstr
       String userText = readString(userTextLength, false);
       ddpIdPacket.setUserText(userText);
     }
+  }
+  
+  public DdpLevel readDdpLevel() throws IOException {
+    String levelId = readString(8, true);
+    return DdpLevel.levelOf(levelId);
+  }
+
+  public static DdpLevel readDdpLevel(URL ddpIdUrl) throws IOException {
+    DataInputStream dis = new DataInputStream( ddpIdUrl.openStream());
+    String levelId = readString(dis, 8, true);
+    dis.close();
+    return DdpLevel.levelOf(levelId);
   }
 }

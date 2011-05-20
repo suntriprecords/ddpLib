@@ -1,27 +1,16 @@
 package org.mars.ddp.v101;
 
-import org.mars.ddp.common.MapStream;
-import org.mars.ddp.common.TextStream;
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 
-public class DdpImage {
-  
-  private DdpId ddpId;
-  private MapStream<MapPacket> mapStreams = new MapStream<MapPacket>();
-  private TextStream<TextPackable> textStream = new TextStream<TextPackable>();
-  
-  public DdpId getDdpId() {
-    return ddpId;
-  }
-  public void setDdpId(DdpId ddpId) {
-    this.ddpId = ddpId;
-  }
+import org.mars.ddp.common.AbstractDdpImage;
 
-  public MapStream<MapPacket> getMapStreams() {
-    return mapStreams;
+public class DdpImage extends AbstractDdpImage<DdpId, MapPacket, TextPacket> {
+
+  @Override
+  public void parse(URL ddpUrl) throws MalformedURLException, IOException {
+    // FIXME
+    
   }
-  public TextStream<TextPackable> getTextStreams() {
-    return textStream;
-  }
-  
-  //TODO continue
 }

@@ -67,7 +67,7 @@ public abstract class AbstractPacketParser<S extends Packet> {
   
   protected Character readChar(boolean trim) throws IOException {
     try {
-      char c = dis.readChar();
+      char c = (char)dis.read(); //just casting, this is ASCII. NOT using dis.readChar(), it reads 2 chars.
       bytesRead++;
       return (trim && c == ' ') ? null : c;
     }
@@ -78,26 +78,31 @@ public abstract class AbstractPacketParser<S extends Packet> {
 
   protected String readString(int length, boolean trim) throws IOException {
     try {
-      byte[] buffer = new byte[length];
-      dis.readFully(buffer);
+      String str = readString(dis, length, trim);
       bytesRead += length;
-      String str = new String(buffer, DEFAULT_CHARSET);
-      if(trim) {
-        str = str.trim();
-        if(str.length() == 0) {
-          str = null;
-        }
-      }
-      return str; 
+      return str;
     }
     catch(IOException e) {
       throw createIOException(e);
     }
   }
+
+  protected static String readString(DataInputStream dis, int length, boolean trim) throws IOException {
+    byte[] buffer = new byte[length];
+    dis.readFully(buffer);
+    String str = new String(buffer, DEFAULT_CHARSET);
+    if(trim) {
+      str = str.trim();
+      if(str.length() == 0) {
+        str = null;
+      }
+    }
+    return str; 
+  }
   
   protected Boolean readBoolean(boolean trim) throws IOException {
     try {
-      char c = dis.readChar();
+      char c = (char)dis.readByte();
       bytesRead++;
       
       if(c == '0') {
