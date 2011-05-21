@@ -1,14 +1,21 @@
 package org.mars.ddp.common;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-public abstract class AbstractDdpImage<I extends AbstractDdpId, M extends AbstractMapPacket<?, ?>, T extends AbstractTextPacket> {
+import org.mars.ddp.v20.DdpId;
+import org.mars.ddp.v20.DdpIdParser;
+import org.mars.ddp.v20.MapPacket;
+import org.mars.ddp.v20.MapPacketParser;
+
+public abstract class AbstractDdpImage<I extends AbstractDdpId, M extends AbstractMapPacket<?, ?>> {
 
   private I ddpId;
   private MapStream<M> mapStreams;
-  private TextStream<T> textStream;
   
   public I getDdpId() {
     return ddpId;
@@ -24,12 +31,36 @@ public abstract class AbstractDdpImage<I extends AbstractDdpId, M extends Abstra
     return mapStreams;
   }
   
-  public TextStream<T> getTextStreams() {
-    if(textStream == null) {
-      textStream = new TextStream<T>();
+  public void load(URL ddpUrl) throws MalformedURLException, IOException {
+    InputStream ddpIdStream = new URL(ddpUrl.toExternalForm() + AbstractDdpId.STREAM_NAME).openStream();
+    
+    I ddpId = ((I)getParametrizedType(0).asSubclass(AbstractDdpId.class).newInstance()).newLoader().load();
+    setDdpId(ddpId);
+    ddpIdStream.close();
+    
+    getMapStreams().clear(); 
+    InputStream ddpMapStream = new URL(ddpUrl.toExternalForm() + MapStream.STREAM_NAME).openStream();
+    MapPacketParser mapPacketParser = new MapPacketParser(ddpMapStream);
+    while(mapPacketParser.available() > 0) {
+      M mapPacket = mapPacketParser.load();
+      getMapStreams().add(mapPacket);
     }
-    return textStream;
+    ddpMapStream.close();
   }
   
-  public abstract void parse(URL ddpUrl) throws MalformedURLException, IOException;
+  protected Class<?> getParametrizedType(int order) {
+    Class<?> actualType;
+
+    Type supType = getClass().getGenericSuperclass(); // will only give a Class if no further Parametrization on the extended Class
+    if (supType instanceof ParameterizedType) {
+      ParameterizedType type = (ParameterizedType) supType;
+      Type[] args = type.getActualTypeArguments();
+      actualType = (args.length > order) ? (Class<?>) args[order] : null;
+    }
+    else {
+      actualType = null;
+    }
+
+    return actualType;
+  }
 }

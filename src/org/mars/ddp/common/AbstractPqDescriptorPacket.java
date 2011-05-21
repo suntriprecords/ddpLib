@@ -1,22 +1,22 @@
 package org.mars.ddp.common;
 
-public class AbstractPqDescriptorPacket implements Packet {
+public abstract class AbstractPqDescriptorPacket extends AbstractPacket {
 
   public final static String STREAM_NAME = "PQDESCR";
   public static String SUBCODE_PACKET_VALID = "VVVS";
   public final static int PACKET_LENGTH = 64;
 
-  private String trackNumber;
-  private Integer indexNumber;
+  private String trackNumber; //[00-99] except lead-out: AA
+  private Integer indexNumber; //index number associated with the A-time entries in this packet
   private Integer cdaTimeHours; //Reserved
   private Integer cdaTimeMinutes;
-  private Integer cdaTimeSeconds;
+  private Integer cdaTimeSeconds; //If trackNumber is 00h and indexNumber is A0h, this field contains the Psec value for the CD
   private Integer cdaTimeFrames;
-  private String controlByte1; //not byte because the lower byte may be S if the Serial Copy Management System is to be used.
+  private String controlByte1; //upper byte: control for the entry. Lower byte: either 1 for a normal entry or S if Serial Copy Management System is to be used
   private String controlByte2; //Reserved
-  private String isrc;
-  private String upcEan;
-  private String userText;
+  private String isrc; //valid only for the first entry for each track number greater than 0
+  private String upcEan; //Only one UPC entry is allowed for each PQ packet stream. It is recommended that it be placed in the first packet.
+  private String userText; //user comments that will not be recorded to the CD
   
   
   public String getTrackNumber() {

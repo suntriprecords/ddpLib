@@ -10,7 +10,7 @@ public abstract class AbstractPqDescriptorParser extends AbstractPacketParser<Ab
   }
 
   @Override
-  protected void parse(AbstractPqDescriptorPacket pqPacket) throws IOException {
+  protected void load(AbstractPqDescriptorPacket pqPacket) throws IOException {
     String textPacketValid = readString(4, true);
     if(!AbstractPqDescriptorPacket.SUBCODE_PACKET_VALID.equals(textPacketValid)) {
       throw new IllegalArgumentException("subcodePacketValid = " + textPacketValid);

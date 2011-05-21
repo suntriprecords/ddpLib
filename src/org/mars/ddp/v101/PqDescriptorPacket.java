@@ -1,12 +1,12 @@
 package org.mars.ddp.v101;
 
 import org.mars.ddp.common.AbstractPacketParser;
-import org.mars.ddp.common.InformationPacket;
+import org.mars.ddp.common.AbstractPqDescriptorPacket;
 
-public class CustomerInfoPacket extends InformationPacket implements TextPackable {
+public class PqDescriptorPacket extends AbstractPqDescriptorPacket {
 
   @Override
   public Class<? extends AbstractPacketParser<?>> getPacketLoaderClass() {
-    return null; //FIXME
+    return PqDescriptorPacketParser.class;
   }
 }

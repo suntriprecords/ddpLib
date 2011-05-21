@@ -17,12 +17,7 @@ public abstract class AbstractDdpIdParser<T extends AbstractDdpId> extends Abstr
   }
 
   @Override
-  public T parse() throws IOException {
-    throw new UnsupportedOperationException();
-  }
-
-  @Override
-  protected void parse(AbstractDdpId ddpIdPacket) throws IOException {
+  protected void load(AbstractDdpId ddpIdPacket) throws IOException {
     ddpIdPacket.setDdpLevel( readDdpLevel());
 
     String upcEan = readString(13, true);
@@ -40,7 +35,7 @@ public abstract class AbstractDdpIdParser<T extends AbstractDdpId> extends Abstr
     String masterId = readString(48, true);
     ddpIdPacket.setMasterId(masterId);
     
-    Character bookSpecifier = readChar(true);
+    Character bookSpecifier = readChar(true); //actually...the spec says it should be empty
     ddpIdPacket.setBookSpecifier(bookSpecifier);
     
     String type = readString(2, true);

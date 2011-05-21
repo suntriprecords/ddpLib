@@ -4,25 +4,25 @@ package org.mars.ddp.common;
 /**
  * DDPID identifies the presence and level of DDP.
  */
-public abstract class AbstractDdpId implements Packet {
+public abstract class AbstractDdpId extends AbstractPacket {
   
   public final static int PACKET_LENGTH = 128;
   public final static String STREAM_NAME = "DDPID";
 
-  private DdpLevel ddpLevel;
-  private String upcEan;
-  private Long mapStreamStart;
+  private DdpLevel ddpLevel; //DDP identifier and the DDP level number
+  private String upcEan; //valid UPC/EAN number or null if there is no UPC/EAN
+  private Long mapStreamStart; //null for sequential access media
   private String msl; //Reserved
-  private Integer mediaNumber;
-  private String masterId;
-  private Character bookSpecifier;
-  private String type;
-  private Integer numberSides; //Reserved
-  private Integer currentSide; //Reserved
-  private Integer numberLayers; //Reserved
-  private Integer currentLayer; //Reserved
-  private Character directionOfTranslation;
-  private String userText;
+  private Integer mediaNumber; //null when only a single input media of any type is used
+  private String masterId; //null when not used or when Master ID is not known
+  private Character bookSpecifier; //null, indicating the CD conforms to the Red, Yellow or Green book
+  private String type; //CD: standard CD
+  private Integer numberSides; //Reserved for DV
+  private Integer currentSide; //Reserved for DV
+  private Integer numberLayers; //Reserved for DV
+  private Integer currentLayer; //Reserved for DVD
+  private Character directionOfTranslation; //Reserved for DVD
+  private String userText; //can be used for any purpose. information not placed onto CD
   
   
   public DdpLevel getDdpLevel() {

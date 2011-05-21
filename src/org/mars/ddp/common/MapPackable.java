@@ -17,4 +17,5 @@ public interface MapPackable<T extends DataStreamTypeable, S extends SubCodeDesc
   public Integer getIndexNumber();
   public String getIsrc();
   public String getDataStreamIdentifier();
+  public DataStreamable getDataStream();
 }

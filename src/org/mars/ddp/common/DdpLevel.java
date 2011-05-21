@@ -7,9 +7,9 @@ public enum DdpLevel {
   DDP21("DDP 2.10", null); //FIXME
   
   private String id;
-  private Class<? extends AbstractDdpImage<?, ?, ?>> imageClass;
+  private Class<? extends AbstractDdpImage<?, ?>> imageClass;
   
-  private DdpLevel(String id, Class<? extends AbstractDdpImage<?, ?, ?>> imageClass) {
+  private DdpLevel(String id, Class<? extends AbstractDdpImage<?, ?>> imageClass) {
     this.id = id;
     this.imageClass = imageClass;
   }
@@ -18,11 +18,11 @@ public enum DdpLevel {
     return id;
   }
   
-  public Class<? extends AbstractDdpImage<?, ?, ?>> getImageClass() {
+  public Class<? extends AbstractDdpImage<?, ?>> getImageClass() {
     return imageClass;
   }
   
-  public AbstractDdpImage<?, ?, ?> newImage() throws InstantiationException, IllegalAccessException {
+  public AbstractDdpImage<?, ?> newImage() throws InstantiationException, IllegalAccessException {
     return imageClass.newInstance();
   }
   

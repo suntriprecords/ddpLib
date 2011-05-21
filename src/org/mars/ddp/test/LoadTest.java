@@ -12,8 +12,8 @@ import org.mars.ddp.common.DdpImageFactory;
 public class LoadTest {
 
   public static void main(String... args) throws MalformedURLException, IOException, InstantiationException, IllegalAccessException {
-    URL imageUrl = new File("Z:/Temp/SUNCD02.DDP").toURI().toURL();
-    AbstractDdpImage<?, ?, ?> image = DdpImageFactory.load(imageUrl);
+    URL imageUrl = new File("D:/Temp/SUNCD02.DDP").toURI().toURL();
+    AbstractDdpImage<?, ?> image = DdpImageFactory.load(imageUrl);
     System.out.println( image.getDdpId().getDdpLevel().getId());
   }
 }

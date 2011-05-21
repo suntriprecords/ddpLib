@@ -17,8 +17,8 @@ public abstract class AbstractPacketParser<S extends Packet> {
     this.dis = new DataInputStream(is);
   }
   
-  public abstract S parse() throws IOException;
-  protected abstract void parse(S ddpStream) throws IOException;
+  public abstract S load() throws IOException;
+  protected abstract void load(S ddpStream) throws IOException;
   
   
   public void close() throws IOException {

@@ -1,6 +1,7 @@
 package org.mars.ddp.common;
 
 public interface Packet {
-  //nothing
-  //we could have public int getPacketLength() here
+  public Class<? extends AbstractPacketParser<?>> getPacketLoaderClass();
+  public AbstractPacketParser<?> newLoader() throws InstantiationException, IllegalAccessException;
+  //XXX we could have public int getPacketLength() here
 }

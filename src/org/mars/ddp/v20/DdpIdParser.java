@@ -12,9 +12,9 @@ public class DdpIdParser extends AbstractDdpIdParser<DdpId> {
   }
 
   @Override
-  public DdpId parse() throws IOException {
+  public DdpId load() throws IOException {
     DdpId ddpId = new DdpId();
-    parse(ddpId);
+    load(ddpId);
     return ddpId;
   }
 }

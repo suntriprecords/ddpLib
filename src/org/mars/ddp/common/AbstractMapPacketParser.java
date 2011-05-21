@@ -2,8 +2,8 @@ package org.mars.ddp.common;
 
 import java.io.IOException;
 import java.io.InputStream;
-CHECK IN ALL PARSERS WHICH DATA IS MANDATORY
-public abstract class AbstractMapPacketParser<T extends DataStreamTypeable, S extends SubCodeDescribable, P extends AbstractMapPacket<T, S>> extends AbstractPacketParser<P> {
+
+public abstract class AbstractMapPacketParser<P extends AbstractMapPacket<T, S>, T extends DataStreamTypeable, S extends SubCodeDescribable> extends AbstractPacketParser<P> {
 
   public AbstractMapPacketParser(InputStream is) {
     super(is);
@@ -15,7 +15,7 @@ public abstract class AbstractMapPacketParser<T extends DataStreamTypeable, S ex
   }
 
   @Override
-  protected void parse(P mapPacket) throws IOException {
+  protected void load(P mapPacket) throws IOException {
     String mapPacketValid = readString(4, true);
     if(!AbstractMapPacket.MAP_PACKET_VALID.equals(mapPacketValid)) {
       throw new IllegalArgumentException("mapPacketValid = " + mapPacketValid);
@@ -72,9 +72,9 @@ public abstract class AbstractMapPacketParser<T extends DataStreamTypeable, S ex
     String isrc = readString(12, true);
     mapPacket.setIsrc(isrc);
     
-    Integer dsiSize = readInt(3);
+    Integer dsiSize = readInt(3); //17 or null
     if(dsiSize != null) {
-      String dataStreamIdentifier = readString(dsiSize, false);
+      String dataStreamIdentifier = readString(dsiSize, true); //trimming anyway, dsiSize isn't relevant of the actual useful identifier length 
       mapPacket.setDataStreamIdentifier(dataStreamIdentifier);
     }
   }
