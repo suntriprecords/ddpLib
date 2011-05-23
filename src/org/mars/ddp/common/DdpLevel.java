@@ -22,8 +22,16 @@ public enum DdpLevel {
     return imageClass;
   }
   
-  public AbstractDdpImage<?, ?> newImage() throws InstantiationException, IllegalAccessException {
-    return imageClass.newInstance();
+  public AbstractDdpImage<?, ?> newImage() throws DdpException {
+    try {
+      return imageClass.newInstance();
+    }
+    catch (InstantiationException e) {
+      throw new DdpException(e);
+    }
+    catch (IllegalAccessException e) {
+      throw new DdpException(e);
+    }
   }
   
   public static DdpLevel levelOf(String id) {

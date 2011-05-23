@@ -1,21 +1,18 @@
 package org.mars.ddp.v20;
 
-import java.io.IOException;
-import java.io.InputStream;
+import java.net.URL;
 
 import org.mars.ddp.common.AbstractTextPacket;
 import org.mars.ddp.common.AbstractTextPacketParser;
 
 public class TextPacketParser extends AbstractTextPacketParser {
 
-  public TextPacketParser(InputStream is) {
-    super(is);
+  public TextPacketParser(URL baseUrl, String fileName) {
+    super(baseUrl, fileName);
   }
 
   @Override
-  public AbstractTextPacket load() throws IOException {
-    TextPacket tp = new TextPacket();
-    load(tp);
-    return tp;
+  public Class<? extends AbstractTextPacket> getLoadableClass() {
+    return TextPacket.class;
   }
 }

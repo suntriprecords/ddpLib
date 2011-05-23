@@ -1,20 +1,17 @@
 package org.mars.ddp.v20;
 
-import java.io.IOException;
-import java.io.InputStream;
+import java.net.URL;
 
 import org.mars.ddp.common.AbstractDdpIdParser;
 
 public class DdpIdParser extends AbstractDdpIdParser<DdpId> {
 
-  public DdpIdParser(InputStream is) {
-    super(is);
+  public DdpIdParser(URL baseUrl, String fileName) {
+    super(baseUrl, fileName);
   }
 
   @Override
-  public DdpId load() throws IOException {
-    DdpId ddpId = new DdpId();
-    load(ddpId);
-    return ddpId;
+  public Class<? extends DdpId> getLoadableClass() {
+    return DdpId.class;
   }
 }

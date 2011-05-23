@@ -1,21 +1,16 @@
 package org.mars.ddp.common;
 
 import java.io.IOException;
-import java.io.InputStream;
+import java.net.URL;
 
-public abstract class AbstractMapPacketParser<P extends AbstractMapPacket<T, S>, T extends DataStreamTypeable, S extends SubCodeDescribable> extends AbstractPacketParser<P> {
+public abstract class AbstractMapPacketParser<P extends AbstractMapPacket<T, S>, T extends DataStreamTypeable, S extends SubCodeDescribable> extends AbstractLoader<P> {
 
-  public AbstractMapPacketParser(InputStream is) {
-    super(is);
+  public AbstractMapPacketParser(URL baseUrl, String fileName) {
+    super(baseUrl, fileName);
   }
 
   @Override
-  public String getStreamName() {
-    return MapStream.STREAM_NAME;
-  }
-
-  @Override
-  protected void load(P mapPacket) throws IOException {
+  protected void load(P mapPacket) throws IOException, DdpException {
     String mapPacketValid = readString(4, true);
     if(!AbstractMapPacket.MAP_PACKET_VALID.equals(mapPacketValid)) {
       throw new IllegalArgumentException("mapPacketValid = " + mapPacketValid);

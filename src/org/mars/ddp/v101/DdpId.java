@@ -1,12 +1,12 @@
 package org.mars.ddp.v101;
 
 import org.mars.ddp.common.AbstractDdpId;
-import org.mars.ddp.common.AbstractPacketParser;
+import org.mars.ddp.common.AbstractLoader;
 
 public class DdpId extends AbstractDdpId {
 
   @Override
-  public Class<? extends AbstractPacketParser<?>> getPacketLoaderClass() {
+  public Class<? extends AbstractLoader<DdpId>> getLoaderClass() {
     return DdpIdParser.class;
   }
 }

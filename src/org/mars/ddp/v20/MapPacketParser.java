@@ -1,28 +1,27 @@
 package org.mars.ddp.v20;
 
 import java.io.IOException;
-import java.io.InputStream;
+import java.net.URL;
 
 import org.mars.ddp.common.AbstractMapPacketParser;
 import org.mars.ddp.common.DataStreamable;
+import org.mars.ddp.common.DdpException;
+import org.mars.ddp.common.Loader;
 import org.mars.ddp.common.SubCodeDescribable;
-import org.mars.ddp.common.SubCodeLoader;
 
 public class MapPacketParser extends AbstractMapPacketParser<MapPacket, DataStreamType, SubCodeDescriptor> {
-
-  public MapPacketParser(InputStream is) {
-    super(is);
-  }
   
-  @Override
-  public MapPacket load() throws IOException {
-    MapPacket mapPacket = new MapPacket();
-    load(mapPacket);
-    return mapPacket;
+  public MapPacketParser(URL baseUrl, String fileName) {
+    super(baseUrl, fileName);
   }
 
   @Override
-  protected void load(MapPacket mapPacket) throws IOException {
+  public Class<? extends MapPacket> getLoadableClass() {
+    return MapPacket.class;
+  }
+
+  @Override
+  protected void load(MapPacket mapPacket) throws IOException, DdpException {
     super.load(mapPacket);
     
     Character newOrange = readChar(true);
@@ -42,17 +41,9 @@ public class MapPacketParser extends AbstractMapPacketParser<MapPacket, DataStre
     
     SubCodeDescribable subCodeDesc = mapPacket.getSubCodeDescriptor();
     if(subCodeDesc != null) {
-      try {
-        SubCodeLoader loader = subCodeDesc.newLoader();
-        DataStreamable stream = loader.load();
-        mapPacket.setDataStream(stream);
-      }
-      catch (InstantiationException e) {
-        throw new RuntimeException(e);
-      }
-      catch (IllegalAccessException e) {
-        throw new RuntimeException(e);
-      }
+      Loader<? extends DataStreamable> loader = subCodeDesc.newLoader(getBaseUrl(), mapPacket.getDataStreamIdentifier());
+      DataStreamable stream = loader.load();
+      mapPacket.setDataStream(stream);
     }
   }
 

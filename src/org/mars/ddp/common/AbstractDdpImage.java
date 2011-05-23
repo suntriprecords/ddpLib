@@ -1,17 +1,13 @@
 package org.mars.ddp.common;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
-import java.net.MalformedURLException;
 import java.net.URL;
 
-import org.mars.ddp.v20.DdpId;
-import org.mars.ddp.v20.DdpIdParser;
-import org.mars.ddp.v20.MapPacket;
-import org.mars.ddp.v20.MapPacketParser;
-
+/**
+ * Carfull to getParametrizedType calls if you change the erasure of this class
+ */
 public abstract class AbstractDdpImage<I extends AbstractDdpId, M extends AbstractMapPacket<?, ?>> {
 
   private I ddpId;
@@ -19,9 +15,6 @@ public abstract class AbstractDdpImage<I extends AbstractDdpId, M extends Abstra
   
   public I getDdpId() {
     return ddpId;
-  }
-  public void setDdpId(I ddpId) {
-    this.ddpId = ddpId;
   }
 
   public MapStream<M> getMapStreams() {
@@ -31,36 +24,48 @@ public abstract class AbstractDdpImage<I extends AbstractDdpId, M extends Abstra
     return mapStreams;
   }
   
-  public void load(URL ddpUrl) throws MalformedURLException, IOException {
-    InputStream ddpIdStream = new URL(ddpUrl.toExternalForm() + AbstractDdpId.STREAM_NAME).openStream();
-    
-    I ddpId = ((I)getParametrizedType(0).asSubclass(AbstractDdpId.class).newInstance()).newLoader().load();
-    setDdpId(ddpId);
-    ddpIdStream.close();
-    
-    getMapStreams().clear(); 
-    InputStream ddpMapStream = new URL(ddpUrl.toExternalForm() + MapStream.STREAM_NAME).openStream();
-    MapPacketParser mapPacketParser = new MapPacketParser(ddpMapStream);
-    while(mapPacketParser.available() > 0) {
-      M mapPacket = mapPacketParser.load();
-      getMapStreams().add(mapPacket);
+  //TODO split with a loader
+  public void load(URL ddpUrl) throws DdpException {
+
+    try {
+      Class<I> ddpIdClass = getParametrizedType(0);
+      //FIXME unnecessary newInstance isn't cute
+      Loader<I> ddpIdLoader = ddpIdClass.newInstance().newLoader(ddpUrl, AbstractDdpId.STREAM_NAME);
+      this.ddpId = ddpIdLoader.load();
+      
+      getMapStreams().clear(); 
+      Class<M> mapClass = getParametrizedType(1);
+      //FIXME unnecessary newInstance isn't cute
+      Loader<M> mapLoader = mapClass.newInstance().newLoader(ddpUrl, MapStream.STREAM_NAME);
+      while(mapLoader.available() > 0) {
+        M mapPacket = mapLoader.load();
+        getMapStreams().add(mapPacket);
+      }
     }
-    ddpMapStream.close();
+    catch (InstantiationException e) {
+      throw new DdpException(e);
+    }
+    catch (IllegalAccessException e) {
+      throw new DdpException(e);
+    }
+    catch (IOException e) {
+      throw new DdpException(e);
+    }
   }
   
-  protected Class<?> getParametrizedType(int order) {
-    Class<?> actualType;
+
+  @SuppressWarnings("unchecked")
+  protected <T> Class<T> getParametrizedType(int order) {
+    Class<T> actualType = null;
 
     Type supType = getClass().getGenericSuperclass(); // will only give a Class if no further Parametrization on the extended Class
     if (supType instanceof ParameterizedType) {
       ParameterizedType type = (ParameterizedType) supType;
       Type[] args = type.getActualTypeArguments();
-      actualType = (args.length > order) ? (Class<?>) args[order] : null;
+      if(args.length > order) {
+        actualType = (Class<T>) args[order];
+      }
     }
-    else {
-      actualType = null;
-    }
-
     return actualType;
   }
 }

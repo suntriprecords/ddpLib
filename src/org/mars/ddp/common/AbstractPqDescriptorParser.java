@@ -1,16 +1,17 @@
 package org.mars.ddp.common;
 
 import java.io.IOException;
-import java.io.InputStream;
+import java.net.URL;
 
-public abstract class AbstractPqDescriptorParser extends AbstractPacketParser<AbstractPqDescriptorPacket> {
+public abstract class AbstractPqDescriptorParser<P extends AbstractPqDescriptorPacket> extends AbstractLoader<P> {
 
-  public AbstractPqDescriptorParser(InputStream is) {
-    super(is);
+
+  public AbstractPqDescriptorParser(URL baseUrl, String fileName) {
+    super(baseUrl, fileName);
   }
 
   @Override
-  protected void load(AbstractPqDescriptorPacket pqPacket) throws IOException {
+  protected void load(P pqPacket) throws IOException {
     String textPacketValid = readString(4, true);
     if(!AbstractPqDescriptorPacket.SUBCODE_PACKET_VALID.equals(textPacketValid)) {
       throw new IllegalArgumentException("subcodePacketValid = " + textPacketValid);
@@ -48,10 +49,5 @@ public abstract class AbstractPqDescriptorParser extends AbstractPacketParser<Ab
     
     String userText = readString(19, true);
     pqPacket.setUserText(userText);
-  }
-
-  @Override
-  public String getStreamName() {
-    return AbstractPqDescriptorPacket.STREAM_NAME;
   }
 }

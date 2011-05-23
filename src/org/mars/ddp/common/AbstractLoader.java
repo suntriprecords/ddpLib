@@ -2,48 +2,108 @@ package org.mars.ddp.common;
 
 import java.io.DataInputStream;
 import java.io.IOException;
-import java.io.InputStream;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.nio.charset.Charset;
 
-public abstract class AbstractPacketParser<S extends Packet> {
+public abstract class AbstractLoader<P> implements Loader<P> {
   
   public final static Charset DEFAULT_CHARSET = Charset.forName("US-ASCII");
 
+  private URL baseUrl;
+  private String fileName;
   private DataInputStream dis;
   private int bytesRead;
-  private boolean complete;
   
-  public AbstractPacketParser(InputStream is) {
-    this.dis = new DataInputStream(is);
+  public AbstractLoader(URL baseUrl, String fileName) {
+    this.baseUrl = baseUrl;
+    this.fileName = fileName;
   }
   
-  public abstract S load() throws IOException;
-  protected abstract void load(S ddpStream) throws IOException;
-  
-  
-  public void close() throws IOException {
-    dis.close();
+  public URL getBaseUrl() {
+    return baseUrl;
   }
-  
-  public abstract String getStreamName();
+
+  public String getFileName() {
+    return fileName;
+  }
+
+  public URL getFileUrl() throws MalformedURLException {
+    return new URL( baseUrl.toExternalForm() + fileName);
+  }
+
+  public static <P> Loader<P> newInstance(Class<? extends Loader<P>> loaderClass, URL baseUrl, String fileName) throws DdpException {
+    try {
+      Constructor<? extends Loader<P>> ctor = loaderClass.getConstructor(URL.class, String.class);
+      return ctor.newInstance(baseUrl, fileName);
+    }
+    catch (SecurityException e) {
+      throw new DdpException(e);
+    }
+    catch (NoSuchMethodException e) {
+      throw new DdpException(e);
+    }
+    catch (IllegalArgumentException e) {
+      throw new DdpException(e);
+    }
+    catch (InstantiationException e) {
+      throw new DdpException(e);
+    }
+    catch (IllegalAccessException e) {
+      throw new DdpException(e);
+    }
+    catch (InvocationTargetException e) {
+      throw new DdpException(e);
+    }
+  }
 
   
+  private DataInputStream getInputStream() throws IOException {
+    if(dis == null) {
+      this.dis = new DataInputStream(getFileUrl().openStream());
+    }
+    return dis;
+  }
+
+  @Override
   public int available() throws IOException {
-    return dis.available();
+    return getInputStream().available();
   }
 
-  public boolean isComplete() {
-    return complete;
+  @Override
+  public void close() throws IOException {
+    getInputStream().close();
+    dis = null;
   }
-  
-  protected void setComplete() {
-    complete = true;
-  }
-  
+
   public int getBytesRead() {
     return bytesRead;
   }
-  
+
+  protected abstract void load(P loadable) throws IOException, DdpException;
+
+  @Override
+  public P load() throws IOException, DdpException {
+    P loadable = newLoadable();
+    load(loadable);
+    return loadable;
+  }
+
+  @Override
+  public P newLoadable() throws DdpException {
+    try {
+      return getLoadableClass().newInstance();
+    }
+    catch (InstantiationException e) {
+      throw new DdpException(e);
+    }
+    catch (IllegalAccessException e) {
+      throw new DdpException(e);
+    }
+  }
+
   protected byte readHexByte(boolean trim) throws IOException {
     return readHexBytes(1, trim)[0];
   }
@@ -67,7 +127,7 @@ public abstract class AbstractPacketParser<S extends Packet> {
   
   protected Character readChar(boolean trim) throws IOException {
     try {
-      char c = (char)dis.read(); //just casting, this is ASCII. NOT using dis.readChar(), it reads 2 chars.
+      char c = (char)getInputStream().read(); //just casting, this is ASCII. NOT using getInputStream().readChar(), it reads 2 chars.
       bytesRead++;
       return (trim && c == ' ') ? null : c;
     }
@@ -78,7 +138,7 @@ public abstract class AbstractPacketParser<S extends Packet> {
 
   protected String readString(int length, boolean trim) throws IOException {
     try {
-      String str = readString(dis, length, trim);
+      String str = readString(getInputStream(), length, trim);
       bytesRead += length;
       return str;
     }
@@ -102,7 +162,7 @@ public abstract class AbstractPacketParser<S extends Packet> {
   
   protected Boolean readBoolean(boolean trim) throws IOException {
     try {
-      char c = (char)dis.readByte();
+      char c = (char)getInputStream().readByte();
       bytesRead++;
       
       if(c == '0') {
@@ -126,7 +186,7 @@ public abstract class AbstractPacketParser<S extends Packet> {
   protected Integer readInt(int length) throws IOException {
     try {
       byte[] buffer = new byte[length];
-      dis.readFully(buffer);
+      getInputStream().readFully(buffer);
       bytesRead += length;
       String str = new String(buffer, DEFAULT_CHARSET).trim();
       return (str.length() == 0) ? null : new Integer(str); 
@@ -139,7 +199,7 @@ public abstract class AbstractPacketParser<S extends Packet> {
   protected Long readLong(int length) throws IOException {
     try {
       byte[] buffer = new byte[length];
-      dis.readFully(buffer);
+      getInputStream().readFully(buffer);
       bytesRead += length;
       String str = new String(buffer, DEFAULT_CHARSET).trim();
       return (str.length() == 0) ? null : new Long(str); 
@@ -150,7 +210,7 @@ public abstract class AbstractPacketParser<S extends Packet> {
   }
   
   protected IOException createIOException(String message, Throwable cause) {
-    StringBuilder sb = new StringBuilder( getStreamName()).append(" @ ").append(bytesRead);
+    StringBuilder sb = new StringBuilder( getFileName()).append(" @ ").append(bytesRead);
     if(message != null) {
       sb.append(": ").append(message);
     }

@@ -1,13 +1,13 @@
 package org.mars.ddp.common;
 
 import java.io.IOException;
-import java.io.InputStream;
+import java.net.URL;
 
 
-public abstract class AbstractTextPacketParser extends AbstractPacketParser<AbstractTextPacket> {
+public abstract class AbstractTextPacketParser extends AbstractLoader<AbstractTextPacket> {
 
-  public AbstractTextPacketParser(InputStream is) {
-    super(is);
+  public AbstractTextPacketParser(URL baseUrl, String fileName) {
+    super(baseUrl, fileName);
   }
 
   @Override
@@ -26,10 +26,5 @@ public abstract class AbstractTextPacketParser extends AbstractPacketParser<Abst
     Integer textInformationLength = readInt(3);
     String textInformation = readString(textInformationLength, (textInformationLength == 0));
     textPacket.setInformation(textInformation);
-  }
-
-  @Override
-  public String getStreamName() {
-    return null;
   }
 }

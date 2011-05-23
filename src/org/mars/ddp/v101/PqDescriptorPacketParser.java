@@ -1,20 +1,17 @@
 package org.mars.ddp.v101;
 
-import java.io.IOException;
-import java.io.InputStream;
+import java.net.URL;
 
 import org.mars.ddp.common.AbstractPqDescriptorParser;
 
-public class PqDescriptorPacketParser extends AbstractPqDescriptorParser {
+public class PqDescriptorPacketParser extends AbstractPqDescriptorParser<PqDescriptorPacket> {
 
-  public PqDescriptorPacketParser(InputStream is) {
-    super(is);
+  public PqDescriptorPacketParser(URL baseUrl, String fileName) {
+    super(baseUrl, fileName);
   }
 
   @Override
-  public PqDescriptorPacket load() throws IOException {
-    PqDescriptorPacket pq = new PqDescriptorPacket();
-    load(pq);
-    return pq;
+  public Class<? extends PqDescriptorPacket> getLoadableClass() {
+    return PqDescriptorPacket.class;
   }
 }

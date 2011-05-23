@@ -2,64 +2,58 @@ package org.mars.ddp.common;
 
 import java.io.DataInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.URL;
 
-public abstract class AbstractDdpIdParser<T extends AbstractDdpId> extends AbstractPacketParser<T> {
+public abstract class AbstractDdpIdParser<P extends AbstractDdpId> extends AbstractLoader<P> {
 
-  public AbstractDdpIdParser(InputStream is) {
-    super(is);
+  public AbstractDdpIdParser(URL baseUrl, String fileName) {
+    super(baseUrl, fileName);
   }
 
   @Override
-  public String getStreamName() {
-    return AbstractDdpId.STREAM_NAME;
-  }
-
-  @Override
-  protected void load(AbstractDdpId ddpIdPacket) throws IOException {
-    ddpIdPacket.setDdpLevel( readDdpLevel());
+  protected void load(P ddpId) throws IOException {
+    ddpId.setDdpLevel( readDdpLevel());
 
     String upcEan = readString(13, true);
-    ddpIdPacket.setUpcEan(upcEan);
+    ddpId.setUpcEan(upcEan);
     
     Long mapStreamStart = readLong(8);
-    ddpIdPacket.setMapStreamStart(mapStreamStart);
+    ddpId.setMapStreamStart(mapStreamStart);
     
     String msl = readString(8, true);
-    ddpIdPacket.setMsl(msl);
+    ddpId.setMsl(msl);
 
     Integer mediaNumber = readInt(1);
-    ddpIdPacket.setMediaNumber(mediaNumber);
+    ddpId.setMediaNumber(mediaNumber);
     
     String masterId = readString(48, true);
-    ddpIdPacket.setMasterId(masterId);
+    ddpId.setMasterId(masterId);
     
     Character bookSpecifier = readChar(true); //actually...the spec says it should be empty
-    ddpIdPacket.setBookSpecifier(bookSpecifier);
+    ddpId.setBookSpecifier(bookSpecifier);
     
     String type = readString(2, true);
-    ddpIdPacket.setType(type);
+    ddpId.setType(type);
     
     Integer numberSides = readInt(1);
-    ddpIdPacket.setNumberSides(numberSides);
+    ddpId.setNumberSides(numberSides);
     
     Integer currentSide = readInt(1);
-    ddpIdPacket.setCurrentSide(currentSide);
+    ddpId.setCurrentSide(currentSide);
     
     Integer numberLayers = readInt(1);
-    ddpIdPacket.setNumberLayers(numberLayers);
+    ddpId.setNumberLayers(numberLayers);
     
     Integer currentLayer = readInt(1);
-    ddpIdPacket.setCurrentLayer(currentLayer);
+    ddpId.setCurrentLayer(currentLayer);
     
     Character directionOfTranslation = readChar(true);
-    ddpIdPacket.setDirectionOfTranslation(directionOfTranslation);
+    ddpId.setDirectionOfTranslation(directionOfTranslation);
     
     Integer userTextLength = readInt(2);
     if(userTextLength != null) {
       String userText = readString(userTextLength, false);
-      ddpIdPacket.setUserText(userText);
+      ddpId.setUserText(userText);
     }
   }
   

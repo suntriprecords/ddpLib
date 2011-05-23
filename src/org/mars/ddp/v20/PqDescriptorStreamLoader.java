@@ -1,27 +1,30 @@
 package org.mars.ddp.v20;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.URL;
 
-import org.mars.ddp.common.DataStreamable;
+import org.mars.ddp.common.AbstractLoader;
+import org.mars.ddp.common.DdpException;
 import org.mars.ddp.common.PqStream;
-import org.mars.ddp.common.SubCodeLoader;
 
-public class PqDescriptorStreamLoader implements SubCodeLoader {
+public class PqDescriptorStreamLoader extends AbstractLoader<PqStream<PqDescriptorPacket>> {
+
+  public PqDescriptorStreamLoader(URL baseUrl, String fileName) {
+    super(baseUrl, fileName);
+  }
+
+  @SuppressWarnings("unchecked")
+  @Override
+  public Class<? extends PqStream<PqDescriptorPacket>> getLoadableClass() {
+    return (Class<? extends PqStream<PqDescriptorPacket>>) PqStream.class;
+  }
 
   @Override
-  public DataStreamable load(URL streamUrl) throws IOException {
-    PqStream<PqDescriptorPacket> pqStream = new PqStream<PqDescriptorPacket>();
-
-    InputStream is = streamUrl.openStream();
-    PqDescriptorPacketParser pqParser = new PqDescriptorPacketParser(is);
-    while(is.available() > 0) {
-      PqDescriptorPacket packet = pqParser.load();
-      pqStream.add(packet);
+  protected void load(PqStream<PqDescriptorPacket> stream) throws IOException, DdpException {
+    PqDescriptorPacketParser pqDescPacketLoader = new PqDescriptorPacketParser(getBaseUrl(), getFileName());
+    while(pqDescPacketLoader.available() > 0) {
+      PqDescriptorPacket pqDescPacket = pqDescPacketLoader.load();
+      stream.add(pqDescPacket);
     }
-    is.close();
-    
-    return pqStream;
   }
 }
