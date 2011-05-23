@@ -3,15 +3,15 @@ package org.mars.ddp.v101;
 import java.io.IOException;
 import java.net.URL;
 
-import org.mars.ddp.common.AbstractMapPacketParser;
+import org.mars.ddp.common.AbstractMapPacketLoader;
 import org.mars.ddp.common.DataStreamable;
 import org.mars.ddp.common.DdpException;
 import org.mars.ddp.common.Loader;
 import org.mars.ddp.common.SubCodeDescribable;
 
-public class MapPacketParser extends AbstractMapPacketParser<MapPacket, DataStreamType, SubCodeDescriptor> {
+public class MapPacketLoader extends AbstractMapPacketLoader<MapPacket, DataStreamType, SubCodeDescriptor> {
 
-  public MapPacketParser(URL baseUrl, String fileName) {
+  public MapPacketLoader(URL baseUrl, String fileName) {
     super(baseUrl, fileName);
   }
 

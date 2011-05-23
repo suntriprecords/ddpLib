@@ -2,11 +2,11 @@ package org.mars.ddp.v20;
 
 import java.net.URL;
 
-import org.mars.ddp.common.AbstractDdpIdParser;
+import org.mars.ddp.common.AbstractDdpIdLoader;
 
-public class DdpIdParser extends AbstractDdpIdParser<DdpId> {
+public class DdpIdLoader extends AbstractDdpIdLoader<DdpId> {
 
-  public DdpIdParser(URL baseUrl, String fileName) {
+  public DdpIdLoader(URL baseUrl, String fileName) {
     super(baseUrl, fileName);
   }
 

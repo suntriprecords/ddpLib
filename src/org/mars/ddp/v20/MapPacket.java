@@ -3,7 +3,7 @@ package org.mars.ddp.v20;
 import org.mars.ddp.common.AbstractMapPacket;
 import org.mars.ddp.common.Loader;
 import org.mars.ddp.common.Packet;
-import org.mars.ddp.v101.MapPacketParser;
+import org.mars.ddp.v101.MapPacketLoader;
 
 
 public class MapPacket extends AbstractMapPacket<DataStreamType, SubCodeDescriptor> {
@@ -41,6 +41,6 @@ public class MapPacket extends AbstractMapPacket<DataStreamType, SubCodeDescript
 
   @Override
   public Class<? extends Loader<? extends Packet>> getLoaderClass() {
-    return MapPacketParser.class;
+    return MapPacketLoader.class;
   }
 }

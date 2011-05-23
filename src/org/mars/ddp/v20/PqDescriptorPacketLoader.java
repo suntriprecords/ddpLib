@@ -2,11 +2,11 @@ package org.mars.ddp.v20;
 
 import java.net.URL;
 
-import org.mars.ddp.common.AbstractPqDescriptorParser;
+import org.mars.ddp.common.AbstractPqDescriptorLoader;
 
-public class PqDescriptorPacketParser extends AbstractPqDescriptorParser<PqDescriptorPacket> {
+public class PqDescriptorPacketLoader extends AbstractPqDescriptorLoader<PqDescriptorPacket> {
 
-  public PqDescriptorPacketParser(URL baseUrl, String fileName) {
+  public PqDescriptorPacketLoader(URL baseUrl, String fileName) {
     super(baseUrl, fileName);
   }
 

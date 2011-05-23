@@ -8,6 +8,6 @@ public class PqDescriptorPacket extends AbstractPqDescriptorPacket {
 
   @Override
   public Class<? extends Loader<? extends Packet>> getLoaderClass() {
-    return PqDescriptorPacketParser.class;
+    return PqDescriptorPacketLoader.class;
   }
 }

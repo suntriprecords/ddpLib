@@ -4,9 +4,9 @@ import java.io.IOException;
 import java.net.URL;
 
 
-public abstract class AbstractTextPacketParser extends AbstractLoader<AbstractTextPacket> {
+public abstract class AbstractTextPacketLoader extends AbstractLoader<AbstractTextPacket> {
 
-  public AbstractTextPacketParser(URL baseUrl, String fileName) {
+  public AbstractTextPacketLoader(URL baseUrl, String fileName) {
     super(baseUrl, fileName);
   }
 

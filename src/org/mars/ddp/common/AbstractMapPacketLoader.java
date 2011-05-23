@@ -3,9 +3,9 @@ package org.mars.ddp.common;
 import java.io.IOException;
 import java.net.URL;
 
-public abstract class AbstractMapPacketParser<P extends AbstractMapPacket<T, S>, T extends DataStreamTypeable, S extends SubCodeDescribable> extends AbstractLoader<P> {
+public abstract class AbstractMapPacketLoader<P extends AbstractMapPacket<T, S>, T extends DataStreamTypeable, S extends SubCodeDescribable> extends AbstractLoader<P> {
 
-  public AbstractMapPacketParser(URL baseUrl, String fileName) {
+  public AbstractMapPacketLoader(URL baseUrl, String fileName) {
     super(baseUrl, fileName);
   }
 

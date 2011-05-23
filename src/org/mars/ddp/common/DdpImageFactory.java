@@ -7,7 +7,7 @@ public class DdpImageFactory {
 
   public static AbstractDdpImage<?, ?> create(URL imageDirUrl) throws IOException, DdpException {
     URL ddpIdUrl = new URL(imageDirUrl.toExternalForm() + AbstractDdpId.STREAM_NAME);
-    DdpLevel level = AbstractDdpIdParser.readDdpLevel(ddpIdUrl);
+    DdpLevel level = AbstractDdpIdLoader.readDdpLevel(ddpIdUrl);
     AbstractDdpImage<?, ?> image = level.newImage();
     return image;
   }

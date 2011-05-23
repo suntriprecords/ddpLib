@@ -4,9 +4,9 @@ import java.io.DataInputStream;
 import java.io.IOException;
 import java.net.URL;
 
-public abstract class AbstractDdpIdParser<P extends AbstractDdpId> extends AbstractLoader<P> {
+public abstract class AbstractDdpIdLoader<P extends AbstractDdpId> extends AbstractLoader<P> {
 
-  public AbstractDdpIdParser(URL baseUrl, String fileName) {
+  public AbstractDdpIdLoader(URL baseUrl, String fileName) {
     super(baseUrl, fileName);
   }
 

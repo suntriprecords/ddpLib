@@ -21,7 +21,7 @@ public class PqDescriptorStreamLoader extends AbstractLoader<PqStream<PqDescript
 
   @Override
   protected void load(PqStream<PqDescriptorPacket> stream) throws IOException, DdpException {
-    PqDescriptorPacketParser pqDescPacketLoader = new PqDescriptorPacketParser(getBaseUrl(), getFileName());
+    PqDescriptorPacketLoader pqDescPacketLoader = new PqDescriptorPacketLoader(getBaseUrl(), getFileName());
     while(pqDescPacketLoader.available() > 0) {
       PqDescriptorPacket pqDescPacket = pqDescPacketLoader.load();
       stream.add(pqDescPacket);

@@ -3,11 +3,11 @@ package org.mars.ddp.v20;
 import java.net.URL;
 
 import org.mars.ddp.common.AbstractTextPacket;
-import org.mars.ddp.common.AbstractTextPacketParser;
+import org.mars.ddp.common.AbstractTextPacketLoader;
 
-public class TextPacketParser extends AbstractTextPacketParser {
+public class TextPacketLoader extends AbstractTextPacketLoader {
 
-  public TextPacketParser(URL baseUrl, String fileName) {
+  public TextPacketLoader(URL baseUrl, String fileName) {
     super(baseUrl, fileName);
   }
 

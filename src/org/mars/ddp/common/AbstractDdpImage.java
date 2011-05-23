@@ -24,7 +24,6 @@ public abstract class AbstractDdpImage<I extends AbstractDdpId, M extends Abstra
     return mapStreams;
   }
   
-  //TODO split with a loader
   public void load(URL ddpUrl) throws DdpException {
 
     try {

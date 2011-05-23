@@ -3,10 +3,10 @@ package org.mars.ddp.common;
 import java.io.IOException;
 import java.net.URL;
 
-public abstract class AbstractPqDescriptorParser<P extends AbstractPqDescriptorPacket> extends AbstractLoader<P> {
+public abstract class AbstractPqDescriptorLoader<P extends AbstractPqDescriptorPacket> extends AbstractLoader<P> {
 
 
-  public AbstractPqDescriptorParser(URL baseUrl, String fileName) {
+  public AbstractPqDescriptorLoader(URL baseUrl, String fileName) {
     super(baseUrl, fileName);
   }
 

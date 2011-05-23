@@ -8,6 +8,6 @@ public class TextPacket extends AbstractTextPacket implements TextPackable {
 
   @Override
   public Class<? extends Loader<? extends Packet>> getLoaderClass() {
-    return TextPacketParser.class;
+    return TextPacketLoader.class;
   }
 }

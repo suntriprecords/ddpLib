@@ -8,6 +8,6 @@ public class MapPacket extends AbstractMapPacket<DataStreamType, SubCodeDescript
 
   @Override
   public Class<? extends Loader<? extends Packet>> getLoaderClass() {
-    return MapPacketParser.class;
+    return MapPacketLoader.class;
   }
 }
