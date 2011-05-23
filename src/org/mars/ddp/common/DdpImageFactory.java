@@ -5,16 +5,31 @@ import java.net.URL;
 
 public class DdpImageFactory {
 
-  public static AbstractDdpImage<?, ?> create(URL imageDirUrl) throws IOException, DdpException {
+  public static <I extends AbstractDdpId, M extends AbstractMapPacket<?, ?>> AbstractDdpImage<I, M> create(URL imageDirUrl) throws IOException, DdpException {
     URL ddpIdUrl = new URL(imageDirUrl.toExternalForm() + AbstractDdpId.STREAM_NAME);
     DdpLevel level = AbstractDdpIdLoader.readDdpLevel(ddpIdUrl);
-    AbstractDdpImage<?, ?> image = level.newImage();
-    return image;
+
+    try {
+      @SuppressWarnings("unchecked")
+      Class<? extends AbstractDdpImage<I, M>> imageClass = (Class<? extends AbstractDdpImage<I, M>>) level.getImageClass();
+      return imageClass.newInstance();
+    }
+    catch (InstantiationException e) {
+      throw new DdpException(e);
+    }
+    catch (IllegalAccessException e) {
+      throw new DdpException(e);
+    }
+    catch (IllegalArgumentException e) {
+      throw new DdpException(e);
+    }
   }
-  
-  public static AbstractDdpImage<?, ?> load(URL imageDirUrl) throws DdpException, IOException {
-    AbstractDdpImage<?, ?> image = create(imageDirUrl);
-    image.load(imageDirUrl);
+
+
+  public static <I extends AbstractDdpId, M extends AbstractMapPacket<?, ?>> AbstractDdpImage<I, M> load(URL imageDirUrl) throws DdpException, IOException {
+    AbstractDdpImage<I, M> image = create(imageDirUrl);
+    AbstractDdpImageLoader<I, M> loader = image.newLoader(imageDirUrl);
+    loader.load(image);
     return image;
   }
 }

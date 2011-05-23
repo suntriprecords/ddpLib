@@ -1,9 +1,9 @@
 package org.mars.ddp.common;
 
-import java.io.IOException;
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
+
 
 /**
  * Carfull to getParametrizedType calls if you change the erasure of this class
@@ -17,6 +17,10 @@ public abstract class AbstractDdpImage<I extends AbstractDdpId, M extends Abstra
     return ddpId;
   }
 
+  public void setDdpId(I ddpId) {
+    this.ddpId = ddpId;
+  }
+
   public MapStream<M> getMapStreams() {
     if(mapStreams == null) {
       mapStreams = new MapStream<M>();
@@ -24,22 +28,18 @@ public abstract class AbstractDdpImage<I extends AbstractDdpId, M extends Abstra
     return mapStreams;
   }
   
-  public void load(URL ddpUrl) throws DdpException {
+  public void clearMapStreams() {
+    getMapStreams().clear();
+  }
 
+  
+  public abstract Class<? extends AbstractDdpImageLoader<I, M>> getLoaderClass();
+  
+  
+  public AbstractDdpImageLoader<I, M> newLoader(URL imageDirUrl) throws DdpException {
     try {
-      Class<I> ddpIdClass = getParametrizedType(0);
-      //FIXME unnecessary newInstance isn't cute
-      Loader<I> ddpIdLoader = ddpIdClass.newInstance().newLoader(ddpUrl, AbstractDdpId.STREAM_NAME);
-      this.ddpId = ddpIdLoader.load();
-      
-      getMapStreams().clear(); 
-      Class<M> mapClass = getParametrizedType(1);
-      //FIXME unnecessary newInstance isn't cute
-      Loader<M> mapLoader = mapClass.newInstance().newLoader(ddpUrl, MapStream.STREAM_NAME);
-      while(mapLoader.available() > 0) {
-        M mapPacket = mapLoader.load();
-        getMapStreams().add(mapPacket);
-      }
+      Constructor<? extends AbstractDdpImageLoader<I, M>> ctor = getLoaderClass().getConstructor(URL.class);
+      return ctor.newInstance(imageDirUrl);
     }
     catch (InstantiationException e) {
       throw new DdpException(e);
@@ -47,24 +47,17 @@ public abstract class AbstractDdpImage<I extends AbstractDdpId, M extends Abstra
     catch (IllegalAccessException e) {
       throw new DdpException(e);
     }
-    catch (IOException e) {
+    catch (IllegalArgumentException e) {
       throw new DdpException(e);
     }
-  }
-  
-
-  @SuppressWarnings("unchecked")
-  protected <T> Class<T> getParametrizedType(int order) {
-    Class<T> actualType = null;
-
-    Type supType = getClass().getGenericSuperclass(); // will only give a Class if no further Parametrization on the extended Class
-    if (supType instanceof ParameterizedType) {
-      ParameterizedType type = (ParameterizedType) supType;
-      Type[] args = type.getActualTypeArguments();
-      if(args.length > order) {
-        actualType = (Class<T>) args[order];
-      }
+    catch (InvocationTargetException e) {
+      throw new DdpException(e);
     }
-    return actualType;
+    catch (SecurityException e) {
+      throw new DdpException(e);
+    }
+    catch (NoSuchMethodException e) {
+      throw new DdpException(e);
+    }
   }
 }

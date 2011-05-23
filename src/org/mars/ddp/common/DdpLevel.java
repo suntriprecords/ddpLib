@@ -1,6 +1,7 @@
 package org.mars.ddp.common;
 
 
+
 public enum DdpLevel {
   DDP101("DDP 1.01", org.mars.ddp.v101.DdpImage.class),
   DDP20("DDP 2.00", org.mars.ddp.v20.DdpImage.class),
@@ -20,18 +21,6 @@ public enum DdpLevel {
   
   public Class<? extends AbstractDdpImage<?, ?>> getImageClass() {
     return imageClass;
-  }
-  
-  public AbstractDdpImage<?, ?> newImage() throws DdpException {
-    try {
-      return imageClass.newInstance();
-    }
-    catch (InstantiationException e) {
-      throw new DdpException(e);
-    }
-    catch (IllegalAccessException e) {
-      throw new DdpException(e);
-    }
   }
   
   public static DdpLevel levelOf(String id) {
