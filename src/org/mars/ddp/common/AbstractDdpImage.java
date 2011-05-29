@@ -1,5 +1,6 @@
 package org.mars.ddp.common;
 
+import java.io.InputStream;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
@@ -32,6 +33,7 @@ public abstract class AbstractDdpImage<I extends AbstractDdpId, M extends Abstra
     getMapStreams().clear();
   }
 
+  public abstract InputStream extractTrack(int i);
   
   public abstract Class<? extends AbstractDdpImageLoader<I, M>> getLoaderClass();
   
