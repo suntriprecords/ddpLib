@@ -28,16 +28,17 @@ public abstract class AbstractDdpImageLoader<I extends AbstractDdpId, M extends 
       Class<I> ddpIdClass = getParametrizedType(image.getClass(), 0);
       //FIXME unnecessary newInstance isn't cute
       Loader<I> ddpIdLoader = ddpIdClass.newInstance().newLoader(getBaseUrl(), AbstractDdpId.STREAM_NAME);
-      image.setDdpId(ddpIdLoader.load());
+      image.setDdpId(ddpIdLoader.load(true));
       
       image.clearMapStreams(); 
       Class<M> mapClass = getParametrizedType(image.getClass(), 1);
       //FIXME unnecessary newInstance isn't cute
       Loader<M> mapLoader = mapClass.newInstance().newLoader(getBaseUrl(), MapStream.STREAM_NAME);
       while(mapLoader.available() > 0) {
-        M mapPacket = mapLoader.load();
+        M mapPacket = mapLoader.load(false);
         image.getMapStreams().add(mapPacket);
       }
+      mapLoader.close();
     }
     catch (InstantiationException e) {
       throw new DdpException(e);

@@ -28,7 +28,7 @@ public class MapPacketLoader extends AbstractMapPacketLoader<MapPacket, DataStre
     SubCodeDescribable subCodeDesc = mapPacket.getSubCodeDescriptor();
     if(subCodeDesc != null) {
       Loader<? extends DataStreamable> loader = subCodeDesc.newLoader(getBaseUrl(), mapPacket.getDataStreamIdentifier());
-      DataStreamable stream = loader.load();
+      DataStreamable stream = loader.load(true);
       mapPacket.setDataStream(stream);
     }
   }

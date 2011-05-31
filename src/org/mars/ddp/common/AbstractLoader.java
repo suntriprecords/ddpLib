@@ -85,9 +85,12 @@ public abstract class AbstractLoader<P> implements Loader<P> {
   protected abstract void load(P loadable) throws IOException, DdpException;
 
   @Override
-  public P load() throws IOException, DdpException {
+  public P load(boolean close) throws IOException, DdpException {
     P loadable = newLoadable();
     load(loadable);
+    if(close) {
+      close();
+    }
     return loadable;
   }
 
