@@ -1,11 +1,9 @@
 package org.mars.ddp.common;
 
-import java.io.InputStream;
+import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
-
-import org.mars.ddp.v20.SubCodeDescriptor;
 
 
 /**
@@ -36,17 +34,52 @@ public abstract class AbstractDdpImage<I extends AbstractDdpId, M extends Abstra
   }
 
   public <D extends DataStreamable> D getSubCodeStream(SubCodeDescribable subCodeDesc) {
-    return getMapStreams().getSubCodeStream(SubCodeDescriptor.PQ_DESCR); 
+    return getMapStreams().getSubCodeStream(subCodeDesc); 
   }
+  
+  public <D extends DataStreamable> D getDataStream(DataStreamTypeable dataStreamType) {
+    return getMapStreams().getDataStream(dataStreamType); 
+  }
+
+  public abstract <D extends DataStreamable> D getMainDataStream();
+  public abstract <D extends DataStreamable> D getPQSubCodeStream();
   
   /**
    * @see http://en.wikipedia.org/wiki/Compact_Disc
    * @see http://en.wikipedia.org/wiki/Compact_Disc_subcode
    */
-  public abstract InputStream extractTrack(int i);
+  /**
+   * TODO allow pregap(pause) ripping, etc
+   */
+  public TrackInputStream extractTrack(int i) throws IOException {
+    
+    int trackLength = getTrackLengthBytes(i); //will raise enough errors if non-existent track 
   
+    DataStreamable ds = getMainDataStream();
+    if(ds != null) {
+      URL streamUrl = ds.getStreamUrl();
+      return new TrackInputStream(streamUrl.openStream(), trackLength);
+    }
+    else {
+      throw new IllegalArgumentException("No DM stream where to extract data from");
+    }
+  }
+
+  public int getTrackLengthBytes(int i) {
+    int length = 0;
+    
+    PqStream<?> pqStream = getPQSubCodeStream();
+    if(pqStream != null) {
+      AbstractPqDescriptorPacket pqPacketStart = pqStream.getTrackPacket(i);
+      AbstractPqDescriptorPacket pqPacketEnd = pqStream.getTrackPacket(i+1);
+      //TODO lead-in/out to handle
+      length = pqPacketEnd.getCdaCueBytes() - pqPacketStart.getCdaCueBytes();
+    }
+    
+    return length;
+  }
+
   public abstract Class<? extends AbstractDdpImageLoader<I, M>> getLoaderClass();
-  
   
   public AbstractDdpImageLoader<I, M> newLoader(URL imageDirUrl) throws DdpException {
     try {

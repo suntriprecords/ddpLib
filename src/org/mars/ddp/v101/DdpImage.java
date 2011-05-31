@@ -1,9 +1,8 @@
 package org.mars.ddp.v101;
 
-import java.io.InputStream;
-
 import org.mars.ddp.common.AbstractDdpImage;
 import org.mars.ddp.common.AbstractDdpImageLoader;
+import org.mars.ddp.common.DataStreamable;
 
 public class DdpImage extends AbstractDdpImage<DdpId, MapPacket> {
 
@@ -11,10 +10,14 @@ public class DdpImage extends AbstractDdpImage<DdpId, MapPacket> {
   public Class<? extends AbstractDdpImageLoader<DdpId, MapPacket>> getLoaderClass() {
     return DdpImageLoader.class;
   }
+  
+  @Override
+  public <D extends DataStreamable> D getMainDataStream() {
+    return getDataStream(DataStreamType.Data_Stream);
+  }
 
   @Override
-  public InputStream extractTrack(int i) {
-    // FIXME Auto-generated method stub
-    return null;
+  public <D extends DataStreamable> D getPQSubCodeStream() {
+    return getSubCodeStream(SubCodeDescriptor.PQ_DESCR);
   }
 }

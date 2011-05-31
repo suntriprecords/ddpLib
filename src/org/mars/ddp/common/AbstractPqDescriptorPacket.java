@@ -85,4 +85,28 @@ public abstract class AbstractPqDescriptorPacket extends AbstractPacket {
   public void setUserText(String userText) {
     this.userText = userText;
   }
+  
+  /**
+   * @see http://en.wikipedia.org/wiki/Compact_Disc#Data_structure
+   */
+  public Integer getCdaCueSeconds() {
+    int hours = (cdaTimeHours != null ? cdaTimeHours : 0); //usually empty (reserved)
+    return ((hours * 60 + cdaTimeMinutes) * 60 + cdaTimeSeconds);
+  }
+
+  /**
+   * At 75 frames per second
+   * @see http://en.wikipedia.org/wiki/Compact_Disc#Data_structure
+   */
+  public Integer getCdaCueFrames() {
+    return getCdaCueSeconds() * 75 + cdaTimeFrames;
+  }
+
+  /**
+   * At 33 bytes per frame
+   * @see http://en.wikipedia.org/wiki/Compact_Disc#Data_structure
+   */
+  public Integer getCdaCueBytes() {
+    return getCdaCueFrames() * 33;
+  }
 }

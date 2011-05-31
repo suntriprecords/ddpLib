@@ -1,14 +1,17 @@
 package org.mars.ddp.common;
 
+import java.net.URL;
+
 
 /**
  * DDPID identifies the presence and level of DDP.
  */
-public abstract class AbstractDdpId extends AbstractPacket {
+public abstract class AbstractDdpId extends AbstractPacket implements DataStreamable {
   
   public final static int PACKET_LENGTH = 128;
   public final static String STREAM_NAME = "DDPID";
 
+  private URL streamUrl;
   private DdpLevel ddpLevel; //DDP identifier and the DDP level number
   private String upcEan; //valid UPC/EAN number or null if there is no UPC/EAN
   private Long mapStreamStart; //null for sequential access media
@@ -24,7 +27,10 @@ public abstract class AbstractDdpId extends AbstractPacket {
   private Character directionOfTranslation; //Reserved for DVD
   private String userText; //can be used for any purpose. information not placed onto CD
   
-  
+  @Override
+  public URL getStreamUrl() {
+    return streamUrl;
+  }
   public DdpLevel getDdpLevel() {
     return ddpLevel;
   }
@@ -66,6 +72,10 @@ public abstract class AbstractDdpId extends AbstractPacket {
   }
   public String getUserText() {
     return userText;
+  }
+  @Override
+  public void setStreamUrl(URL streamUrl) {
+    this.streamUrl = streamUrl;
   }
   public void setDdpLevel(DdpLevel ddpLevel) {
     this.ddpLevel = ddpLevel;
