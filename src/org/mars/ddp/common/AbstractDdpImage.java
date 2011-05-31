@@ -5,6 +5,8 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
 
+import org.mars.ddp.v20.SubCodeDescriptor;
+
 
 /**
  * Carfull to getParametrizedType calls if you change the erasure of this class
@@ -33,6 +35,14 @@ public abstract class AbstractDdpImage<I extends AbstractDdpId, M extends Abstra
     getMapStreams().clear();
   }
 
+  public <D extends DataStreamable> D getSubCodeStream(SubCodeDescribable subCodeDesc) {
+    return getMapStreams().getSubCodeStream(SubCodeDescriptor.PQ_DESCR); 
+  }
+  
+  /**
+   * @see http://en.wikipedia.org/wiki/Compact_Disc
+   * @see http://en.wikipedia.org/wiki/Compact_Disc_subcode
+   */
   public abstract InputStream extractTrack(int i);
   
   public abstract Class<? extends AbstractDdpImageLoader<I, M>> getLoaderClass();
