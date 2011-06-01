@@ -10,8 +10,8 @@ public abstract class AbstractPqDescriptorPacket extends AbstractPacket {
   private Integer indexNumber; //index number associated with the A-time entries in this packet
   private Integer cdaTimeHours; //Reserved
   private Integer cdaTimeMinutes;
-  private Integer cdaTimeSeconds; //If trackNumber is 00h and indexNumber is A0h, this field contains the Psec value for the CD
-  private Integer cdaTimeFrames;
+  private Integer cdaTimeSeconds; //TODO If trackNumber is 00h and indexNumber is A0h, this field contains the Psec value for the CD
+  private Integer cdaTimeFrames; //attention, A-time frames are actually sectors (98 * 33 bytes frames)
   private String controlByte1; //upper byte: control for the entry. Lower byte: either 1 for a normal entry or S if Serial Copy Management System is to be used
   private String controlByte2; //Reserved
   private String isrc; //valid only for the first entry for each track number greater than 0
@@ -95,11 +95,20 @@ public abstract class AbstractPqDescriptorPacket extends AbstractPacket {
   }
 
   /**
-   * At 75 frames per second
+   * At 75 sectors per second
+   * Attention the A-time frames are actually sectors (98 * 33 bytes frames)
+   * @see http://en.wikipedia.org/wiki/Compact_Disc#.22Frame.22
+   */
+  public Integer getCdaCueSectors() {
+    return getCdaCueSeconds() * 75 + cdaTimeFrames;
+  }
+
+  /**
+   * At 98 frames per sector
    * @see http://en.wikipedia.org/wiki/Compact_Disc#Data_structure
    */
   public Integer getCdaCueFrames() {
-    return getCdaCueSeconds() * 75 + cdaTimeFrames;
+    return getCdaCueSectors() * 98;
   }
 
   /**

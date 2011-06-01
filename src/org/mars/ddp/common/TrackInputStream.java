@@ -6,13 +6,24 @@ import java.io.InputStream;
 
 public class TrackInputStream extends BufferedInputStream {
 
+  private int start;
   private int length; //bytes length incl CIRC+Control = 33 bytes/frame
   
-  public TrackInputStream(InputStream in, int length) {
+  public TrackInputStream(InputStream in, int start, int length) throws IOException {
     super(in);
+    this.start = start;
     this.length = length;
+    in.skip(start);
   }
   
+  public int getStart() {
+    return start;
+  }
+
+  public int getLength() {
+    return length;
+  }
+
   @Override
   public synchronized int read() throws IOException {
     if(pos + 9 < length) { //checking we won't hit the end of the track

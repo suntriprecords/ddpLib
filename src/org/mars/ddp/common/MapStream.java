@@ -11,6 +11,7 @@ public class MapStream<T extends MapPackable<?, ?>> extends AbstractStream<T> {
     for(T mapPacket : this) {
       if(mapPacket.getSubCodeDescriptor() == subCodeDesc) {
         result = mapPacket;
+        break;
       }
     }
     return result;
@@ -32,6 +33,7 @@ public class MapStream<T extends MapPackable<?, ?>> extends AbstractStream<T> {
     for(T mapPacket : this) {
       if(mapPacket.getDataStreamType() == dataStreamType) {
         result = mapPacket;
+        break;
       }
     }
     return result;

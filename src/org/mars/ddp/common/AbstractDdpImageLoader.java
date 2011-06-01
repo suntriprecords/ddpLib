@@ -34,6 +34,7 @@ public abstract class AbstractDdpImageLoader<I extends AbstractDdpId, M extends 
       Class<M> mapClass = getParametrizedType(image.getClass(), 1);
       //FIXME unnecessary newInstance isn't cute
       Loader<M> mapLoader = mapClass.newInstance().newLoader(getBaseUrl(), MapStream.STREAM_NAME);
+      //TODO use OFS to skip soem garbage
       while(mapLoader.available() > 0) {
         M mapPacket = mapLoader.load(false);
         image.getMapStreams().add(mapPacket);

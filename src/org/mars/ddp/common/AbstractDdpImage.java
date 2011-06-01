@@ -53,16 +53,29 @@ public abstract class AbstractDdpImage<I extends AbstractDdpId, M extends Abstra
    */
   public TrackInputStream extractTrack(int i) throws IOException {
     
-    int trackLength = getTrackLengthBytes(i); //will raise enough errors if non-existent track 
+    int trackStart = getTrackStartBytes(i); //will raise enough errors if non-existent track 
+    int trackLength = getTrackLengthBytes(i); //idem 
   
     DataStreamable ds = getMainDataStream();
     if(ds != null) {
       URL streamUrl = ds.getStreamUrl();
-      return new TrackInputStream(streamUrl.openStream(), trackLength);
+      return new TrackInputStream(streamUrl.openStream(), trackStart, trackLength);
     }
     else {
       throw new IllegalArgumentException("No DM stream where to extract data from");
     }
+  }
+
+  public int getTrackStartBytes(int i) {
+    int length = 0;
+    
+    PqStream<?> pqStream = getPQSubCodeStream();
+    if(pqStream != null) {
+      AbstractPqDescriptorPacket pqPacketStart = pqStream.getTrackPacket(i);
+      return pqPacketStart.getCdaCueBytes();
+    }
+    
+    return length;
   }
 
   public int getTrackLengthBytes(int i) {
