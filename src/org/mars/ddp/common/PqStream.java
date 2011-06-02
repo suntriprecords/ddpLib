@@ -1,7 +1,7 @@
 package org.mars.ddp.common;
 
 
-public class PqStream<P extends AbstractPqDescriptorPacket> extends AbstractStream<P> {
+public class PqStream<P extends AbstractPqDescriptorPacket> extends AbstractStreamCollection<P> {
   private static final long serialVersionUID = 1L;
   
   /**

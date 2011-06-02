@@ -5,7 +5,7 @@ import java.net.URL;
 
 public class DdpImageFactory {
 
-  public static <I extends AbstractDdpId, M extends AbstractMapPacket<?, ?>> AbstractDdpImage<I, M> create(URL imageDirUrl) throws IOException, DdpException {
+  public static <I extends AbstractDdpId, M extends AbstractMapPacket<?, ?, ?>> AbstractDdpImage<I, M> create(URL imageDirUrl) throws IOException, DdpException {
     URL ddpIdUrl = new URL(imageDirUrl.toExternalForm() + AbstractDdpId.STREAM_NAME);
     DdpLevel level = AbstractDdpIdLoader.readDdpLevel(ddpIdUrl);
 
@@ -26,7 +26,7 @@ public class DdpImageFactory {
   }
 
 
-  public static <I extends AbstractDdpId, M extends AbstractMapPacket<?, ?>> AbstractDdpImage<I, M> load(URL imageDirUrl) throws DdpException, IOException {
+  public static <I extends AbstractDdpId, M extends AbstractMapPacket<?, ?, ?>> AbstractDdpImage<I, M> load(URL imageDirUrl) throws DdpException, IOException {
     AbstractDdpImage<I, M> image = create(imageDirUrl);
     AbstractDdpImageLoader<I, M> loader = image.newLoader(imageDirUrl);
     loader.load(image);

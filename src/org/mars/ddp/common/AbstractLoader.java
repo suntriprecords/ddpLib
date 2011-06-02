@@ -84,17 +84,33 @@ public abstract class AbstractLoader<P> implements Loader<P> {
 
   protected abstract void load(P loadable) throws IOException, DdpException;
 
-  private void loadWithSpecifics(P loadable) throws IOException, DdpException {
+  /**
+   * May be overridden
+   * @throws DdpException 
+   */
+  protected void preLoad(P loadable) throws DdpException, IOException {
     if(loadable instanceof DataStreamable) {
       ((DataStreamable)loadable).setStreamUrl( getFileUrl());
     }
-    load(loadable);
   }
   
+  /**
+   * May be overridden
+   * @throws IOException 
+   * @throws DdpException 
+   */
+  protected void postLoad(P loadable) throws IOException, DdpException {
+    //nothing
+  }
+
   @Override
   public P load(boolean close) throws IOException, DdpException {
     P loadable = newLoadable();
-    loadWithSpecifics(loadable);
+    
+    preLoad(loadable);
+    load(loadable);
+    postLoad(loadable);
+    
     if(close) {
       close();
     }

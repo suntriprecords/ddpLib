@@ -1,11 +1,9 @@
 package org.mars.ddp.common;
 
 import java.net.URL;
-import java.util.ArrayList;
 
-public abstract class AbstractStream<P extends Packet> extends ArrayList<P> implements DataStreamable {
-  private static final long serialVersionUID = 1L;
-  
+public abstract class AbstractDataStream implements DataStreamable {
+
   private URL streamUrl;
   
   @Override

@@ -5,7 +5,7 @@ import org.mars.ddp.common.Loader;
 import org.mars.ddp.common.Packet;
 
 
-public class MapPacket extends AbstractMapPacket<DataStreamType, SubCodeDescriptor> {
+public class MapPacket extends AbstractMapPacket<DataStreamType, SubCodeDescriptor, SourceStorageMode> {
 
   private Character newOrange; //Reserved
   private Integer preGap1NextTrackIncludedInDataStream;

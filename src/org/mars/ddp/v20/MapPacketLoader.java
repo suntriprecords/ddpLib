@@ -4,12 +4,9 @@ import java.io.IOException;
 import java.net.URL;
 
 import org.mars.ddp.common.AbstractMapPacketLoader;
-import org.mars.ddp.common.DataStreamable;
 import org.mars.ddp.common.DdpException;
-import org.mars.ddp.common.Loader;
-import org.mars.ddp.common.SubCodeDescribable;
 
-public class MapPacketLoader extends AbstractMapPacketLoader<MapPacket, DataStreamType, SubCodeDescriptor> {
+public class MapPacketLoader extends AbstractMapPacketLoader<MapPacket, DataStreamType, SubCodeDescriptor, SourceStorageMode> {
   
   public MapPacketLoader(URL baseUrl, String fileName) {
     super(baseUrl, fileName);
@@ -37,14 +34,6 @@ public class MapPacketLoader extends AbstractMapPacketLoader<MapPacket, DataStre
     mapPacket.setStartingFileOffSet(startingFileOffSet);
     
     readString(15, false); //padding
-
-    
-    SubCodeDescribable subCodeDesc = mapPacket.getSubCodeDescriptor();
-    if(subCodeDesc != null) {
-      Loader<? extends DataStreamable> loader = subCodeDesc.newLoader(getBaseUrl(), mapPacket.getDataStreamIdentifier());
-      DataStreamable stream = loader.load(true);
-      mapPacket.setDataStream(stream);
-    }
   }
 
   @Override
@@ -56,12 +45,22 @@ public class MapPacketLoader extends AbstractMapPacketLoader<MapPacket, DataStre
 
   @Override
   public SubCodeDescriptor readSubCodeDescriptor() throws IOException {
-    SubCodeDescriptor desc = null;
+    SubCodeDescriptor sub = null;
 
     String id = readString(8, true);
     if(id != null) {
-      desc = SubCodeDescriptor.idOf(id);
+      sub = SubCodeDescriptor.idOf(id);
     }
-    return desc;
+    return sub;
+  }
+
+  @Override
+  public SourceStorageMode readSourceStorageMode() throws IOException {
+    SourceStorageMode ssm = null;
+    Integer id = readInt(1);
+    if(id != null) {
+      ssm = SourceStorageMode.idOf(id);
+    }
+    return ssm;
   }
 }

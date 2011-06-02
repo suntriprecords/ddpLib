@@ -6,7 +6,7 @@ package org.mars.ddp.common;
  * of the CD program area, but also subchannel files that may be present,
  * and other data such as ordering information.
  */
-public abstract class AbstractMapPacket<T extends DataStreamTypeable, S extends SubCodeDescribable> extends AbstractPacket implements MapPackable<T, S> {
+public abstract class AbstractMapPacket<T extends DataStreamTypeable, S extends SubCodeDescribable, M extends SourceStorageModable> extends AbstractPacket implements MapPackable<T, S> {
 
   public static String MAP_PACKET_VALID = "VVVM";
 
@@ -16,7 +16,7 @@ public abstract class AbstractMapPacket<T extends DataStreamTypeable, S extends 
   private Integer dataStreamStart; //the decimal address of physical sector expressed in ASCII characters. If null, mastering will record DM (Main) data in the order in which they occur on the input media and map packets.
   private S subCodeDescriptor; //null for Super Density (DV) or Multimedia CD (MMCD).
   private CDMode cdMode; //null when map packet is used for DS (Subcode) and TS (Text) data
-  private SourceStorageMode sourceStorageMode; //null when a map packet is used for DS (Subcode) and TS (Text) data
+  private M sourceStorageMode; //null when a map packet is used for DS (Subcode) and TS (Text) data
   private Boolean sourceMaterialScrambled; //null when the map packet is used for DS (Subcode) and TS (Text) data
   private Integer preGapPart1IncludedInDataStream; //null when the map packet is used for DS (Subcode) and TS (Text) data
   private Integer preGapPart2OrPauseInDataStream; //null when the map packet is used for DS (Subcode) and TS (Text) data
@@ -54,7 +54,7 @@ public abstract class AbstractMapPacket<T extends DataStreamTypeable, S extends 
     return cdMode;
   }
   @Override
-  public SourceStorageMode getSourceStorageMode() {
+  public M getSourceStorageMode() {
     return sourceStorageMode;
   }
   @Override
@@ -115,7 +115,7 @@ public abstract class AbstractMapPacket<T extends DataStreamTypeable, S extends 
   public void setCdMode(CDMode cdMode) {
     this.cdMode = cdMode;
   }
-  public void setSourceStorageMode(SourceStorageMode sourceStorageMode) {
+  public void setSourceStorageMode(M sourceStorageMode) {
     this.sourceStorageMode = sourceStorageMode;
   }
   public void setSourceMaterialScrambled(Boolean sourceMaterialScrambled) {

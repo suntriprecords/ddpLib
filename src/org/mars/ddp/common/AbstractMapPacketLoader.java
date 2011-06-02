@@ -3,7 +3,9 @@ package org.mars.ddp.common;
 import java.io.IOException;
 import java.net.URL;
 
-public abstract class AbstractMapPacketLoader<P extends AbstractMapPacket<T, S>, T extends DataStreamTypeable, S extends SubCodeDescribable> extends AbstractLoader<P> {
+import org.mars.ddp.v20.SourceStorageMode;
+
+public abstract class AbstractMapPacketLoader<P extends AbstractMapPacket<T, S, M>, T extends DataStreamTypeable, S extends SubCodeDescribable, M extends SourceStorageModable> extends AbstractLoader<P> {
 
   public AbstractMapPacketLoader(URL baseUrl, String fileName) {
     super(baseUrl, fileName);
@@ -37,11 +39,8 @@ public abstract class AbstractMapPacketLoader<P extends AbstractMapPacket<T, S>,
       mapPacket.setCdMode(cdMode);
     }
     
-    Integer ssm = readInt(1);
-    if(ssm != null) {
-      SourceStorageMode sourceStorageMode = SourceStorageMode.idOf(ssm);
-      mapPacket.setSourceStorageMode(sourceStorageMode);
-    }
+    M sourceStorageMode = readSourceStorageMode();
+    mapPacket.setSourceStorageMode(sourceStorageMode);
     
     Boolean sourceMaterialScrambled = readBoolean(true);
     mapPacket.setSourceMaterialScrambled(sourceMaterialScrambled);
@@ -74,6 +73,39 @@ public abstract class AbstractMapPacketLoader<P extends AbstractMapPacket<T, S>,
     }
   }
 
+  @Override
+  protected void postLoad(P loadable) throws IOException, DdpException {
+    super.postLoad(loadable);
+
+    SubCodeDescribable sub = loadable.getSubCodeDescriptor();
+    SourceStorageModable ssm = loadable.getSourceStorageMode();
+    
+    /**
+     * SUB is null when the map packet is used for DM (Main) or TS (Text) data.
+     * One exception exists, however: If R-W subcode data is appended to each block
+     * of the main channel data (SSM = 8), this field describes the format of that data.
+     * SUB is not used for Super Density (DV) or Multimedia CD (MMCD).
+     */
+    if(sub != null && ssm != SourceStorageMode.Complete_2352_Bytes_Plus_R_W_data) {
+      Loader<? extends DataStreamable> loader = sub.newLoader(getBaseUrl(), loadable.getDataStreamIdentifier());
+      DataStreamable stream = loader.load(true);
+      loadable.setDataStream(stream);
+    }
+    else if(ssm == null) {
+      /**
+       * SSM is null when the map packet is used for DS (Subcode) and TS (Text) data
+       * But all SubCode cases are handled above, so let's load TS data
+       */
+      //TODO
+    }
+    else {
+      Loader<? extends DataStreamable> loader = ssm.newLoader(getBaseUrl(), loadable.getDataStreamIdentifier());
+      DataStreamable stream = loader.load(true);
+      loadable.setDataStream(stream);
+    }
+  }
+
   public abstract T readDataStreamType() throws IOException;
   public abstract S readSubCodeDescriptor() throws IOException;
+  public abstract M readSourceStorageMode() throws IOException;
 }

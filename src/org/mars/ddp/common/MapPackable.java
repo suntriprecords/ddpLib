@@ -7,7 +7,7 @@ public interface MapPackable<T extends DataStreamTypeable, S extends SubCodeDesc
   public Integer getDataStreamStart();
   public S getSubCodeDescriptor();
   public CDMode getCdMode();
-  public SourceStorageMode getSourceStorageMode();
+  public SourceStorageModable getSourceStorageMode();
   public Boolean isSourceMaterialScrambled();
   public Integer getPreGapPart1IncludedInDataStream();
   public Integer getPreGapPart2OrPauseInDataStream();

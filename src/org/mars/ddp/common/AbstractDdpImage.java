@@ -9,7 +9,7 @@ import java.net.URL;
 /**
  * Carfull to getParametrizedType calls if you change the erasure of this class
  */
-public abstract class AbstractDdpImage<I extends AbstractDdpId, M extends AbstractMapPacket<?, ?>> {
+public abstract class AbstractDdpImage<I extends AbstractDdpId, M extends AbstractMapPacket<?, ?, ?>> {
 
   private I ddpId;
   private MapStream<M> mapStreams;
@@ -51,7 +51,7 @@ public abstract class AbstractDdpImage<I extends AbstractDdpId, M extends Abstra
   /**
    * TODO allow pregap(pause) ripping, etc
    */
-  public TrackInputStream extractTrack(int i) throws IOException {
+  public TrackInputStream openTrackStream(int i) throws IOException {
     
     int trackStart = getTrackStartBytes(i); //will raise enough errors if non-existent track 
     int trackLength = getTrackLengthBytes(i); //idem 

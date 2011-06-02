@@ -17,8 +17,8 @@ public class LoadTest {
     AbstractDdpImage<?, ?> image = DdpImageFactory.load(imageUrl);
     System.out.println( image.getDdpId().getDdpLevel().getId());
     
-    TrackInputStream tis = image.extractTrack(2);
-    FileOutputStream fos = new FileOutputStream("D:/Temp/SUNCD02.DDP/plop.pcm");
+    TrackInputStream tis = image.openTrackStream(2);
+    FileOutputStream fos = new FileOutputStream("D:/Temp/SUNCD02.DDP/plop.cda");
     byte[] buffer = new byte[65536];
     int read;
     while((read = tis.read(buffer)) != -1) {
