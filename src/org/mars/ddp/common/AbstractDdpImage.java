@@ -33,31 +33,38 @@ public abstract class AbstractDdpImage<I extends AbstractDdpId, M extends Abstra
     getMapStreams().clear();
   }
 
-  public <D extends DataStreamable> D getSubCodeStream(SubCodeDescribable subCodeDesc) {
-    return getMapStreams().getSubCodeStream(subCodeDesc); 
+  public M getSubCodePacket(SubCodeDescribable subCodeDesc) {
+    return getMapStreams().getSubCodePacket(subCodeDesc); 
   }
   
-  public <D extends DataStreamable> D getDataStream(DataStreamTypeable dataStreamType) {
-    return getMapStreams().getDataStream(dataStreamType); 
+  public M getDataStreamPacket(DataStreamTypeable dataStreamType) {
+    return getMapStreams().getDataStreamPacket(dataStreamType); 
   }
 
-  public abstract <D extends DataStreamable> D getMainDataStream();
-  public abstract <D extends DataStreamable> D getPQSubCodeStream();
+  public abstract M getMainDataPacket();
+  public abstract M getPQSubCodePacket();
+  
+  public TrackInputStream openTrackStream(int i) throws IOException {
+    return openTrackStream(i, false);
+  }
   
   /**
    * @see http://en.wikipedia.org/wiki/Compact_Disc
    * @see http://en.wikipedia.org/wiki/Compact_Disc_subcode
    */
-  /**
-   * TODO allow pregap(pause) ripping, etc
-   */
-  public TrackInputStream openTrackStream(int i) throws IOException {
+  public TrackInputStream openTrackStream(int i, boolean withPreGap) throws IOException {
     
-    int trackStart = getTrackStartBytes(i); //will raise enough errors if non-existent track 
-    int trackLength = getTrackLengthBytes(i); //idem 
+    int trackStart = getTrackStartBytes(i, withPreGap); //will raise enough errors if non-existent track 
+    int trackLength = getTrackLengthBytes(i, withPreGap); //idem 
   
-    DataStreamable ds = getMainDataStream();
-    if(ds != null) {
+    M mapPacket = getMainDataPacket();
+    if(mapPacket != null) {
+      Integer ofs = mapPacket.getStartingFileOffSet();
+      if(ofs != null) {
+        trackStart += ofs;
+      }
+      
+      DataStreamable ds = mapPacket.getDataStream();
       URL streamUrl = ds.getStreamUrl();
       return new TrackInputStream(streamUrl.openStream(), trackStart, trackLength);
     }
@@ -66,29 +73,29 @@ public abstract class AbstractDdpImage<I extends AbstractDdpId, M extends Abstra
     }
   }
 
-  public int getTrackStartBytes(int i) {
+  public int getTrackStartBytes(int i, boolean withPreGap) {
     int length = 0;
     
-    PqStream<?> pqStream = getPQSubCodeStream();
-    if(pqStream != null) {
-      AbstractPqDescriptorPacket pqPacketStart = pqStream.getTrackPacket(i);
+    M mapPacket = getPQSubCodePacket();
+    if(mapPacket != null) {
+      PqStream<?> pqStream = (PqStream<?>)mapPacket.getDataStream();
+      AbstractPqDescriptorPacket pqPacketStart = withPreGap ? pqStream.getPreGapPacket(i) : pqStream.getTrackPacket(i);
       return pqPacketStart.getCdaCueBytes();
     }
-    
     return length;
   }
 
-  public int getTrackLengthBytes(int i) {
+  public int getTrackLengthBytes(int i, boolean withPreGap) {
     int length = 0;
     
-    PqStream<?> pqStream = getPQSubCodeStream();
-    if(pqStream != null) {
-      AbstractPqDescriptorPacket pqPacketStart = pqStream.getTrackPacket(i);
-      AbstractPqDescriptorPacket pqPacketEnd = pqStream.getTrackPacket(i+1);
+    M mapPacket = getPQSubCodePacket();
+    if(mapPacket != null) {
+      PqStream<?> pqStream = (PqStream<?>)mapPacket.getDataStream();
+      AbstractPqDescriptorPacket pqPacketStart = withPreGap ? pqStream.getPreGapPacket(i) : pqStream.getTrackPacket(i);
+      AbstractPqDescriptorPacket pqPacketEnd = pqStream.getPreGapPacket(i+1);
       //TODO lead-in/out to handle
       length = pqPacketEnd.getCdaCueBytes() - pqPacketStart.getCdaCueBytes();
     }
-    
     return length;
   }
 

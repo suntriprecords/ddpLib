@@ -12,7 +12,7 @@ import org.mars.ddp.common.SourceStorageModable;
 
 public enum SourceStorageMode implements SourceStorageModable {
 
-  User_Data_Only(0, NullDataStreamLoader.class), //FIXME
+  User_Data_Only(0, BinaryStreamLoader.class),
   Interleaved_Form_1_And_Form_2_2332_Bytes(1, NullDataStreamLoader.class), //FIXME
   Interleaved_Form_2_And_Form_2_2336_Bytes(2, NullDataStreamLoader.class), //FIXME
   Interleaved_Form_2_And_Form_2_2340_Bytes(3, NullDataStreamLoader.class), //FIXME

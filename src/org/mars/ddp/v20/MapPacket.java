@@ -22,6 +22,7 @@ public class MapPacket extends AbstractMapPacket<DataStreamType, SubCodeDescript
   public Integer getNumberOfBlocksOfPauseToAdd() {
     return numberOfBlocksOfPauseToAdd;
   }
+  @Override
   public Integer getStartingFileOffSet() {
     return startingFileOffSet;
   }

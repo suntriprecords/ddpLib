@@ -97,6 +97,9 @@ public abstract class AbstractMapPacket<T extends DataStreamTypeable, S extends 
   public DataStreamable getDataStream() {
     return dataStream;
   }
+  
+  public abstract Integer getStartingFileOffSet();
+  
   public void setDataStreamType(T dataStreamType) {
     this.dataStreamType = dataStreamType;
   }

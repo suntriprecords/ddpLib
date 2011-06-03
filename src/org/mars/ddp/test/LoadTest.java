@@ -13,12 +13,13 @@ import org.mars.ddp.common.TrackInputStream;
 public class LoadTest {
 
   public static void main(String... args) throws IOException, DdpException {
-    URL imageUrl = new File("D:/Temp/SUNCD02.DDP").toURI().toURL();
+    File imageDir = new File("D:/Temp/DDP - SUNCD22 - Artifact303 - Back To Space");
+    URL imageUrl = imageDir.toURI().toURL();
     AbstractDdpImage<?, ?> image = DdpImageFactory.load(imageUrl);
     System.out.println( image.getDdpId().getDdpLevel().getId());
     
-    TrackInputStream tis = image.openTrackStream(2);
-    FileOutputStream fos = new FileOutputStream("D:/Temp/SUNCD02.DDP/plop.cda");
+    TrackInputStream tis = image.openTrackStream(1, false);
+    FileOutputStream fos = new FileOutputStream(new File(imageDir, "plop.cda"));
     byte[] buffer = new byte[65536];
     int read;
     while((read = tis.read(buffer)) != -1) {

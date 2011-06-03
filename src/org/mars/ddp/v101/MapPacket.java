@@ -10,4 +10,9 @@ public class MapPacket extends AbstractMapPacket<DataStreamType, SubCodeDescript
   public Class<? extends Loader<? extends Packet>> getLoaderClass() {
     return MapPacketLoader.class;
   }
+
+  @Override
+  public Integer getStartingFileOffSet() {
+    return null; //not supported in this version
+  }
 }

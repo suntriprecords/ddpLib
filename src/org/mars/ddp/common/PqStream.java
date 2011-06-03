@@ -1,22 +1,29 @@
 package org.mars.ddp.common;
 
-
+/**
+ * One lead-in, 2 lead-outs, 1 pause per track
+ * Lead-out is actually at size()-2 or the getTracksCount()+1 track
+ */
 public class PqStream<P extends AbstractPqDescriptorPacket> extends AbstractStreamCollection<P> {
   private static final long serialVersionUID = 1L;
   
-  /**
-   * One lead-in, 2 lead-outs
-   * Lead-out will be allowed as the getTracksCount()+1 track
-   * TODO handle pre-gap
-   */
-  public P getTrackPacket(int i) {
-    return get(i+2); //+1 with pregap, +2 without
+  public int getTracksCount() {
+    return (size()-3)/2;
   }
 
-  /**
-   * One lead-in, 2 lead-outs, 1 pause per track
-   */
-  public int getTracksCount() {
-    return (size() - 3)/2;
+  public P getLeadInPacket() {
+    return get(0);
+  }
+
+  public P getPreGapPacket(int i) {
+    return get(2*(i-1)+1);
+  }
+
+  public P getTrackPacket(int i) {
+    return get(2*(i-1)+2);
+  }
+
+  public P getLeadOutPacket() {
+    return getPreGapPacket(getTracksCount()+1);
   }
 }
