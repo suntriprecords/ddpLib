@@ -96,7 +96,7 @@ public abstract class AbstractPqDescriptorPacket extends AbstractPacket {
 
   /**
    * At 75 sectors per second
-   * Attention the A-time frames are actually sectors (98 * 33 bytes frames)
+   * Attention the A-time frames are actually sectors (each 98 * frames)
    * @see http://en.wikipedia.org/wiki/Compact_Disc#.22Frame.22
    */
   public Integer getCdaCueSectors() {
@@ -112,10 +112,10 @@ public abstract class AbstractPqDescriptorPacket extends AbstractPacket {
   }
 
   /**
-   * At 33 bytes per frame
+   * At 24 bytes per frame (33 actuzlly but the image doesn't contain CIRC/Control bytes)
    * @see http://en.wikipedia.org/wiki/Compact_Disc#Data_structure
    */
   public Integer getCdaCueBytes() {
-    return getCdaCueFrames() * 33;
+    return getCdaCueFrames() * 24;
   }
 }
