@@ -3,11 +3,11 @@ package org.mars.ddp.common;
 import java.io.IOException;
 import java.io.InputStream;
 
-public class TrackInputStream extends InputStream {
+public class PcmInputStream extends InputStream {
 
   private InputStream in;
   private int start;
-  private int length; //bytes length incl CIRC+Control = 33 bytes/frame
+  private int length; //bytes length incl CIRC+Control = 24 bytes/frame
   private int pos;
   
   /**
@@ -16,7 +16,7 @@ public class TrackInputStream extends InputStream {
    * @param length is WITH the CIRC/Control bytes
    * @throws IOException
    */
-  public TrackInputStream(InputStream in, int start, int length) throws IOException {
+  public PcmInputStream(InputStream in, int start, int length) throws IOException {
     this.in = in;
     this.start = start;
     this.length = length;
@@ -42,11 +42,7 @@ public class TrackInputStream extends InputStream {
 
   @Override
   public synchronized int read() throws IOException {
-    if(pos + 9 < length) { //checking we won't hit the end of the track
-      if((pos + 9) % 33 == 0) { //each frame is 8 CIRC + 1 Control bytes
-        skip(9);
-      }
-      
+    if(pos < length) { //checking we won't hit the end of the track
       int b = in.read();
       pos++;
       return b;

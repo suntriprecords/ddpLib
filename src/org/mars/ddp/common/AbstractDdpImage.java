@@ -44,7 +44,7 @@ public abstract class AbstractDdpImage<I extends AbstractDdpId, M extends Abstra
   public abstract M getMainDataPacket();
   public abstract M getPQSubCodePacket();
   
-  public TrackInputStream openTrackStream(int i) throws IOException {
+  public PcmInputStream openTrackStream(int i) throws IOException {
     return openTrackStream(i, false);
   }
   
@@ -52,7 +52,7 @@ public abstract class AbstractDdpImage<I extends AbstractDdpId, M extends Abstra
    * @see http://en.wikipedia.org/wiki/Compact_Disc
    * @see http://en.wikipedia.org/wiki/Compact_Disc_subcode
    */
-  public TrackInputStream openTrackStream(int i, boolean withPreGap) throws IOException {
+  public PcmInputStream openTrackStream(int i, boolean withPreGap) throws IOException {
     
     int trackStart = getTrackStartBytes(i, withPreGap); //will raise enough errors if non-existent track 
     int trackLength = getTrackLengthBytes(i, withPreGap); //idem 
@@ -66,7 +66,7 @@ public abstract class AbstractDdpImage<I extends AbstractDdpId, M extends Abstra
       
       DataStreamable ds = mapPacket.getDataStream();
       URL streamUrl = ds.getStreamUrl();
-      return new TrackInputStream(streamUrl.openStream(), trackStart, trackLength);
+      return new PcmInputStream(streamUrl.openStream(), trackStart, trackLength);
     }
     else {
       throw new IllegalArgumentException("No DM stream where to extract data from");
