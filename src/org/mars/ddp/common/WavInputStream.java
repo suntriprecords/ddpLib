@@ -33,6 +33,7 @@ public class WavInputStream extends InputStream {
   private void createCanonicalWavHeader() throws IOException {
     ByteArrayOutputStream baos = new ByteArrayOutputStream(CANONICAL_WAV_HEADER_LENGTH);
     DataOutputStream dos = new DataOutputStream(baos);
+
     //RIFF chunk
     String chunkId = RIFF_CHUNK_ID;
     int subChunk1Size = 16; //PCM, so 16

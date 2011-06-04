@@ -37,7 +37,7 @@ public class PcmInputStream extends InputStream {
   
   @Override
   public int available() throws IOException {
-    return in.available();
+    return Math.min(length - pos, in.available());
   }
 
   @Override
