@@ -6,7 +6,15 @@ import java.io.IOException;
 import java.io.InputStream;
 
 /**
- * @see https://ccrma.stanford.edu/courses/422/projects/WaveFormat/
+ * I understand WAV = WAV-header + PCM
+ * https://ccrma.stanford.edu/courses/422/projects/WaveFormat/
+ * http://www-mmsp.ece.mcgill.ca/Documents/AudioFormats/WAVE/WAVE.html
+ * http://www.sonicspot.com/guide/wavefiles.html
+ * http://www.blitter.com/~russtopia/MIDI/~jglatt/tech/wave.htm
+ * http://en.wikipedia.org/wiki/WAV
+ * 
+ * Or you can call the cavalry...
+ * http://download.oracle.com/javase/tutorial/sound/converters.html
  */
 public class WavInputStream extends InputStream {
 

@@ -3,6 +3,9 @@ package org.mars.ddp.common;
 import java.io.IOException;
 import java.io.InputStream;
 
+/**
+ * http://en.wikipedia.org/wiki/Pulse-code_modulation
+ */
 public class PcmInputStream extends InputStream {
 
   private InputStream in;
