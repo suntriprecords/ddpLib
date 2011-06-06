@@ -1,9 +1,9 @@
 package org.mars.ddp.common;
 
-import java.io.ByteArrayOutputStream;
-import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
 
 /**
  * I understand WAV = WAV-header + PCM
@@ -39,43 +39,47 @@ public class WavInputStream extends InputStream {
   }
 
   private void createCanonicalWavHeader() throws IOException {
-    ByteArrayOutputStream baos = new ByteArrayOutputStream(CANONICAL_WAV_HEADER_LENGTH);
-    DataOutputStream dos = new DataOutputStream(baos);
-
+    ByteBuffer  bb = ByteBuffer.allocate(CANONICAL_WAV_HEADER_LENGTH);
+    
     //RIFF chunk
-    String chunkId = RIFF_CHUNK_ID;
     int subChunk1Size = 16; //PCM, so 16
     int subChunk2Size = in.available(); //The whole data
     int chunkSize = 4 + (8 + subChunk1Size) + (8 + subChunk2Size);
-    String format = WAVE_FORMAT_ID;
+    bb.put(RIFF_CHUNK_ID.getBytes());
 
-    dos.write(chunkId.getBytes());
-    dos.writeInt(chunkSize);
-    dos.write(format.getBytes());
-    
+    bb.order(ByteOrder.LITTLE_ENDIAN);
+    bb.putInt(chunkSize);
+
+    bb.order(ByteOrder.BIG_ENDIAN);
+    bb.put(WAVE_FORMAT_ID.getBytes());
+
+
     //FMT chunk
-    String subChunk1Id = FORMAT_CHUNK_ID;
-    int audioFormat = 1; //AudioFormat PCM = 1 (i.e. Linear quantization)
-    int numChannels = 2; //Stereo = 2 channels
+    bb.put(FORMAT_CHUNK_ID.getBytes());
+    
+    bb.order(ByteOrder.LITTLE_ENDIAN);
+    short audioFormat = 1; //AudioFormat PCM = 1 (i.e. Linear quantization)
+    short numChannels = 2; //Stereo = 2 channels
     int sampleRate = 44100; //Sampling rate is 44100 Hz
-    int bitsPerSample = 16;
+    short bitsPerSample = 16;
     int byteRate = sampleRate * numChannels * bitsPerSample/8;
-    int blockAlign = numChannels * bitsPerSample/8;
-    
-    dos.write(subChunk1Id.getBytes());
-    dos.writeInt(subChunk1Size);
-    dos.writeShort(audioFormat);
-    dos.writeShort(numChannels);
-    dos.writeInt(sampleRate);
-    dos.writeInt(byteRate);
-    dos.writeShort(blockAlign);
-    dos.writeShort(bitsPerSample);
-    
-    String subChunk2Id = DATA_CHUNK_ID;
-    dos.write(subChunk2Id.getBytes());
-    dos.writeInt(subChunk2Size);
-    
-    header = baos.toByteArray();
+    short blockAlign = (short)(numChannels * bitsPerSample/8);
+    bb.putInt(subChunk1Size);
+    bb.putShort(audioFormat);
+    bb.putShort(numChannels);
+    bb.putInt(sampleRate);
+    bb.putInt(byteRate);
+    bb.putShort(blockAlign);
+    bb.putShort(bitsPerSample);
+
+    //DATA chunk
+    bb.order(ByteOrder.BIG_ENDIAN);
+    bb.put(DATA_CHUNK_ID.getBytes());
+
+    bb.order(ByteOrder.LITTLE_ENDIAN);
+    bb.putInt(subChunk2Size);
+
+    header = bb.array();
   }
   
   public int getLength() {

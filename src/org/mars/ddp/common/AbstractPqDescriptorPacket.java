@@ -1,6 +1,13 @@
 package org.mars.ddp.common;
 
-public abstract class AbstractPqDescriptorPacket extends AbstractPacket {
+/**
+ * @see http://en.wikipedia.org/wiki/Compact_Disc#Data_structure
+ * @see http://en.wikipedia.org/wiki/Pregap
+ * @see http://desolationvalley.com/wj/oddcd/
+ */
+public abstract class AbstractPqDescriptorPacket extends AbstractPacket implements DataUnits {
+
+  public final static String LEAD_OUT_TRACK_NUMBER = "AA";
 
   public final static String STREAM_NAME = "PQDESCR";
   public static String SUBCODE_PACKET_VALID = "VVVS";
@@ -89,7 +96,7 @@ public abstract class AbstractPqDescriptorPacket extends AbstractPacket {
   /**
    * @see http://en.wikipedia.org/wiki/Compact_Disc#Data_structure
    */
-  public Integer getCdaCueSeconds() {
+  public int getCdaCueSeconds() {
     int hours = (cdaTimeHours != null ? cdaTimeHours : 0); //usually empty (reserved)
     return ((hours * 60 + cdaTimeMinutes) * 60 + cdaTimeSeconds);
   }
@@ -99,23 +106,23 @@ public abstract class AbstractPqDescriptorPacket extends AbstractPacket {
    * Attention the A-time frames are actually sectors (each 98 * frames)
    * @see http://en.wikipedia.org/wiki/Compact_Disc#.22Frame.22
    */
-  public Integer getCdaCueSectors() {
-    return getCdaCueSeconds() * 75 + cdaTimeFrames;
+  public int getCdaCueSectors() {
+    return getCdaCueSeconds() * SECTORS_PER_SECOND + cdaTimeFrames;
   }
 
   /**
    * At 98 frames per sector
    * @see http://en.wikipedia.org/wiki/Compact_Disc#Data_structure
    */
-  public Integer getCdaCueFrames() {
-    return getCdaCueSectors() * 98;
+  public int getCdaCueFrames() {
+    return getCdaCueSectors() * FRAMES_PER_SECTOR;
   }
 
   /**
    * At 24 bytes per frame (33 actuzlly but the image doesn't contain CIRC/Control bytes)
    * @see http://en.wikipedia.org/wiki/Compact_Disc#Data_structure
    */
-  public Integer getCdaCueBytes() {
-    return getCdaCueFrames() * 24;
+  public int getCdaCueBytes() {
+    return getCdaCueFrames() * BYTES_PER_FRAME;
   }
 }

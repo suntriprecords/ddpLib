@@ -73,16 +73,28 @@ public abstract class AbstractDdpImage<I extends AbstractDdpId, M extends Abstra
     }
   }
 
-  public int getTrackStartBytes(int i, boolean withPreGap) {
+  PLOP REFAIRE RATIONEL
+  public int getTrackStartBytes(int trackNumber, int indexNumber) {
     int length = 0;
     
     M mapPacket = getPQSubCodePacket();
     if(mapPacket != null) {
       PqStream<?> pqStream = (PqStream<?>)mapPacket.getDataStream();
-      AbstractPqDescriptorPacket pqPacketStart = withPreGap ? pqStream.getPreGapPacket(i) : pqStream.getTrackPacket(i);
-      return pqPacketStart.getCdaCueBytes();
+      boolean withPreGap = (indexNumber == 0);
+      AbstractPqDescriptorPacket pqPacketStart = withPreGap ? pqStream.getPreGapPacket(trackNumber) : pqStream.getTrackPacket(trackNumber);
+      //Removing 2 seconds because there's ALWAYS 2 seconds silence added in the final cd compared to the image data
+      int start = pqPacketStart.getCdaCueBytes();
+      if(trackNumber != 1) { 
+        start -= DataUnits.BYTES_TWO_SECONDS;
+      }
+      return start;
     }
     return length;
+  }
+
+  PLOP REFAIRE RATIONEL
+  public int getTrackStartBytes(int trackNumber, boolean withPreGap) {
+    return getTrackStartBytes(trackNumber, withPreGap ? 0 : 1);
   }
 
   public int getTrackLengthBytes(int i, boolean withPreGap) {

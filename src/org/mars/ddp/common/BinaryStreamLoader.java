@@ -16,6 +16,6 @@ public class BinaryStreamLoader extends AbstractLoader<BinaryStream> {
 
   @Override
   protected void load(BinaryStream bs) throws IOException {
-    //TODO
+    //nothing to load spcifically
   }
 }
