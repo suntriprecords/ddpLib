@@ -6,50 +6,14 @@ package org.mars.ddp.common;
  */
 public class PqStream<P extends AbstractPqDescriptorPacket> extends AbstractStreamCollection<P> {
   private static final long serialVersionUID = 1L;
-  
+
   /**
    * Gets the number of tracks without the lead-in/out
    * easy way: return (size()-3)/2 but will nto work when more than 2 indexes for one track
    * accurate way: below
    */
   public int getTracksCount() {
-    int count = 0;
-    String prevTrkNr = null;
-    Integer prevIdxNr = null;
-    int lastIncr = 0;
-    int loopIndex = 0;
-    
-    for(P packet : this) {
-      String trkNr = packet.getTrackNumber();
-      if(AbstractPqDescriptorPacket.LEAD_OUT_TRACK_NUMBER.equals(trkNr)) {
-        break;
-      }
-      Integer idxNr = packet.getIndexNumber();
-      
-      if(trkNr == null) {
-        if(idxNr == null) { //then we really don't know where we are
-          if(!prevIdxNr.equals(0) && (loopIndex-lastIncr) >= 2) {
-            count++;
-            lastIncr = loopIndex;
-          }
-        }
-        else if(idxNr.equals(0)) {
-          count++;
-          lastIncr = loopIndex;
-        }
-      }
-      else if(!trkNr.equals(prevTrkNr)) {
-        count++;
-        lastIncr = loopIndex;
-      }
-      //else it's the same track.
-      
-      prevTrkNr = trkNr;
-      prevIdxNr = idxNr;
-      loopIndex++;
-    }
-    
-    return count;
+    return getIndexPacket(-1, -1).getTrackCount();
   }
 
   public P getLeadInPacket() {
@@ -62,7 +26,7 @@ public class PqStream<P extends AbstractPqDescriptorPacket> extends AbstractStre
    * works with lead-in/out too
    */
   public P getPreGapPacket(int track) {
-    return getIndexPacket(track, 0);
+    return getIndexPacket(track, 0).getPacket();
   }
 
   /**
@@ -71,66 +35,98 @@ public class PqStream<P extends AbstractPqDescriptorPacket> extends AbstractStre
    * works with lead-in/out too
    */
   public P getTrackPacket(int track) {
-    return getIndexPacket(track, 1);
+    return getIndexPacket(track, 1).getPacket();
   }
 
   /**
    * works with lead-in/out too
+   * @return PacketCounter with (packet found, index in pqStream), or (null, trackCount) 
    */
-  public P getIndexPacket(int track, int index) {
-    int trackCount = getTracksCount();
-    boolean isLeadIn = (track == 0);
-    boolean isLeadOut = (track == trackCount+1);
-
-    if(isLeadIn) {
-      return get(0);
-    }
-    else if(isLeadOut) {
-      return get(size()-1);
-    }
-    else if (track < 0 || track > trackCount+1) { //beyond leadOut
-      throw new IllegalArgumentException("track=" + track + ", index=" + index);
-    }
-    else {
-      String prevTrkNr = null; //may be guessed
-      int prevIdxNr = 0; //may be guessed
-      int lastIncr = 0;
-      int loopIndex = 0;
-
-      for(P packet : this) {
-        String trkNr = packet.getTrackNumber();
-        Integer idxNr = packet.getIndexNumber();
-        
-        if(trkNr == null) {
-          if(idxNr == null) { //then we really don't know where we are
-TODO            if(prevIdxNr == index-1) {
-              return packet;
-            }
-            else {
-              idxNr = prevIdxNr + 1; //guessing
-              trkNr = prevTrkNr;
-            }
+  public PacketCounter<P> getIndexPacket(int track, int index) {
+    int loop = 0;
+    int trackCount = 0;
+    int prevTrkNr = -1; //may be guessed
+    int prevIdxNr = -1; //may be guessed
+    
+    for(P packet : this) {
+      //if these are null, we'll try to guess them
+      Integer trkNr = null;
+      if(packet.getTrackNumber() != null) {
+        trkNr = new Integer( packet.getTrackNumber()); 
+      }
+      Integer idxNr = packet.getIndexNumber();
+      
+      
+      if(trkNr == null) {
+        if(idxNr == null) { //then we really don't know where we are
+          if(prevIdxNr == 0) { //there must be an index 1 now, same track
+            trkNr = prevTrkNr;
+            idxNr = 1;
           }
-          else if(idxNr.equals(0)) { //then we changed tracks
-            trkNr = Integer.toString(Integer.parseInt(prevTrkNr) + 1); //guessing
+          else { //new track assuming they are ordered with indexes 0-1-0-1...
+            trackCount++;
+            trkNr = prevTrkNr + 1;
+            idxNr = 0;
           }
         }
-        else if(trkNr.equals(track)) {
-          if(idxNr == null) {
-          }
+        else if(idxNr == 0) {
+          trackCount++;
+          trkNr = prevTrkNr + 1;
         }
-        //else it's the same track.
-        
-        prevTrkNr = trkNr;
-        prevIdxNr = idxNr;
-        loopIndex++;
+        else { //else we don't change track
+          trkNr = prevTrkNr;
+        }
+      }
+      else if(!trkNr.equals(prevTrkNr)) {
+        trackCount++;
+        if(idxNr == null) {
+          idxNr = 0;
+        }
+      }
+      else if(idxNr == null) { //it's the same track.
+        idxNr = prevIdxNr + 1;
       }
       
+      if(track == trkNr && index == idxNr) {
+        return new PacketCounter<P>(packet, loop, trackCount);
+      }
+      
+      prevTrkNr = trkNr;
+      prevIdxNr = idxNr;
+      loop++;
     }
-    return trackCount;
+    return new PacketCounter<P>(trackCount); //not found
   }
 
   public P getLeadOutPacket() {
     return getPreGapPacket(getTracksCount()+1);
   }
+
+
+  public final static class PacketCounter<T extends AbstractPqDescriptorPacket> {
+    private T packet;
+    private int position;
+    private int trackCount;
+    
+    public PacketCounter(T packet, int position, int trackCount) {
+      this.packet = packet;
+      this.position = position;
+      this.trackCount = trackCount;
+    }
+
+    public PacketCounter(int trackCount) {
+      this.trackCount = trackCount;
+    }
+    
+    public T getPacket() {
+      return packet;
+    }
+    public int getPosition() {
+      return position;
+    }
+    public int getTrackCount() {
+      return trackCount;
+    }
+  }
 }
+

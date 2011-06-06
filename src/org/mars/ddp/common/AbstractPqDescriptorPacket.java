@@ -7,6 +7,7 @@ package org.mars.ddp.common;
  */
 public abstract class AbstractPqDescriptorPacket extends AbstractPacket implements DataUnits {
 
+  public final static String LEAD_IN_TRACK_NUMBER = "00";
   public final static String LEAD_OUT_TRACK_NUMBER = "AA";
 
   public final static String STREAM_NAME = "PQDESCR";
@@ -124,5 +125,13 @@ public abstract class AbstractPqDescriptorPacket extends AbstractPacket implemen
    */
   public int getCdaCueBytes() {
     return getCdaCueFrames() * BYTES_PER_FRAME;
+  }
+  
+  public boolean isLeadIn() {
+    return LEAD_IN_TRACK_NUMBER.equals(trackNumber);
+  }
+
+  public boolean isLeadOut() {
+    return LEAD_OUT_TRACK_NUMBER.equals(trackNumber);
   }
 }

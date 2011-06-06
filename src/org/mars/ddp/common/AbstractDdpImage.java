@@ -52,39 +52,50 @@ public abstract class AbstractDdpImage<I extends AbstractDdpId, M extends Abstra
    * @see http://en.wikipedia.org/wiki/Compact_Disc
    * @see http://en.wikipedia.org/wiki/Compact_Disc_subcode
    */
-  public PcmInputStream openTrackStream(int i, boolean withPreGap) throws IOException {
-    
-    int trackStart = getTrackStartBytes(i, withPreGap); //will raise enough errors if non-existent track 
-    int trackLength = getTrackLengthBytes(i, withPreGap); //idem 
-  
+  public PcmInputStream openTrackStream(int trackNumber, boolean withPreGap) throws IOException {
+    int start = getTrackStartBytes(trackNumber, withPreGap); //will raise enough errors if non-existent track 
+    int length = getTrackLengthBytes(trackNumber, withPreGap); //idem 
+    return openDataStream(start, length);
+  }
+
+  public PcmInputStream openTrackStream(int trackNumber, int indexNumber) throws IOException {
+    int start = getTrackStartBytes(trackNumber, indexNumber); //will raise enough errors if non-existent track 
+    int length = getTrackLengthBytes(trackNumber, indexNumber); //idem
+    return openDataStream(start, length);
+  }
+
+  public PcmInputStream openDataStream(int start, int length) throws IOException {
     M mapPacket = getMainDataPacket();
     if(mapPacket != null) {
       Integer ofs = mapPacket.getStartingFileOffSet();
       if(ofs != null) {
-        trackStart += ofs;
+        start += ofs;
       }
       
       DataStreamable ds = mapPacket.getDataStream();
       URL streamUrl = ds.getStreamUrl();
-      return new PcmInputStream(streamUrl.openStream(), trackStart, trackLength);
+      return new PcmInputStream(streamUrl.openStream(), start, length);
     }
     else {
       throw new IllegalArgumentException("No DM stream where to extract data from");
     }
   }
 
-  PLOP REFAIRE RATIONEL
+  
+  public int getTrackStartBytes(int trackNumber, boolean withPreGap) {
+    return getTrackStartBytes(trackNumber, withPreGap ? 0 : 1);
+  }
+
   public int getTrackStartBytes(int trackNumber, int indexNumber) {
     int length = 0;
     
     M mapPacket = getPQSubCodePacket();
     if(mapPacket != null) {
       PqStream<?> pqStream = (PqStream<?>)mapPacket.getDataStream();
-      boolean withPreGap = (indexNumber == 0);
-      AbstractPqDescriptorPacket pqPacketStart = withPreGap ? pqStream.getPreGapPacket(trackNumber) : pqStream.getTrackPacket(trackNumber);
+      AbstractPqDescriptorPacket pqPacketStart = pqStream.getIndexPacket(trackNumber, indexNumber).getPacket();
       //Removing 2 seconds because there's ALWAYS 2 seconds silence added in the final cd compared to the image data
       int start = pqPacketStart.getCdaCueBytes();
-      if(trackNumber != 1) { 
+      if(trackNumber > 1) { 
         start -= DataUnits.BYTES_TWO_SECONDS;
       }
       return start;
@@ -92,20 +103,34 @@ public abstract class AbstractDdpImage<I extends AbstractDdpId, M extends Abstra
     return length;
   }
 
-  PLOP REFAIRE RATIONEL
-  public int getTrackStartBytes(int trackNumber, boolean withPreGap) {
-    return getTrackStartBytes(trackNumber, withPreGap ? 0 : 1);
-  }
-
-  public int getTrackLengthBytes(int i, boolean withPreGap) {
+  public int getTrackLengthBytes(int trackNumber, boolean withPreGap) {
     int length = 0;
     
     M mapPacket = getPQSubCodePacket();
     if(mapPacket != null) {
       PqStream<?> pqStream = (PqStream<?>)mapPacket.getDataStream();
-      AbstractPqDescriptorPacket pqPacketStart = withPreGap ? pqStream.getPreGapPacket(i) : pqStream.getTrackPacket(i);
-      AbstractPqDescriptorPacket pqPacketEnd = pqStream.getPreGapPacket(i+1);
-      //TODO lead-in/out to handle
+      AbstractPqDescriptorPacket pqPacketStart = pqStream.getIndexPacket(trackNumber, withPreGap ? 0 : 1).getPacket();
+      AbstractPqDescriptorPacket pqPacketEnd;
+      if(pqPacketStart.isLeadOut()) {
+        pqPacketEnd = pqStream.getIndexPacket(trackNumber, 1).getPacket();
+      }
+      else {
+        pqPacketEnd = pqStream.getIndexPacket(trackNumber+1, 0).getPacket();  
+      }
+      length = pqPacketEnd.getCdaCueBytes() - pqPacketStart.getCdaCueBytes();
+    }
+    return length;
+  }
+
+  public int getTrackLengthBytes(int trackNumber, int indexNumber) {
+    int length = 0;
+    
+    M mapPacket = getPQSubCodePacket();
+    if(mapPacket != null) {
+      PqStream<?> pqStream = (PqStream<?>)mapPacket.getDataStream();
+      int position = pqStream.getIndexPacket(trackNumber, indexNumber).getPosition();
+      AbstractPqDescriptorPacket pqPacketStart = pqStream.get(position);
+      AbstractPqDescriptorPacket pqPacketEnd = pqStream.get(position+1);
       length = pqPacketEnd.getCdaCueBytes() - pqPacketStart.getCdaCueBytes();
     }
     return length;
