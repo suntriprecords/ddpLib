@@ -20,6 +20,10 @@ public class PqStream<P extends AbstractPqDescriptorPacket> extends AbstractStre
     return get(0);
   }
 
+  public P getLeadOutPacket() {
+    return getPreGapPacket(getTracksCount()+1);
+  }
+
   /**
    * easy way: get(2*(i-1)+1)
    * accurate way: below
@@ -51,7 +55,10 @@ public class PqStream<P extends AbstractPqDescriptorPacket> extends AbstractStre
     for(P packet : this) {
       //if these are null, we'll try to guess them
       Integer trkNr = null;
-      if(packet.getTrackNumber() != null) {
+      if(packet.isLeadOut()) {
+        trkNr = getTracksCount();
+      }
+      else if(packet.getTrackNumber() != null) {
         trkNr = new Integer( packet.getTrackNumber()); 
       }
       Integer idxNr = packet.getIndexNumber();
@@ -96,10 +103,6 @@ public class PqStream<P extends AbstractPqDescriptorPacket> extends AbstractStre
       loop++;
     }
     return new PacketCounter<P>(trackCount); //not found
-  }
-
-  public P getLeadOutPacket() {
-    return getPreGapPacket(getTracksCount()+1);
   }
 
 
