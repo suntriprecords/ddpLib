@@ -16,7 +16,7 @@ public class DdpImage extends AbstractDdpImage<DdpId, MapPacket> {
   }
   
   @Override
-  public MapPacket getPQSubCodePacket() {
+  public MapPacket getPqSubCodePacket() {
     return getSubCodePacket(SubCodeDescriptor.PQ_DESCR);
   }
 }

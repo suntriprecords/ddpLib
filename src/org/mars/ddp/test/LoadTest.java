@@ -10,7 +10,6 @@ import java.net.URL;
 import org.mars.ddp.common.AbstractDdpImage;
 import org.mars.ddp.common.DdpException;
 import org.mars.ddp.common.DdpImageFactory;
-import org.mars.ddp.common.PqStream;
 import org.mars.ddp.common.WavInputStream;
 
 public class LoadTest {
@@ -22,9 +21,7 @@ public class LoadTest {
     AbstractDdpImage<?, ?> image = DdpImageFactory.load(imageUrl);
     System.out.println( image.getDdpId().getDdpLevel().getId());
 
-    
-    PqStream<?> pqStream = (PqStream<?>)image.getPQSubCodePacket().getDataStream();
-    System.out.println("tracks count=" + pqStream.getTracksCount());
+    System.out.println("tracks count=" + image.getPqStream().getTracksCount());
     
     int trackNumber = 2;
     InputStream tis = new WavInputStream(image.openTrackStream(trackNumber, false));

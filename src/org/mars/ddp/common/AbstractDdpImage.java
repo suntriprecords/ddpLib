@@ -42,7 +42,11 @@ public abstract class AbstractDdpImage<I extends AbstractDdpId, M extends Abstra
   }
 
   public abstract M getMainDataPacket();
-  public abstract M getPQSubCodePacket();
+  public abstract M getPqSubCodePacket();
+
+  public PqStream<?> getPqStream() {
+    return (PqStream<?>)getPqSubCodePacket().getDataStream();
+  }
   
   public PcmInputStream openTrackStream(int i) throws IOException {
     return openTrackStream(i, false);
@@ -89,7 +93,7 @@ public abstract class AbstractDdpImage<I extends AbstractDdpId, M extends Abstra
   public int getTrackStartBytes(int trackNumber, int indexNumber) {
     int length = 0;
     
-    M mapPacket = getPQSubCodePacket();
+    M mapPacket = getPqSubCodePacket();
     if(mapPacket != null) {
       PqStream<?> pqStream = (PqStream<?>)mapPacket.getDataStream();
       AbstractPqDescriptorPacket pqPacketStart = pqStream.getIndexPacket(trackNumber, indexNumber).getPacket();
@@ -106,7 +110,7 @@ public abstract class AbstractDdpImage<I extends AbstractDdpId, M extends Abstra
   public int getTrackLengthBytes(int trackNumber, boolean withPreGap) {
     int length = 0;
     
-    M mapPacket = getPQSubCodePacket();
+    M mapPacket = getPqSubCodePacket();
     if(mapPacket != null) {
       PqStream<?> pqStream = (PqStream<?>)mapPacket.getDataStream();
       AbstractPqDescriptorPacket pqPacketStart = pqStream.getIndexPacket(trackNumber, withPreGap ? 0 : 1).getPacket();
@@ -125,7 +129,7 @@ public abstract class AbstractDdpImage<I extends AbstractDdpId, M extends Abstra
   public int getTrackLengthBytes(int trackNumber, int indexNumber) {
     int length = 0;
     
-    M mapPacket = getPQSubCodePacket();
+    M mapPacket = getPqSubCodePacket();
     if(mapPacket != null) {
       PqStream<?> pqStream = (PqStream<?>)mapPacket.getDataStream();
       int position = pqStream.getIndexPacket(trackNumber, indexNumber).getPosition();
