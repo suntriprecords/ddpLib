@@ -19,17 +19,17 @@ public class LoadTest {
     File imageDir = new File(imagePath);
     URL imageUrl = imageDir.toURI().toURL();
     AbstractDdpImage<?, ?> image = DdpImageFactory.load(imageUrl);
-    System.out.println( image.getDdpId().getDdpLevel().getId());
+    System.out.println("DDP Level: " + image.getDdpId().getDdpLevel());
 
-    System.out.println("tracks count=" + image.getPqStream().getTracksCount());
+    System.out.println("Tracks count: " + image.getPqStream().getTracksCount());
     
     int trackNumber = 2;
-    InputStream tis = new WavInputStream(image.openTrackStream(trackNumber, false));
-    FileOutputStream fos = new FileOutputStream(new File(imageDir, "tk" + trackNumber + ".wav"));
-    copy(tis, fos);
+    InputStream tis1 = new WavInputStream(image.openTrackStream(trackNumber, false));
+    FileOutputStream fos1 = new FileOutputStream(new File(imageDir, "trk-dry" + trackNumber + "-dry.wav"));
+    copy(tis1, fos1);
     
     InputStream tis2 = new WavInputStream(image.openTrackStream(trackNumber, true));
-    FileOutputStream fos2 = new FileOutputStream(new File(imageDir, "tk-space" + trackNumber + ".wav"));
+    FileOutputStream fos2 = new FileOutputStream(new File(imageDir, "trk-" + trackNumber + "-space.wav"));
     copy(tis2, fos2);
   }
 

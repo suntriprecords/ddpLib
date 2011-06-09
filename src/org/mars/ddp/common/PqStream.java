@@ -44,7 +44,7 @@ public class PqStream<P extends AbstractPqDescriptorPacket> extends AbstractStre
 
   /**
    * works with lead-in/out too
-   * @return PacketCounter with (packet found, index in pqStream), or (null, trackCount) 
+   * @return PacketCounter with (packet found, index in pqStream, track count until found) 
    */
   public PacketCounter<P> getIndexPacket(int track, int index) {
     int loop = 0;
@@ -53,10 +53,11 @@ public class PqStream<P extends AbstractPqDescriptorPacket> extends AbstractStre
     int prevIdxNr = -1; //may be guessed
     
     for(P packet : this) {
+      boolean newTrack = false;
       //if these are null, we'll try to guess them
       Integer trkNr = null;
       if(packet.isLeadOut()) {
-        trkNr = getTracksCount();
+        trkNr = trackCount + 1;
       }
       else if(packet.getTrackNumber() != null) {
         trkNr = new Integer( packet.getTrackNumber()); 
@@ -71,13 +72,13 @@ public class PqStream<P extends AbstractPqDescriptorPacket> extends AbstractStre
             idxNr = 1;
           }
           else { //new track assuming they are ordered with indexes 0-1-0-1...
-            trackCount++;
+            newTrack = true; 
             trkNr = prevTrkNr + 1;
             idxNr = 0;
           }
         }
         else if(idxNr == 0) {
-          trackCount++;
+          newTrack = true; 
           trkNr = prevTrkNr + 1;
         }
         else { //else we don't change track
@@ -85,13 +86,17 @@ public class PqStream<P extends AbstractPqDescriptorPacket> extends AbstractStre
         }
       }
       else if(!trkNr.equals(prevTrkNr)) {
-        trackCount++;
+        newTrack = true; 
         if(idxNr == null) {
           idxNr = 0;
         }
       }
       else if(idxNr == null) { //it's the same track.
         idxNr = prevIdxNr + 1;
+      }
+      
+      if(newTrack && !packet.isLeadIn() && !packet.isLeadOut()) {
+        trackCount++;
       }
       
       if(track == trkNr && index == idxNr) {
@@ -102,7 +107,7 @@ public class PqStream<P extends AbstractPqDescriptorPacket> extends AbstractStre
       prevIdxNr = idxNr;
       loop++;
     }
-    return new PacketCounter<P>(trackCount); //not found
+    return new PacketCounter<P>(trackCount); //requested index not found, then return only track count
   }
 
 

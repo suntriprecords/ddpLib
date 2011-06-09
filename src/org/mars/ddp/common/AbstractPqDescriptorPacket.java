@@ -134,4 +134,8 @@ public abstract class AbstractPqDescriptorPacket extends AbstractPacket implemen
   public boolean isLeadOut() {
     return LEAD_OUT_TRACK_NUMBER.equals(trackNumber);
   }
+
+  public boolean isLeadInOrOut() {
+    return isLeadIn() || isLeadOut();
+  }
 }

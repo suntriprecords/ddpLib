@@ -31,4 +31,9 @@ public enum DdpLevel {
     }
     throw new IllegalArgumentException(id);
   }
+  
+  @Override
+  public String toString() {
+    return id;
+  }
 }

@@ -47,4 +47,9 @@ public enum SubCodeDescriptor implements SubCodeDescribable {
     }
     throw new IllegalArgumentException(id);
   }
+  
+  @Override
+  public String toString() {
+    return id;
+  }
 }
