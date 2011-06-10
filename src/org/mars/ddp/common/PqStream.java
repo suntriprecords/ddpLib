@@ -95,7 +95,7 @@ public class PqStream<P extends AbstractPqDescriptorPacket> extends AbstractStre
         idxNr = prevIdxNr + 1;
       }
       
-      if(newTrack && !packet.isLeadIn() && !packet.isLeadOut()) {
+      if(newTrack && !packet.isLeadInOrOut()) {
         trackCount++;
       }
       

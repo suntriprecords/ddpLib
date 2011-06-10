@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-public class AbstractStreamCollection<P extends Packet> extends AbstractDataStream implements Iterable<P> {
-  private List<P> delegate = new ArrayList<P>();
+public class AbstractStreamCollection<L> extends AbstractDataStream implements Iterable<L> {
+  private List<L> delegate = new ArrayList<L>();
 
   public int size() {
     return delegate.size();
@@ -16,11 +16,11 @@ public class AbstractStreamCollection<P extends Packet> extends AbstractDataStre
   }
 
   @Override
-  public Iterator<P> iterator() {
+  public Iterator<L> iterator() {
     return delegate.iterator();
   }
 
-  public boolean add(P e) {
+  public boolean add(L e) {
     return delegate.add(e);
   }
 
@@ -28,7 +28,7 @@ public class AbstractStreamCollection<P extends Packet> extends AbstractDataStre
     delegate.clear();
   }
 
-  public P get(int index) {
+  public L get(int index) {
     return delegate.get(index);
   }
 }

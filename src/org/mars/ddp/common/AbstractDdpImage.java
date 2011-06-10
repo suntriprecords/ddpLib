@@ -59,16 +59,16 @@ public abstract class AbstractDdpImage<I extends AbstractDdpId, M extends Abstra
   public PcmInputStream openTrackStream(int trackNumber, boolean withPreGap) throws IOException {
     int start = getTrackStartBytes(trackNumber, withPreGap); //will raise enough errors if non-existent track 
     int length = getTrackLengthBytes(trackNumber, withPreGap); //idem 
-    return openDataStream(start, length);
+    return openMainDataStream(start, length);
   }
 
   public PcmInputStream openTrackStream(int trackNumber, int indexNumber) throws IOException {
     int start = getTrackStartBytes(trackNumber, indexNumber); //will raise enough errors if non-existent track 
     int length = getTrackLengthBytes(trackNumber, indexNumber); //idem
-    return openDataStream(start, length);
+    return openMainDataStream(start, length);
   }
 
-  public PcmInputStream openDataStream(int start, int length) throws IOException {
+  public PcmInputStream openMainDataStream(int start, int length) throws IOException {
     M mapPacket = getMainDataPacket();
     if(mapPacket != null) {
       Integer ofs = mapPacket.getStartingFileOffSet();
