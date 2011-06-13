@@ -10,4 +10,9 @@ public class CustomerInfoPacket extends InformationPacket implements TextPackabl
   public Class<? extends Loader<? extends Packetable>> getLoaderClass() {
     return null;
   }
+
+  @Override
+  public int getPacketLength() {
+    return getInformation().length();
+  }
 }

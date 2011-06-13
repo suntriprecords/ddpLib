@@ -14,6 +14,12 @@ public abstract class AbstractTextPacket extends InformationPacket {
   private String trackNumber; //[00-99] except lead-out: AA
   private Integer indexNumber; //Multiple packets with the same track and index number are allowed. May be null if no index number is used
   
+  
+  @Override
+  public int getPacketLength() {
+    return PACKET_LENGTH;
+  }
+  
   public String getTrackNumber() {
     return trackNumber;
   }
