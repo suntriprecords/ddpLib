@@ -24,16 +24,16 @@ public class MapPacketLoader extends AbstractMapPacketLoader<MapPacket, DataStre
     Character newOrange = readChar(true);
     mapPacket.setNewOrange(newOrange);
     
-    Integer preGap1NextTrackIncludedInDataStream = readInt(4);
+    Integer preGap1NextTrackIncludedInDataStream = readIntFromString(4);
     mapPacket.setPreGap1NextTrackIncludedInDataStream(preGap1NextTrackIncludedInDataStream);
     
-    Integer numberOfBlocksOfPauseToAdd = readInt(8);
+    Integer numberOfBlocksOfPauseToAdd = readIntFromString(8);
     mapPacket.setNumberOfBlocksOfPauseToAdd(numberOfBlocksOfPauseToAdd);
     
-    Integer startingFileOffSet = readInt(9);
+    Integer startingFileOffSet = readIntFromString(9);
     mapPacket.setStartingFileOffSet(startingFileOffSet);
     
-    readString(15, false); //padding
+    readString(15); //padding
   }
 
   @Override
@@ -57,7 +57,7 @@ public class MapPacketLoader extends AbstractMapPacketLoader<MapPacket, DataStre
   @Override
   public SourceStorageMode readSourceStorageMode() throws IOException {
     SourceStorageMode ssm = null;
-    Integer id = readInt(1);
+    Integer id = readIntFromString(1);
     if(id != null) {
       ssm = SourceStorageMode.idOf(id);
     }

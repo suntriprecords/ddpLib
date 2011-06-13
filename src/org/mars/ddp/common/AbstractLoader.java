@@ -3,25 +3,26 @@ package org.mars.ddp.common;
 import java.io.DataInputStream;
 import java.io.IOException;
 import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.Charset;
 
 public abstract class AbstractLoader<P> implements Loader<P> {
-  
+
   public final static Charset DEFAULT_CHARSET = Charset.forName("US-ASCII");
 
   private URL baseUrl;
   private String fileName;
   private DataInputStream dis;
   private int bytesRead;
-  
+
   public AbstractLoader(URL baseUrl, String fileName) {
     this.baseUrl = baseUrl;
     this.fileName = fileName;
   }
-  
+
   public URL getBaseUrl() {
     return baseUrl;
   }
@@ -31,7 +32,7 @@ public abstract class AbstractLoader<P> implements Loader<P> {
   }
 
   public URL getFileUrl() throws MalformedURLException {
-    return new URL( baseUrl.toExternalForm() + fileName);
+    return new URL(baseUrl.toExternalForm() + fileName);
   }
 
   public static <P> Loader<P> newInstance(Class<? extends Loader<P>> loaderClass, URL baseUrl, String fileName) throws DdpException {
@@ -59,9 +60,8 @@ public abstract class AbstractLoader<P> implements Loader<P> {
     }
   }
 
-  
   private DataInputStream getInputStream() throws IOException {
-    if(dis == null) {
+    if (dis == null) {
       this.dis = new DataInputStream(getFileUrl().openStream());
     }
     return dis;
@@ -86,32 +86,34 @@ public abstract class AbstractLoader<P> implements Loader<P> {
 
   /**
    * May be overridden
-   * @throws DdpException 
+   * 
+   * @throws DdpException
    */
   protected void preLoad(P loadable) throws DdpException, IOException {
-    if(loadable instanceof DataStreamable) {
-      ((DataStreamable)loadable).setStreamUrl( getFileUrl());
+    if (loadable instanceof DataStreamable) {
+      ((DataStreamable) loadable).setStreamUrl(getFileUrl());
     }
   }
-  
+
   /**
    * May be overridden
-   * @throws IOException 
-   * @throws DdpException 
+   * 
+   * @throws IOException
+   * @throws DdpException
    */
   protected void postLoad(P loadable) throws IOException, DdpException {
-    //nothing
+    // nothing
   }
 
   @Override
   public P load(boolean close) throws IOException, DdpException {
     P loadable = newLoadable();
-    
+
     preLoad(loadable);
     load(loadable);
     postLoad(loadable);
-    
-    if(close) {
+
+    if (close) {
       close();
     }
     return loadable;
@@ -135,31 +137,34 @@ public abstract class AbstractLoader<P> implements Loader<P> {
   }
 
   protected byte[] readHexBytes(int length, boolean trim) throws IOException {
-    String hexAsString = readString(length*2, trim); //2 quartets to make a byte
-    if(hexAsString.length() % 2 != 0) {
+    String hexAsString = readString(length * 2, trim); // 2 quartets to make a byte
+    if (hexAsString.length() % 2 != 0) {
       throw new IllegalArgumentException("length must be a multiple of 2");
     }
-    
-    int bytesCount = hexAsString.length() / 2; //after trimming, so maybe != length
+
+    int bytesCount = hexAsString.length() / 2; // after trimming, so maybe != length
     byte[] bytes = new byte[bytesCount];
-    for(int i = 0; i < bytesCount; i++) {
-      String byteAsString = hexAsString.substring(i*2, i*2+2);
-      int byteAsInt = Integer.valueOf(byteAsString, 16); //16 = base-16 = hex
-      bytes[i] = (byte)byteAsInt;
+    for (int i = 0; i < bytesCount; i++) {
+      String byteAsString = hexAsString.substring(i * 2, i * 2 + 2);
+      int byteAsInt = Integer.valueOf(byteAsString, 16); // 16 = base-16 = hex
+      bytes[i] = (byte) byteAsInt;
     }
     return bytes;
   }
 
-  
   protected Character readChar(boolean trim) throws IOException {
     try {
-      char c = (char)getInputStream().read(); //just casting, this is ASCII. NOT using getInputStream().readChar(), it reads 2 chars.
+      char c = (char) getInputStream().read(); // just casting, this is ASCII. NOT using getInputStream().readChar(), it reads 2 chars.
       bytesRead++;
       return (trim && c == ' ') ? null : c;
     }
-    catch(IOException e) {
+    catch (IOException e) {
       throw createIOException(e);
     }
+  }
+
+  protected String readString(int length) throws IOException {
+    return readString(length, false);
   }
 
   protected String readString(int length, boolean trim) throws IOException {
@@ -168,76 +173,162 @@ public abstract class AbstractLoader<P> implements Loader<P> {
       bytesRead += length;
       return str;
     }
-    catch(IOException e) {
+    catch (IOException e) {
       throw createIOException(e);
     }
   }
 
   protected static String readString(DataInputStream dis, int length, boolean trim) throws IOException {
-    byte[] buffer = new byte[length];
-    dis.readFully(buffer);
+    byte[] buffer = readBytes(dis, length);
     String str = new String(buffer, DEFAULT_CHARSET);
-    if(trim) {
+    if (trim) {
       str = str.trim();
-      if(str.length() == 0) {
+      if (str.length() == 0) {
         str = null;
       }
     }
-    return str; 
+    return str;
   }
-  
-  protected Boolean readBoolean(boolean trim) throws IOException {
+
+  protected byte[] readBytes(int length) throws IOException {
+    return readBytes(getInputStream(), length);
+  }
+
+  protected static byte[] readBytes(DataInputStream dis, int length) throws IOException {
+    byte[] array = new byte[length];
+    dis.readFully(array);
+    return array;
+  }
+
+  protected byte readByte() throws IOException {
+    return getInputStream().readByte();
+  }
+
+  protected int readUnsignedByte() throws IOException {
+    return getInputStream().readUnsignedByte();
+  }
+
+  protected short readShort() throws IOException {
+    return getInputStream().readShort();
+  }
+
+  protected int readInt() throws IOException {
+    return getInputStream().readInt();
+  }
+
+  protected long readLong() throws IOException {
+    return getInputStream().readLong();
+  }
+
+  protected Boolean readBooleanFromString(boolean trim) throws IOException {
     try {
-      char c = (char)getInputStream().readByte();
+      char c = (char) getInputStream().readByte();
       bytesRead++;
-      
-      if(c == '0') {
+
+      if (c == '0') {
         return Boolean.FALSE;
       }
-      else if(c == '1') {
+      else if (c == '1') {
         return Boolean.TRUE;
       }
-      else if(trim && c == ' ') {
+      else if (trim && c == ' ') {
         return null;
       }
       else {
         throw new IllegalArgumentException(Character.toString(c));
       }
     }
-    catch(IOException e) {
+    catch (IOException e) {
       throw createIOException(e);
     }
+  }
+  
+  /**
+   * Will only work with Byte, Short, Integer, Long and BigInteger (but who cares?)
+   */
+  private <N extends Number> N readNumberFromString(Class<N> clazz, int length) throws IOException {
+    try {
+      Field sizeField = clazz.getDeclaredField("SIZE"); //only works from Java 1.5
+      int typeWidth = sizeField.getInt(null);
+      if (length > typeWidth/4) {
+        throw new IllegalArgumentException("Can't read " + clazz.getSimpleName() + " of " + length + " hex chars");
+      }
+    }
+    catch (NoSuchFieldException e) {
+      //ok, maybe we're on Java 1.4, let's give it a try 
+    }
+    catch (SecurityException e) {
+      throw new RuntimeException(e);
+    }
+    catch (IllegalArgumentException e) {
+      throw new RuntimeException(e);
+    }
+    catch (IllegalAccessException e) {
+      throw new RuntimeException(e);
+    } 
+  
+
+    try {
+      byte[] buffer = readBytes(length);
+      bytesRead += length;
+      String str = new String(buffer, DEFAULT_CHARSET).trim();
+      return (str.length() == 0) ? null : clazz.getConstructor(String.class).newInstance(str);
+    }
+    catch (IOException e) {
+      throw createIOException(e);
+    }
+    catch (IllegalArgumentException e) {
+      throw new RuntimeException(e);
+    }
+    catch (SecurityException e) {
+      throw new RuntimeException(e);
+    }
+    catch (InstantiationException e) {
+      throw new RuntimeException(e);
+    }
+    catch (IllegalAccessException e) {
+      throw new RuntimeException(e);
+    }
+    catch (InvocationTargetException e) {
+      throw new RuntimeException(e);
+    }
+    catch (NoSuchMethodException e) {
+      throw new RuntimeException(e);
+    }
+  }
+  
+  
+  /**
+   * Don't forget a byte cannot take more than 8 bits, that is 2 hex quartets
+   */
+  protected Byte readByteFromString(int length) throws IOException {
+    return readNumberFromString(Byte.class, length);
   }
 
-  protected Integer readInt(int length) throws IOException {
-    try {
-      byte[] buffer = new byte[length];
-      getInputStream().readFully(buffer);
-      bytesRead += length;
-      String str = new String(buffer, DEFAULT_CHARSET).trim();
-      return (str.length() == 0) ? null : new Integer(str); 
-    }
-    catch(IOException e) {
-      throw createIOException(e);
-    }
+  /**
+   * Don't forget a short cannot take more than 16 bits, that is 4 hex quartets
+   */
+  protected Short readShortFromString(int length) throws IOException {
+    return readNumberFromString(Short.class, length);
   }
-  
-  protected Long readLong(int length) throws IOException {
-    try {
-      byte[] buffer = new byte[length];
-      getInputStream().readFully(buffer);
-      bytesRead += length;
-      String str = new String(buffer, DEFAULT_CHARSET).trim();
-      return (str.length() == 0) ? null : new Long(str); 
-    }
-    catch(IOException e) {
-      throw createIOException(e);
-    }
+
+  /**
+   * Don't forget an int cannot take more than 32 bits, that is 8 hex quartets
+   */
+  protected Integer readIntFromString(int length) throws IOException {
+    return readNumberFromString(Integer.class, length);
   }
-  
+
+  /**
+   * Don't forget a long cannot take more than 64 bits, that is 16 hex quartets
+   */
+  protected Long readLongFromString(int length) throws IOException {
+    return readNumberFromString(Long.class, length);
+  }
+
   protected IOException createIOException(String message, Throwable cause) {
-    StringBuilder sb = new StringBuilder( getFileName()).append(" @ ").append(bytesRead);
-    if(message != null) {
+    StringBuilder sb = new StringBuilder(getFileName()).append(" @ ").append(bytesRead);
+    if (message != null) {
       sb.append(": ").append(message);
     }
     return new IOException(sb.toString(), cause);

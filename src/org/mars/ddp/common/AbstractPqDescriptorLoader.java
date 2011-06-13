@@ -20,19 +20,19 @@ public abstract class AbstractPqDescriptorLoader<P extends AbstractPqDescriptorP
     String trackNumber = readString(2, true);
     pqPacket.setTrackNumber(trackNumber);
     
-    Integer indexNumber = readInt(2);
+    Integer indexNumber = readIntFromString(2);
     pqPacket.setIndexNumber(indexNumber);
     
-    Integer cdaTimeHours = readInt(2);
+    Integer cdaTimeHours = readIntFromString(2);
     pqPacket.setCdaTimeHours(cdaTimeHours);
     
-    Integer cdaTimeMinutes = readInt(2);
+    Integer cdaTimeMinutes = readIntFromString(2);
     pqPacket.setCdaTimeMinutes(cdaTimeMinutes);
     
-    Integer cdaTimeSeconds = readInt(2);
+    Integer cdaTimeSeconds = readIntFromString(2);
     pqPacket.setCdaTimeSeconds(cdaTimeSeconds);
     
-    Integer cdaTimeFrames = readInt(2);
+    Integer cdaTimeFrames = readIntFromString(2);
     pqPacket.setCdaTimeFrames(cdaTimeFrames);
     
     String controlByte1 = readString(2, true);

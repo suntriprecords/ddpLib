@@ -20,7 +20,7 @@ public class MapPacketLoader extends AbstractMapPacketLoader<MapPacket, DataStre
   @Override
   protected void load(MapPacket mapPacket) throws IOException, DdpException {
     super.load(mapPacket);
-    readString(37, false); //padding
+    readString(37); //padding
   }
 
   @Override
@@ -43,7 +43,7 @@ public class MapPacketLoader extends AbstractMapPacketLoader<MapPacket, DataStre
   @Override
   public SourceStorageMode readSourceStorageMode() throws IOException {
     SourceStorageMode ssm = null;
-    Integer id = readInt(1);
+    Integer id = readIntFromString(1);
     if(id != null) {
       ssm = SourceStorageMode.idOf(id);
     }

@@ -17,13 +17,13 @@ public abstract class AbstractDdpIdLoader<P extends AbstractDdpId> extends Abstr
     String upcEan = readString(13, true);
     ddpId.setUpcEan(upcEan);
     
-    Long mapStreamStart = readLong(8);
+    Long mapStreamStart = readLongFromString(8);
     ddpId.setMapStreamStart(mapStreamStart);
     
     String msl = readString(8, true);
     ddpId.setMsl(msl);
 
-    Integer mediaNumber = readInt(1);
+    Integer mediaNumber = readIntFromString(1);
     ddpId.setMediaNumber(mediaNumber);
     
     String masterId = readString(48, true);
@@ -35,24 +35,24 @@ public abstract class AbstractDdpIdLoader<P extends AbstractDdpId> extends Abstr
     String type = readString(2, true);
     ddpId.setType(type);
     
-    Integer numberSides = readInt(1);
+    Integer numberSides = readIntFromString(1);
     ddpId.setNumberSides(numberSides);
     
-    Integer currentSide = readInt(1);
+    Integer currentSide = readIntFromString(1);
     ddpId.setCurrentSide(currentSide);
     
-    Integer numberLayers = readInt(1);
+    Integer numberLayers = readIntFromString(1);
     ddpId.setNumberLayers(numberLayers);
     
-    Integer currentLayer = readInt(1);
+    Integer currentLayer = readIntFromString(1);
     ddpId.setCurrentLayer(currentLayer);
     
     Character directionOfTranslation = readChar(true);
     ddpId.setDirectionOfTranslation(directionOfTranslation);
     
-    Integer userTextLength = readInt(2);
+    Integer userTextLength = readIntFromString(2);
     if(userTextLength != null) {
-      String userText = readString(userTextLength, false);
+      String userText = readString(userTextLength);
       ddpId.setUserText(userText);
     }
   }

@@ -2,6 +2,6 @@ package org.mars.ddp.common;
 
 
 
-public interface Packet extends Loadable<Packet> {
+public interface Packetable extends Loadable<Packetable> {
   //XXX we could have public int getPacketLength() here
 }

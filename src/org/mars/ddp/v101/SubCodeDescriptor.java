@@ -6,14 +6,14 @@ import org.mars.ddp.common.AbstractLoader;
 import org.mars.ddp.common.DataStreamable;
 import org.mars.ddp.common.DdpException;
 import org.mars.ddp.common.Loader;
-import org.mars.ddp.common.NullDataStreamLoader;
 import org.mars.ddp.common.SubCodeDescribable;
+import org.mars.ddp.common.SubCodeStreamLoader;
 
 
 public enum SubCodeDescriptor implements SubCodeDescribable {
   PQ_DESCR("PQ DESCR", PqDescriptorStreamLoader.class),
-  _01RSTUVW("01RSTUVW", NullDataStreamLoader.class), //FIXME
-  _02RSTUVW("02RSTUVW", NullDataStreamLoader.class); //FIXME
+  _01RSTUVW("01RSTUVW", SubCodeStreamLoader.class),
+  _02RSTUVW("02RSTUVW", SubCodeStreamLoader.class);
   
   private String id;
   private Class<? extends Loader<? extends DataStreamable>> loaderClass;

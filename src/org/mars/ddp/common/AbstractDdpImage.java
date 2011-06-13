@@ -68,6 +68,7 @@ public abstract class AbstractDdpImage<I extends AbstractDdpId, M extends Abstra
     return openMainDataStream(start, length);
   }
 
+  //FIXME redo that, if we have several DATA tracks in separate files, that won't work. Must be an intelligent loop somewhere
   public PcmInputStream openMainDataStream(int start, int length) throws IOException {
     M mapPacket = getMainDataPacket();
     if(mapPacket != null) {
@@ -100,7 +101,7 @@ public abstract class AbstractDdpImage<I extends AbstractDdpId, M extends Abstra
       //Removing 2 seconds because there's ALWAYS 2 seconds silence added in the final cd compared to the image data
       int start = pqPacketStart.getCdaCueBytes();
       if(trackNumber > 1) { 
-        start -= DataUnits.BYTES_TWO_SECONDS;
+        start -= DataUnits.BYTES_MUSIC_TWO_SECONDS;
       }
       return start;
     }

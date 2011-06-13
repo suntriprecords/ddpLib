@@ -20,10 +20,10 @@ public abstract class AbstractTextPacketLoader extends AbstractLoader<AbstractTe
     String trackNumber = readString(2, true);
     textPacket.setTrackNumber(trackNumber);
     
-    Integer indexNumber = readInt(2);
+    Integer indexNumber = readIntFromString(2);
     textPacket.setIndexNumber(indexNumber);
 
-    Integer textInformationLength = readInt(3);
+    Integer textInformationLength = readIntFromString(3);
     String textInformation = readString(textInformationLength, (textInformationLength == 0));
     textPacket.setInformation(textInformation);
   }

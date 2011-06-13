@@ -6,23 +6,23 @@ import org.mars.ddp.common.AbstractLoader;
 import org.mars.ddp.common.DataStreamable;
 import org.mars.ddp.common.DdpException;
 import org.mars.ddp.common.Loader;
-import org.mars.ddp.common.NullDataStreamLoader;
 import org.mars.ddp.common.SubCodeDescribable;
+import org.mars.ddp.common.SubCodeStreamLoader;
 
 
 public enum SubCodeDescriptor implements SubCodeDescribable {
   PQ_DESCR("PQ DESCR", PqDescriptorStreamLoader.class),    
-  RW24XX("RW24XX", NullDataStreamLoader.class), //FIXME        
-  RW24XI("RW24XI", NullDataStreamLoader.class), //FIXME        
-  RW24PI("RW24PI", NullDataStreamLoader.class), //FIXME
-  RW24PX("RW24PX", NullDataStreamLoader.class), //FIXME
-  RW18XX("RW18XX", NullDataStreamLoader.class), //FIXME
-  WR24XX("WR24XX", NullDataStreamLoader.class), //FIXME
-  WR24XI("WR24XI", NullDataStreamLoader.class), //FIXME
-  WR24PI("WR24PI", NullDataStreamLoader.class), //FIXME
-  WR24PX("WR24PX", NullDataStreamLoader.class), //FIXME
-  WR18XX("WR18XX", NullDataStreamLoader.class), //FIXME
-  CDTEXT("CDTEXT", NullDataStreamLoader.class); //FIXME //SONY CD TEXT
+  RW24XX("RW24XX", SubCodeStreamLoader.class),        
+  RW24XI("RW24XI", SubCodeStreamLoader.class),        
+  RW24PI("RW24PI", SubCodeStreamLoader.class),
+  RW24PX("RW24PX", SubCodeStreamLoader.class),
+  RW18XX("RW18XX", SubCodeStreamLoader.class),
+  WR24XX("WR24XX", SubCodeStreamLoader.class),
+  WR24XI("WR24XI", SubCodeStreamLoader.class),
+  WR24PI("WR24PI", SubCodeStreamLoader.class),
+  WR24PX("WR24PX", SubCodeStreamLoader.class),
+  WR18XX("WR18XX", SubCodeStreamLoader.class),
+  CDTEXT("CDTEXT", CdTextStreamLoader.class); //SONY CD TEXT. For Philips CD Text (stored as R-W), refer to ITTS
 
 
   private String id;
