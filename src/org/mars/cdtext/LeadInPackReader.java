@@ -28,12 +28,14 @@ public class LeadInPackReader {
   
   public LeadInPack readPack() throws IOException {
     //reading
-    PackType packType = PackType.idOf( dis.readUnsignedByte());
+    int packTypeId = dis.readUnsignedByte();
 
     int trackIndicator = dis.readUnsignedByte();
     int trackNumber = (trackIndicator & LeadInPack.PACK_NUMBER_MASK);
     boolean extension = ((trackIndicator & LeadInPack.EXT_DATA_MASK) != 0); //extension if MSB of trackIndicator == 1 (and then I don't know what to do with it)
-    
+
+    PackType packType = PackType.idOf(packTypeId, (trackNumber == LeadInTextPack.TRACK_NUMBER_UNIQUE));
+
     int seqNumber = dis.readUnsignedByte();
     
     int blockAndPosIndicator = dis.readUnsignedByte();
@@ -50,11 +52,8 @@ public class LeadInPackReader {
     int crc = dis.readUnsignedShort();
     
     //filling
-    LeadInPack pack;
-    if(packType.isSize()) {
-      pack = new LeadInBlockSize();
-    }
-    else {
+    LeadInPack pack = packType.newPack();
+    if(pack instanceof LeadInTextPack) {
       LeadInTextPack textPack = new LeadInTextPack();
       textPack.setDoubleByte(doubleByte);
       textPack.setBlockNumber(blockNumber);

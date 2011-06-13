@@ -9,13 +9,13 @@ package org.mars.cdtext;
  *  8F 02 2D 00 00 00 00 00 09 00 00 00 00 00 00 00 6A 24
  *
  *  charcode 1
- *  first tr 1
- *  last tr  13
+ *  first track 1
+ *  last track  13
  *  Copyr  3
  *  Pack Count 80= 12, 81 = 12, 86 = 1, 8e = 18, 8f = 3
  *  last seq   0 = 2d (8 placeholders for 8 languages)
  *  languages  0 = 9  (8 placeholders for 8 languages)
  */
-public class LeadInBlockSize extends LeadInPack {
+public class LeadInControlPack extends LeadInPack {
   public final static int BLOCKS_COUNT = 8;
 }

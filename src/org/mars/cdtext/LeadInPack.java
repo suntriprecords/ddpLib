@@ -26,13 +26,13 @@ public abstract class LeadInPack {
   public final static byte[][] ENDS = {END_SINGLE, END_DOUBLE};
 
   
-  private PackType packType;
+  private PackType type;
   private boolean extension;
   private int packNumber; //[00-99]
   private int sequenceNumber; //[00-255] per block
   private int charPosition;
   private byte[] data; // CD-Text Data field. Can be 1 or 2 bytes based depending on the charset used (defined in the block size info pack...at the end), so keeping the bytes here
-  private int crc;
+  private int crc; //CRC16, that is, polynomial is X^16 + X^12 + X^5 + 1. All bits shall be inverted.
   
   public boolean isStartsHere() {
     return (charPosition == 0);
@@ -47,7 +47,15 @@ public abstract class LeadInPack {
   }
 
   public int getEndPos() {
-    return Arrays.binarySearch(getData(), END);
+    byte[] data = getData();
+    int end = -1;
+    for(int i = 0; i < data.length; i++) {
+      if(data[i] == END) {
+        end = i;
+        break;
+      }
+    }
+    return end;
   }
 
   public int getNextStartPos() {
@@ -55,8 +63,8 @@ public abstract class LeadInPack {
     return (end < 0 ? -1 : end+1);
   }
 
-  public PackType getPackType() {
-    return packType;
+  public PackType getType() {
+    return type;
   }
   public boolean isExtension() {
     return extension;
@@ -103,8 +111,8 @@ public abstract class LeadInPack {
     }
     this.charPosition = charPosition;
   }
-  public void setPackType(PackType packType) {
-    this.packType = packType;
+  public void setPackType(PackType type) {
+    this.type = type;
   }
   public void setExtension(boolean extension) {
     this.extension = extension;

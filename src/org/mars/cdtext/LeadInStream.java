@@ -5,6 +5,7 @@ import java.io.InputStream;
 import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
@@ -12,15 +13,16 @@ import java.util.Locale;
 public class LeadInStream implements Iterable<LeadInPack> {
 
   private List<LeadInTextPack> textPacks = new ArrayList<LeadInTextPack>();
-  private List<LeadInBlockSize> sizePacks = new ArrayList<LeadInBlockSize>();
-
+  private List<LeadInControlPack> controlPacks = new ArrayList<LeadInControlPack>();
+  
   
   public void readAll(InputStream is) throws IOException {
     LeadInPackReader reader = new LeadInPackReader(is);
     while(reader.available() > 0) {
       LeadInPack pack = reader.readPack();
-      if(pack.getPackType().isSize()) {
-        sizePacks.add((LeadInBlockSize)pack);
+      
+      if(pack.getType().isControl()) {
+        controlPacks.add((LeadInControlPack)pack);
       }
       else {
         textPacks.add((LeadInTextPack)pack);
@@ -30,46 +32,46 @@ public class LeadInStream implements Iterable<LeadInPack> {
   
   @Override
   public Iterator<LeadInPack> iterator() {
-    return new PackIterator( iteratorTexts(), iteratorSizes());
+    return new PackIterator( iteratorTexts(), iteratorControls());
   }
   
   public Iterator<LeadInTextPack> iteratorTexts() {
     return textPacks.iterator();
   }
 
-  public Iterator<LeadInBlockSize> iteratorSizes() {
-    return sizePacks.iterator();
+  public Iterator<LeadInControlPack> iteratorControls() {
+    return controlPacks.iterator();
   }
 
   public String getText(PackType packType) {
-    return getText(packType, 0);
+    return getText(packType, LeadInTextPack.BLOCK_DEFAULT);
   }
 
   public String getText(PackType packType, int block) {
-    return getText(0, packType, block);
+    return getText(LeadInTextPack.TRACK_NUMBER_UNIQUE, packType, block);
   }
 
   public String getText(PackType packType, Locale locale) {
-    int block = getBlockForLocale(locale);
-    return getText(0, packType, block);
+    int block = getBlock(locale);
+    return getText(LeadInTextPack.TRACK_NUMBER_UNIQUE, packType, block);
   }
 
   public String getText(PackType packType, Language language) {
-    int block = getBlockForLanguage(language);
-    return getText(0, packType, block);
+    int block = getBlock(language);
+    return getText(LeadInTextPack.TRACK_NUMBER_UNIQUE, packType, block);
   }
 
   public String getText(int track, PackType packType) {
-    return getText(track, packType, 0);
+    return getText(track, packType, LeadInTextPack.BLOCK_DEFAULT);
   }
 
   public String getText(int track, PackType packType, Language language) {
-    int block = getBlockForLanguage(language);
+    int block = getBlock(language);
     return getText(track, packType, block);
   }
 
   public String getText(int track, PackType packType, Locale locale) {
-    int block = getBlockForLocale(locale);
+    int block = getBlock(locale);
     return getText(track, packType, block);
   }
   
@@ -79,17 +81,30 @@ public class LeadInStream implements Iterable<LeadInPack> {
     }
 
     byte[] data = getData(track, packType, block);
-    Charset cs = getCharCode().getCharset();
-    return new String(data, cs);
+    if(data != null) {
+      Charset cs = getCharCode().getCharset();
+      return new String(data, cs);
+    }
+    else {
+      return null;
+    }
   }
 
   public byte[] getData(PackType packType) {
-    return getData(0, packType, 0);
+    return getData(LeadInTextPack.TRACK_NUMBER_UNIQUE, packType, LeadInTextPack.BLOCK_DEFAULT);
   }
 
   public byte[] getData(int track, PackType packType, int block) {
-    if(packType.isGlobal() && block != 0) {
-      throw new IllegalArgumentException("Block " + block + " requested for PackType: " + packType.name());
+    if(block < 0) { //non-existent language, see getBlockForLanguage(language)
+      return null;
+    }
+    else if(packType.isUnique()) {
+      if(block != 0) { //block is always zero for a text global to the cd-text
+        throw new IllegalArgumentException("Block requested " + block + " for unique type: " + packType);
+      }
+      else if(track != LeadInTextPack.TRACK_NUMBER_UNIQUE){
+        throw new IllegalArgumentException("Track requested: " + track + " for unique type: " + packType);
+      }
     }
     
     ByteBuffer bb = ByteBuffer.allocate(LeadInPack.MAX_DATA_LENGTH_PREFERRED);
@@ -98,7 +113,7 @@ public class LeadInStream implements Iterable<LeadInPack> {
     boolean assemblyStarted = false;
 
     for(LeadInTextPack pack : textPacks) {
-      if(pack.getPackType() == packType && pack.getTrackNumber() == track && pack.getBlockNumber() == block) {
+      if(pack.getType() == packType && pack.getTrackNumber() == track && pack.getBlockNumber() == block) {
         
         if(pack.isTab()) {
           return getData(track-1, packType, block);
@@ -109,12 +124,12 @@ public class LeadInStream implements Iterable<LeadInPack> {
         }
         
         int end = pack.getEndPos();
-        if(end < 0) { //the end isn't here
+        if(end < 0) { //the end marker isn't here
           bb.put(pack.getData());
           //and continue looping
         }
-        else { //the end is in this pack
-          bb.put(pack.getDataTillEnd());
+        else { //the end marker is in this pack
+          bb.put(pack.getDataTillEnd()); //not comying the terminator(s) of course
           break;
         }
         assemblyStarted = true;
@@ -122,8 +137,11 @@ public class LeadInStream implements Iterable<LeadInPack> {
       previous = pack;
     }
     
-    if(bb.position() > 0) { //we wrote into it
-      return bb.array();
+    if(bb.position() > 0) { //we have written to it
+      byte[] result = new byte[bb.position()];
+      bb.flip();
+      bb.get(result);
+      return result;
     }
     else {
       return null;
@@ -135,8 +153,8 @@ public class LeadInStream implements Iterable<LeadInPack> {
    * Assumming they're in the right order in the list
    */
   private byte[] getCompleteBlockSize() {
-    ByteBuffer bb = ByteBuffer.allocate(sizePacks.size() * LeadInPack.DATA_LENGTH);
-    for(LeadInBlockSize bsi : sizePacks) {
+    ByteBuffer bb = ByteBuffer.allocate(controlPacks.size() * LeadInPack.DATA_LENGTH);
+    for(LeadInControlPack bsi : controlPacks) {
       bb.put(bsi.getData());
     }
     return bb.array();
@@ -144,51 +162,51 @@ public class LeadInStream implements Iterable<LeadInPack> {
   
   
   public CharacterCoding getCharCode() {
-    LeadInBlockSize bsi0 = sizePacks.get(0);
+    LeadInControlPack bsi0 = controlPacks.get(0);
     int ccId = bsi0.getData()[0];
     return CharacterCoding.idOf(ccId);
   }
   
   public int getFirstTrack() {
-    LeadInBlockSize bsi0 = sizePacks.get(0);
+    LeadInControlPack bsi0 = controlPacks.get(0);
     return bsi0.getData()[1];
   }
 
   public int getLastTrack() {
-    LeadInBlockSize bsi0 = sizePacks.get(0);
+    LeadInControlPack bsi0 = controlPacks.get(0);
     return bsi0.getData()[2];
   }
   
-  public int getCopyr() {
-    LeadInBlockSize bsi0 = sizePacks.get(0);
+  public int getCopyright() {
+    LeadInControlPack bsi0 = controlPacks.get(0);
     return bsi0.getData()[3];
   }
   
   public int getPackCount(PackType packType) {
-    return getCompleteBlockSize()[4 + packType.ordinal()];
+    return getCompleteBlockSize()[4 + packType.getCountIndex()];
   }
 
   public int getLastSeq(int block) {
-    if(block >= LeadInBlockSize.BLOCKS_COUNT) {
-      throw new IllegalArgumentException("Non-exitent block: " + block + ". Max: " + LeadInBlockSize.BLOCKS_COUNT);
+    if(block >= LeadInControlPack.BLOCKS_COUNT) {
+      throw new IllegalArgumentException("Non-exitent block: " + block + ". Max: " + LeadInControlPack.BLOCKS_COUNT);
     }
     return getCompleteBlockSize()[4 + PackType.values().length + block];
   }
 
   public Language getLanguage(int block) {
-    if(block >= LeadInBlockSize.BLOCKS_COUNT) {
-      throw new IllegalArgumentException("Non-exitent block: " + block + ". Max: " + LeadInBlockSize.BLOCKS_COUNT);
+    if(block >= LeadInControlPack.BLOCKS_COUNT) {
+      throw new IllegalArgumentException("Non-exitent block: " + block + ". Max: " + LeadInControlPack.BLOCKS_COUNT);
     }
 
-    LeadInBlockSize bsi2 = sizePacks.get(2); //jumping over 16 packTypes and 8 lastSeqs, that is exactly 2 blocks
+    LeadInControlPack bsi2 = controlPacks.get(2); //jumping over 16 packTypes and 8 lastSeqs, that is exactly 2 blocks
     int langId = bsi2.getData()[4 + block];
     return Language.idOf(langId);
   }
   
-  public int getBlockForLanguage(Language language) {
+  public int getBlock(Language language) {
     int langId = language.getId();
-    byte[] blockLangs = sizePacks.get(2).getData();
-    for(int i = 0; i < LeadInBlockSize.BLOCKS_COUNT; i++) {
+    byte[] blockLangs = controlPacks.get(2).getData();
+    for(int i = 0; i < LeadInControlPack.BLOCKS_COUNT; i++) {
       if(blockLangs[4 + i] == langId) {
         return i;
       }
@@ -196,22 +214,49 @@ public class LeadInStream implements Iterable<LeadInPack> {
     return -1;
   }
 
-  public int getBlockForLocale(Locale locale) {
+  public int getBlock(Locale locale) {
     for(Language lang : Language.values()) {
       if(lang.getLocale().equals(locale)) {
-        return getBlockForLanguage(lang);
+        return getBlock(lang);
       }
     }
     return -1;
   }
 
+  public Language getDefaultLanguage() {
+    return getLanguage(LeadInTextPack.BLOCK_DEFAULT);
+  }
+  
+  public Locale getDefaultLocale() {
+    return getDefaultLanguage().getLocale();
+  }
+  
+  public List<Language> getAvailableLanguages() {
+    List<Language> result = new ArrayList<Language>();
+    
+    for(int b = 0; b < LeadInControlPack.BLOCKS_COUNT; b++) {
+      Language lang = getLanguage(b);
+      if(lang != null) {
+        result.add(lang);
+      }
+    }
+    return Collections.unmodifiableList(result);
+  }
+
+  public List<Locale> getAvailableLocales() {
+    List<Locale> result = new ArrayList<Locale>();
+    for(Language lang : getAvailableLanguages()) {
+      result.add(lang.getLocale());
+    }
+    return Collections.unmodifiableList(result);
+  }
 
   private final class PackIterator implements Iterator<LeadInPack> {
 
     private Iterator<LeadInTextPack> textIterator;
-    private Iterator<LeadInBlockSize> sizesIterator;
+    private Iterator<LeadInControlPack> sizesIterator;
     
-    public PackIterator(Iterator<LeadInTextPack> textIterator, Iterator<LeadInBlockSize> sizesIterator) {
+    public PackIterator(Iterator<LeadInTextPack> textIterator, Iterator<LeadInControlPack> sizesIterator) {
       this.textIterator = textIterator;
       this.sizesIterator = sizesIterator;
     }

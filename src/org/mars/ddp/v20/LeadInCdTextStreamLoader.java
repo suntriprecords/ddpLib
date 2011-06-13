@@ -7,22 +7,21 @@ import java.net.URL;
 import org.mars.ddp.common.AbstractLoader;
 import org.mars.ddp.common.DdpException;
 
-public class LeadInCdTextStreamLoader extends AbstractLoader<LeadInStream> {
+public class LeadInCdTextStreamLoader extends AbstractLoader<LeadInCdTextStream> {
 
   public LeadInCdTextStreamLoader(URL baseUrl, String fileName) {
     super(baseUrl, fileName);
   }
 
   @Override
-  public Class<? extends LeadInStream> getLoadableClass() {
-    return LeadInStream.class;
+  public Class<? extends LeadInCdTextStream> getLoadableClass() {
+    return LeadInCdTextStream.class;
   }
 
   @Override
-  protected void load(LeadInStream stream) throws IOException, DdpException {
+  protected void load(LeadInCdTextStream stream) throws IOException, DdpException {
     InputStream is = new URL( getBaseUrl().toExternalForm() + getFileName()).openStream();
-    LeadInStream leadInStream = new LeadInStream();
-    leadInStream.readAll(is);
+    stream.readAll(is);
     is.close();
   }
 }

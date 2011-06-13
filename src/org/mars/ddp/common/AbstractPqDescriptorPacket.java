@@ -26,7 +26,11 @@ public abstract class AbstractPqDescriptorPacket extends AbstractPacket implemen
   private String upcEan; //Only one UPC entry is allowed for each PQ packet stream. It is recommended that it be placed in the first packet.
   private String userText; //user comments that will not be recorded to the CD
   
-  
+  @Override
+  public int getPacketLength() {
+    return PACKET_LENGTH;
+  }
+
   public String getTrackNumber() {
     return trackNumber;
   }

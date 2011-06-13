@@ -23,6 +23,9 @@ public class LeadInTextPack extends LeadInPack {
   public final static int BLOCK_MASK = 0x70;
   public final static int POSITION_MASK = 0x0F;
 
+  public final static int TRACK_NUMBER_UNIQUE = 0; //for Cd text areas which aren't per track
+  public final static int BLOCK_DEFAULT = 0;
+
   public final static byte TAB = (byte)0x09;
   public final static byte[] TAB_SINGLE = {TAB};
   public final static byte[] TAB_DOUBLE = {TAB, TAB};
@@ -46,16 +49,12 @@ public class LeadInTextPack extends LeadInPack {
   @Override
   public int getEndPos() {
     byte[] data = getData();
-    int dataLength = data.length;
+    int dataLen = data.length;
     
-    int end;
-    while((end = Arrays.binarySearch(data, 0, dataLength, END)) >= 0) {
-      if(isDoubleByte()) {
-        if(end < dataLength-1 && data[end+1] == END) {
-          break;
-        }
-      }
-      else {
+    int end = -1;
+    for(int i = 0; i < dataLen; i++) {
+      if(data[i] == END && (!isDoubleByte() || (i < dataLen-1 &&  data[i+1] == END))) {
+        end = i;
         break;
       }
     }

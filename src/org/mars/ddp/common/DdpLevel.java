@@ -5,7 +5,7 @@ package org.mars.ddp.common;
 public enum DdpLevel {
   DDP101("DDP 1.01", org.mars.ddp.v101.DdpImage.class),
   DDP20("DDP 2.00", org.mars.ddp.v20.DdpImage.class),
-  DDP21("DDP 2.10", null); //FIXME
+  DDP21("DDP 2.10", null); //TODO
   
   private String id;
   private Class<? extends AbstractDdpImage<?, ?>> imageClass;

@@ -27,6 +27,8 @@ public enum Language {
   GREEK(112, new Locale("el")), // 0x70
   CHINESE(117, Locale.CHINESE); // 0x75
 
+public final static int NO_LANGUAGE_ID = 0;
+  
   private int id;
   private Locale locale;
   
@@ -45,12 +47,17 @@ public enum Language {
   }
 
   public static Language idOf(int id) {
-    for(Language lang : values()) {
-      if(lang.getId() == id) {
-        return lang;
-      }
+    if(id == NO_LANGUAGE_ID) {
+      return null;
     }
-    throw new IllegalArgumentException(Integer.toString(id));
+    else {
+      for(Language lang : values()) {
+        if(lang.getId() == id) {
+          return lang;
+        }
+      }
+      throw new IllegalArgumentException(Integer.toString(id));
+    }
   }
 
   public static Language languageOf(Locale locale) {

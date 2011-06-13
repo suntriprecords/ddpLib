@@ -26,6 +26,11 @@ public abstract class AbstractDdpId extends AbstractPacket implements DataStream
   private Integer currentLayer; //Reserved for DVD
   private Character directionOfTranslation; //Reserved for DVD
   private String userText; //can be used for any purpose. information not placed onto CD
+
+  @Override
+  public int getPacketLength() {
+    return PACKET_LENGTH;
+  }
   
   @Override
   public URL getStreamUrl() {

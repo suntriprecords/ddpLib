@@ -2,9 +2,10 @@ package org.mars.ddp.v20;
 
 import java.net.URL;
 
+import org.mars.cdtext.LeadInStream;
 import org.mars.ddp.common.DataStreamable;
 
-public class LeadInStream extends org.mars.cdtext.LeadInStream implements DataStreamable {
+public class LeadInCdTextStream extends LeadInStream implements DataStreamable {
 
   private URL streamUrl;
   

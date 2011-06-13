@@ -6,6 +6,7 @@ import java.net.URL;
 /**
  * Convenience class that can load nothing
  */
+@Deprecated
 public class NullDataStreamLoader implements Loader<DataStreamable> {
 
   public NullDataStreamLoader(URL baseUrl, String fileName) {

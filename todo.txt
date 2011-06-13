@@ -1,1 +1,5 @@
-Handle RW subcode
+- Handle RW subcode better (extract P-Q and R-W channels independently...)
+- Handle Philips CD-Text
+- Implement DDP 2.10
+- TS data handling
+- Psec for trackNumber is 00h and indexNumber is A0h 

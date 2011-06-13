@@ -3,7 +3,6 @@ package org.mars.ddp.common;
 import java.io.DataInputStream;
 import java.io.IOException;
 import java.lang.reflect.Constructor;
-import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -251,27 +250,6 @@ public abstract class AbstractLoader<P> implements Loader<P> {
    * Will only work with Byte, Short, Integer, Long and BigInteger (but who cares?)
    */
   private <N extends Number> N readNumberFromString(Class<N> clazz, int length) throws IOException {
-    try {
-      Field sizeField = clazz.getDeclaredField("SIZE"); //only works from Java 1.5
-      int typeWidth = sizeField.getInt(null);
-      if (length > typeWidth/4) {
-        throw new IllegalArgumentException("Can't read " + clazz.getSimpleName() + " of " + length + " hex chars");
-      }
-    }
-    catch (NoSuchFieldException e) {
-      //ok, maybe we're on Java 1.4, let's give it a try 
-    }
-    catch (SecurityException e) {
-      throw new RuntimeException(e);
-    }
-    catch (IllegalArgumentException e) {
-      throw new RuntimeException(e);
-    }
-    catch (IllegalAccessException e) {
-      throw new RuntimeException(e);
-    } 
-  
-
     try {
       byte[] buffer = readBytes(length);
       bytesRead += length;

@@ -9,6 +9,7 @@ package org.mars.ddp.common;
 public abstract class AbstractMapPacket<T extends DataStreamTypeable, S extends SubCodeDescribable, M extends SourceStorageModable> extends AbstractPacket implements MapPackable<T, S> {
 
   public static String MAP_PACKET_VALID = "VVVM";
+  public final static int PACKET_LENGTH = 128;
 
   private T dataStreamType; //identification for the type of data described by this map packet
   private Integer dataStreamPointer; //For disc-based direct access devices, this is the exact sector number. For tape-based direct access devices this number is based upon SMPTE time conventions of 30 per second
@@ -28,7 +29,11 @@ public abstract class AbstractMapPacket<T extends DataStreamTypeable, S extends 
   private String dataStreamIdentifier; //name of the TS (Text) or DS (Subcode) file when used with logically accessed input media such as labeled tape or disc files. DSI also contains the name of DM (Main) files when used with logically accessed direct access media such as DOS files
   private DataStreamable dataStream; //the parsed data steam
   
-  
+  @Override
+  public int getPacketLength() {
+    return PACKET_LENGTH;
+  }
+
   @Override
   public T getDataStreamType() {
     return dataStreamType;

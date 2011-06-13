@@ -4,6 +4,11 @@ import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
+import java.util.Collection;
+import java.util.Locale;
+
+import org.mars.cdtext.PackType;
+import org.mars.ddp.v20.LeadInCdTextStream;
 
 
 /**
@@ -43,7 +48,8 @@ public abstract class AbstractDdpImage<I extends AbstractDdpId, M extends Abstra
 
   public abstract M getMainDataPacket();
   public abstract M getPqSubCodePacket();
-
+  public abstract M getCdTextPacket();
+  
   public PqStream<?> getPqStream() {
     return (PqStream<?>)getPqSubCodePacket().getDataStream();
   }
@@ -141,6 +147,65 @@ public abstract class AbstractDdpImage<I extends AbstractDdpId, M extends Abstra
     return length;
   }
 
+  
+  private LeadInCdTextStream getCdTextStream() {
+    M mapPacket = getCdTextPacket();
+    if(mapPacket != null) {
+      return (LeadInCdTextStream)mapPacket.getDataStream();
+    }
+    else {
+      return null;
+    }
+  }
+  
+  public Collection<Locale> getCdTextLocales() {
+    return getCdTextStream().getAvailableLocales();
+  }
+
+  public Locale getCdTextDefaultLocale() {
+    return getCdTextStream().getDefaultLocale();
+  }
+
+  public String getCdText(int trackNumber, PackType packType, Locale locale) {
+    LeadInCdTextStream cdTextStream = getCdTextStream();
+    if(cdTextStream != null) {
+      return cdTextStream.getText(trackNumber, packType, locale);
+    }
+    else {
+      return null;
+    }
+  }
+  
+  public String getCdText(int trackNumber, PackType packType) {
+    LeadInCdTextStream cdTextStream = getCdTextStream();
+    if(cdTextStream != null) {
+      return cdTextStream.getText(trackNumber, packType);
+    }
+    else {
+      return null;
+    }
+  }
+  
+  public String getCdText(PackType packType, Locale locale) {
+    LeadInCdTextStream cdTextStream = getCdTextStream();
+    if(cdTextStream != null) {
+      return cdTextStream.getText(packType, locale);
+    }
+    else {
+      return null;
+    }
+  }
+
+  public String getCdText(PackType packType) {
+    LeadInCdTextStream cdTextStream = getCdTextStream();
+    if(cdTextStream != null) {
+      return cdTextStream.getText(packType);
+    }
+    else {
+      return null;
+    }
+  }
+  
   public abstract Class<? extends AbstractDdpImageLoader<I, M>> getLoaderClass();
   
   public AbstractDdpImageLoader<I, M> newLoader(URL imageDirUrl) throws DdpException {
