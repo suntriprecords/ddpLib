@@ -26,15 +26,6 @@ public class ImageLoad {
     int tracksCount = image.getPqStream().getTracksCount();
     System.out.println("Tracks count: " + tracksCount);
     
-    int trackNumber = 2;
-//    InputStream tis1 = new WavInputStream(image.openTrackStream(trackNumber, false));
-//    FileOutputStream fos1 = new FileOutputStream(new File(imageDir, "trk-dry" + trackNumber + "-dry.wav"));
-//    copy(tis1, fos1);
-//    
-//    InputStream tis2 = new WavInputStream(image.openTrackStream(trackNumber, true));
-//    FileOutputStream fos2 = new FileOutputStream(new File(imageDir, "trk-" + trackNumber + "-space.wav"));
-//    copy(tis2, fos2);
-
     String albumArtist = image.getCdText(0, PackType.Album_Performers);
     String albumTitle = image.getCdText(PackType.Album_Title);
     System.out.println("Album: " + albumArtist + " - " + albumTitle);
@@ -48,9 +39,16 @@ public class ImageLoad {
       }
     }
     System.out.println("UPC/EAN: " + image.getCdText(PackType.UPC_EAN));
+
+    //dumping one track
+    int tracktoDump = (int)(Math.random() * tracksCount);
+    System.out.println("Dumping track " + tracktoDump);
+    InputStream tis = new WavInputStream(image.openTrackStream(tracktoDump, false));
+    FileOutputStream fos = new FileOutputStream(new File(imageDir, "track" + tracktoDump + ".wav"));
+    copy(tis, fos);
   }
 
-  public static void copy(InputStream tis, OutputStream fos) throws IOException {
+  private static void copy(InputStream tis, OutputStream fos) throws IOException {
     byte[] buffer = new byte[65536];
     int read;
     while((read = tis.read(buffer)) != -1) {

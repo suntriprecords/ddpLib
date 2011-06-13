@@ -7,9 +7,19 @@ public class SubCodeByte {
   public final static int START_MARKER_POSITION = 0; 
   public final static int END_MARKER_POSITION = 97; 
   
-  private SubCodeByte(byte subcode, int position) {
-    super();
+  /**
+   * Needed for reflect
+   */
+  public SubCodeByte() {
+    //nothing
+  }
+
+  public SubCodeByte(byte subcode) {
     this.subcode = subcode;
+  }
+
+  public SubCodeByte(byte subcode, int position) {
+    this(subcode);
     this.position = position;
   }
 

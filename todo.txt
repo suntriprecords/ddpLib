@@ -1,3 +1,4 @@
+- Handle subcode loading better (what's commented leads to out of memory errors)
 - Handle RW subcode better (extract P-Q and R-W channels independently...)
 - Handle Philips CD-Text
 - Implement DDP 2.10
