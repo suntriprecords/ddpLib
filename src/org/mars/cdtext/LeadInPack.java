@@ -11,8 +11,8 @@ public abstract class LeadInPack {
   public final static int EXT_DATA_MASK = 0x80; // Extended data indicator in track_no
   public final static int PACK_NUMBER_MASK = 0x7F;
 
-  public final static int PACK_MAX_NUMBER = 99; //like tracks in a CD...
-  public final static int SEQUENCE_MAX_NUMBER = 255; //max 255 packs in a block
+  public final static int PACK_NUMBER_MAX = 99; //like tracks in a CD...
+  public final static int SEQUENCE_NUMBER_MAX = 255; //max 255 packs in a block
 
   public final static int PACKET_LENGTH = 18; 
   public final static int DATA_LENGTH = 12;
@@ -110,13 +110,13 @@ public abstract class LeadInPack {
     this.extension = extension;
   }
   public void setPackNumber(int packNumber) {
-    if(packNumber < 0 || packNumber > PACK_MAX_NUMBER) {
+    if(packNumber < 0 || packNumber > PACK_NUMBER_MAX) {
       throw new IllegalArgumentException(Integer.toString(packNumber));
     }
     this.packNumber = packNumber;
   }
   public void setSequenceNumber(int sequenceNumber) {
-    if(sequenceNumber < 0 || sequenceNumber > SEQUENCE_MAX_NUMBER) {
+    if(sequenceNumber < 0 || sequenceNumber > SEQUENCE_NUMBER_MAX) {
       throw new IllegalArgumentException(Integer.toString(sequenceNumber));
     }
     this.sequenceNumber = sequenceNumber;

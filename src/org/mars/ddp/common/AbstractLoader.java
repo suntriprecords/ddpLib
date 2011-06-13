@@ -208,6 +208,10 @@ public abstract class AbstractLoader<P> implements Loader<P> {
     return getInputStream().readUnsignedByte();
   }
 
+  protected int readUnsignedShort() throws IOException {
+    return getInputStream().readUnsignedShort();
+  }
+
   protected short readShort() throws IOException {
     return getInputStream().readShort();
   }

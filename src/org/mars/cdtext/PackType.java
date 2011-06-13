@@ -47,6 +47,10 @@ public enum PackType {
     return global;
   }
 
+  public boolean isSize() {
+    return (id == Block_Size_Info.id);
+  }
+
   public static PackType idOf(int id) {
     for(PackType type : values()) {
       if(type.getId() == id) {

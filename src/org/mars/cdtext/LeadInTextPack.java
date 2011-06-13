@@ -74,6 +74,9 @@ public class LeadInTextPack extends LeadInPack {
     }
   }
   
+  /* (non-Javadoc)
+   * @see org.mars.cdtext.CdTextable#getText(java.nio.charset.Charset)
+   */
   public String getText(Charset cs) {
     return new String(getData(), cs);
   }
@@ -81,6 +84,9 @@ public class LeadInTextPack extends LeadInPack {
     setData( text.getBytes(cs));
   }
   
+  /* (non-Javadoc)
+   * @see org.mars.cdtext.CdTextable#getTrackNumber()
+   */
   public int getTrackNumber() {
     return getPackNumber();
   }
@@ -88,6 +94,9 @@ public class LeadInTextPack extends LeadInPack {
     setPackNumber(trackNumber);
   }
 
+  /* (non-Javadoc)
+   * @see org.mars.cdtext.CdTextable#isDoubleByte()
+   */
   public boolean isDoubleByte() {
     return doubleByte;
   }
@@ -95,6 +104,9 @@ public class LeadInTextPack extends LeadInPack {
     this.doubleByte = doubleByte;
   }
 
+  /* (non-Javadoc)
+   * @see org.mars.cdtext.CdTextable#getBlockNumber()
+   */
   public int getBlockNumber() {
     return blockNumber;
   }

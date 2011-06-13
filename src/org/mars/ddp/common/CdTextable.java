@@ -1,5 +1,12 @@
 package org.mars.ddp.common;
 
-public interface CdTextable extends Packetable {
-  //FIXME fill public signatures
+import java.util.Locale;
+
+public interface CdTextable {
+  public Locale getLocale();
+  
+  /** [00-99] */
+  public int getTrackNumber();
+
+  public String getText();
 }

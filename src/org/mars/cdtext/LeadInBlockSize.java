@@ -1,6 +1,5 @@
 package org.mars.cdtext;
 
-
 /**
  *  CD-Text size example:
  *  0  1  2  3  00 01 02 03 04 05 06 07 08 09 10 11 CRC16
@@ -17,6 +16,6 @@ package org.mars.cdtext;
  *  last seq   0 = 2d (8 placeholders for 8 languages)
  *  languages  0 = 9  (8 placeholders for 8 languages)
  */
-public class BlockSizeInfo extends LeadInPack {
+public class LeadInBlockSize extends LeadInPack {
   public final static int BLOCKS_COUNT = 8;
 }

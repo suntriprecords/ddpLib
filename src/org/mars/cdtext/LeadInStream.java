@@ -1,16 +1,45 @@
 package org.mars.cdtext;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 
-public class LeadInTextStream {
+public class LeadInStream implements Iterable<LeadInPack> {
 
   private List<LeadInTextPack> textPacks = new ArrayList<LeadInTextPack>();
-  private List<BlockSizeInfo> sizePacks = new ArrayList<BlockSizeInfo>();
+  private List<LeadInBlockSize> sizePacks = new ArrayList<LeadInBlockSize>();
+
   
+  public void readAll(InputStream is) throws IOException {
+    LeadInPackReader reader = new LeadInPackReader(is);
+    while(reader.available() > 0) {
+      LeadInPack pack = reader.readPack();
+      if(pack.getPackType().isSize()) {
+        sizePacks.add((LeadInBlockSize)pack);
+      }
+      else {
+        textPacks.add((LeadInTextPack)pack);
+      }
+    }
+  }
+  
+  @Override
+  public Iterator<LeadInPack> iterator() {
+    return new PackIterator( iteratorTexts(), iteratorSizes());
+  }
+  
+  public Iterator<LeadInTextPack> iteratorTexts() {
+    return textPacks.iterator();
+  }
+
+  public Iterator<LeadInBlockSize> iteratorSizes() {
+    return sizePacks.iterator();
+  }
 
   public String getText(PackType packType) {
     return getText(packType, 0);
@@ -107,7 +136,7 @@ public class LeadInTextStream {
    */
   private byte[] getCompleteBlockSize() {
     ByteBuffer bb = ByteBuffer.allocate(sizePacks.size() * LeadInPack.DATA_LENGTH);
-    for(BlockSizeInfo bsi : sizePacks) {
+    for(LeadInBlockSize bsi : sizePacks) {
       bb.put(bsi.getData());
     }
     return bb.array();
@@ -115,23 +144,23 @@ public class LeadInTextStream {
   
   
   public CharacterCoding getCharCode() {
-    BlockSizeInfo bsi0 = sizePacks.get(0);
+    LeadInBlockSize bsi0 = sizePacks.get(0);
     int ccId = bsi0.getData()[0];
     return CharacterCoding.idOf(ccId);
   }
   
   public int getFirstTrack() {
-    BlockSizeInfo bsi0 = sizePacks.get(0);
+    LeadInBlockSize bsi0 = sizePacks.get(0);
     return bsi0.getData()[1];
   }
 
   public int getLastTrack() {
-    BlockSizeInfo bsi0 = sizePacks.get(0);
+    LeadInBlockSize bsi0 = sizePacks.get(0);
     return bsi0.getData()[2];
   }
   
   public int getCopyr() {
-    BlockSizeInfo bsi0 = sizePacks.get(0);
+    LeadInBlockSize bsi0 = sizePacks.get(0);
     return bsi0.getData()[3];
   }
   
@@ -140,18 +169,18 @@ public class LeadInTextStream {
   }
 
   public int getLastSeq(int block) {
-    if(block >= BlockSizeInfo.BLOCKS_COUNT) {
-      throw new IllegalArgumentException("Non-exitent block: " + block + ". Max: " + BlockSizeInfo.BLOCKS_COUNT);
+    if(block >= LeadInBlockSize.BLOCKS_COUNT) {
+      throw new IllegalArgumentException("Non-exitent block: " + block + ". Max: " + LeadInBlockSize.BLOCKS_COUNT);
     }
     return getCompleteBlockSize()[4 + PackType.values().length + block];
   }
 
   public Language getLanguage(int block) {
-    if(block >= BlockSizeInfo.BLOCKS_COUNT) {
-      throw new IllegalArgumentException("Non-exitent block: " + block + ". Max: " + BlockSizeInfo.BLOCKS_COUNT);
+    if(block >= LeadInBlockSize.BLOCKS_COUNT) {
+      throw new IllegalArgumentException("Non-exitent block: " + block + ". Max: " + LeadInBlockSize.BLOCKS_COUNT);
     }
 
-    BlockSizeInfo bsi2 = sizePacks.get(2); //jumping over 16 packTypes and 8 lastSeqs, that is exactly 2 blocks
+    LeadInBlockSize bsi2 = sizePacks.get(2); //jumping over 16 packTypes and 8 lastSeqs, that is exactly 2 blocks
     int langId = bsi2.getData()[4 + block];
     return Language.idOf(langId);
   }
@@ -159,7 +188,7 @@ public class LeadInTextStream {
   public int getBlockForLanguage(Language language) {
     int langId = language.getId();
     byte[] blockLangs = sizePacks.get(2).getData();
-    for(int i = 0; i < BlockSizeInfo.BLOCKS_COUNT; i++) {
+    for(int i = 0; i < LeadInBlockSize.BLOCKS_COUNT; i++) {
       if(blockLangs[4 + i] == langId) {
         return i;
       }
@@ -175,4 +204,37 @@ public class LeadInTextStream {
     }
     return -1;
   }
+
+
+  private final class PackIterator implements Iterator<LeadInPack> {
+
+    private Iterator<LeadInTextPack> textIterator;
+    private Iterator<LeadInBlockSize> sizesIterator;
+    
+    public PackIterator(Iterator<LeadInTextPack> textIterator, Iterator<LeadInBlockSize> sizesIterator) {
+      this.textIterator = textIterator;
+      this.sizesIterator = sizesIterator;
+    }
+    
+    @Override
+    public boolean hasNext() {
+      return textIterator.hasNext() || sizesIterator.hasNext();
+    }
+
+    @Override
+    public LeadInPack next() {
+      if(textIterator.hasNext()) {
+        return textIterator.next();
+      }
+      else {
+        return sizesIterator.next();
+      }
+    }
+
+    @Override
+    public void remove() {
+      throw new UnsupportedOperationException();
+    }
+  }
 }
+
