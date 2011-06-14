@@ -1,8 +1,9 @@
 package org.mars.ddp.common;
 
 /**
+ * Tracks are one-based in case you didn't know
  * One lead-in, 2 lead-outs, 1 pause per track
- * Lead-out is actually at size()-2 or the getTracksCount()+1 track
+ * Lead-out is actually at size()-2 or the getTracksCount()+1 track and has twice index 1
  */
 public class PqStream<P extends AbstractPqDescriptorPacket> extends AbstractStreamCollection<P> {
   private static final long serialVersionUID = 1L;
@@ -21,29 +22,103 @@ public class PqStream<P extends AbstractPqDescriptorPacket> extends AbstractStre
   }
 
   public P getLeadOutPacket() {
-    return getPreGapPacket(getTracksCount()+1);
+    int track = getTracksCount() + 1;
+    int index = getStartIndex(track);
+    return getIndexPacket(track, index).getPacket();
   }
 
   /**
-   * easy way: get(2*(i-1)+1)
-   * accurate way: below
-   * works with lead-in/out too
+   * Must work with lead-in/out
+   */
+  public int getStartIndex(int track) {
+    int count = getTracksCount();
+    if(track < 0 || track > count+1) { //+1 to allow lead-out
+      throw new IllegalArgumentException("Track: " + track);
+    }
+    else {
+      return (track == count+1 ? 1 : 0); //lead-out only has index == 1
+    }
+  }
+
+  /**
+   * Easy way: get(2*(i-1)+1)
+   * Accurate way: see below
    */
   public P getPreGapPacket(int track) {
-    return getIndexPacket(track, 0).getPacket();
+    isTrackExistsOrComplain(track);
+    int index = getStartIndex(track);
+    return getIndexPacket(track, index).getPacket();
   }
 
   /**
-   * easy way: get(2*(i-1)+2)
-   * accurate way: below
-   * works with lead-in/out too
+   * Easy way: get(2*(i-1)+2)
+   * Accurate way: see below
    */
   public P getTrackPacket(int track) {
+    isTrackExistsOrComplain(track);
     return getIndexPacket(track, 1).getPacket();
   }
 
+
+  private void isTrackExistsOrComplain(int track) {
+    if(!isTrackExists(track)) {
+      throw new IllegalArgumentException("Non existent track: " + track);
+    }
+  }
+
+  public boolean isTrackExists(int track) {
+    return (track > 0 && track <= getTracksCount());
+  }
+  
   /**
-   * works with lead-in/out too
+   * Attention this is without Offsets/PreGaps
+   */
+  public int getTrackStartBytes(int track, boolean withPreGap) {
+    return getTrackStartBytes(track, withPreGap ? 0 : 1);
+  }
+
+  /**
+   * Attention this is without Offsets/PreGaps
+   */
+  public int getTrackStartBytes(int track, int index) {
+    isTrackExistsOrComplain(track);
+    AbstractPqDescriptorPacket pqPacketStart = getIndexPacket(track, index).getPacket();
+    return pqPacketStart.getCdaCueBytes();
+  }
+
+  public int getTrackLengthBytes(int track, boolean withPreGap) {
+    isTrackExistsOrComplain(track);
+
+    int indexStart = (withPreGap ? getStartIndex(track) : 1);
+    PacketCounter<?> counter = getIndexPacket(track, indexStart);
+    AbstractPqDescriptorPacket pqPacketStart = counter.getPacket();
+    
+    AbstractPqDescriptorPacket pqPacketEnd;
+    if(pqPacketStart.isLeadOut()) {
+      pqPacketEnd = get(counter.getPosition() + 1);
+    }
+    else {
+      int indexEnd = getStartIndex(track+1);
+      pqPacketEnd = getIndexPacket(track+1, indexEnd).getPacket();  
+    }
+
+    int length = pqPacketEnd.getCdaCueBytes() - pqPacketStart.getCdaCueBytes();
+    return length;
+  }
+
+  public int getTrackLengthBytes(int track, int index) {
+    isTrackExistsOrComplain(track);
+    
+    int position = getIndexPacket(track, index).getPosition();
+    AbstractPqDescriptorPacket pqPacketStart = get(position);
+    AbstractPqDescriptorPacket pqPacketEnd   = get(position+1);
+    int length = pqPacketEnd.getCdaCueBytes() - pqPacketStart.getCdaCueBytes();
+    return length;
+  }
+
+  /**
+   * The miracle method to get the index of a track/index
+   * Works with lead-in/out too
    * @return PacketCounter with (packet found, index in pqStream, track count until found) 
    */
   public PacketCounter<P> getIndexPacket(int track, int index) {

@@ -22,7 +22,7 @@ public enum SubCodeDescriptor implements SubCodeDescribable {
   WR24PI("WR24PI", SubCodeStreamLoader.class),
   WR24PX("WR24PX", SubCodeStreamLoader.class),
   WR18XX("WR18XX", SubCodeStreamLoader.class),
-  CDTEXT("CDTEXT", LeadInCdTextStreamLoader.class); //SONY CD TEXT. For Philips CD Text (stored as R-W), refer to ITTS
+  CDTEXT("CDTEXT", LeadInCdTextStreamLoader.class); //SONY CD TEXT. For Philips CD Text (stored as R-W), refer to ITTS, if you dare
 
 
   private String id;

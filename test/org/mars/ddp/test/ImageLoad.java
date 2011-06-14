@@ -17,7 +17,7 @@ import org.mars.ddp.common.WavInputStream;
 public class ImageLoad {
 
   public static void main(String... args) throws IOException, DdpException {
-    String imagePath = "D:/Temp/SUNCD02.DDP";
+    String imagePath = "D:/Temp/DDP - SUNCD22 - Artifact303 - Back To Space";
     File imageDir = new File(imagePath);
     URL imageUrl = imageDir.toURI().toURL();
     AbstractDdpImage<?, ?> image = DdpImageFactory.load(imageUrl);
@@ -41,10 +41,10 @@ public class ImageLoad {
     System.out.println("UPC/EAN: " + image.getCdText(PackType.UPC_EAN));
 
     //dumping one track
-    int tracktoDump = (int)(Math.random() * tracksCount);
-    System.out.println("Dumping track " + tracktoDump);
-    InputStream tis = new WavInputStream(image.openTrackStream(tracktoDump, false));
-    FileOutputStream fos = new FileOutputStream(new File(imageDir, "track" + tracktoDump + ".wav"));
+    int trackToDump = 1; //1+(int)(Math.random() * tracksCount);
+    System.out.println("Dumping track " + trackToDump);
+    InputStream tis = new WavInputStream(image.openTrackStream(trackToDump, false));
+    FileOutputStream fos = new FileOutputStream(new File(imageDir, "track" + trackToDump + ".wav"));
     copy(tis, fos);
   }
 

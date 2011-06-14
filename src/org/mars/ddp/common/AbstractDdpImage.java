@@ -46,13 +46,29 @@ public abstract class AbstractDdpImage<I extends AbstractDdpId, M extends Abstra
     return getMapStreams().getDataStreamPacket(dataStreamType); 
   }
 
-  public abstract M getMainDataPacket();
+  public abstract M getMainDataPacket(); //FIXME
   public abstract M getPqSubCodePacket();
   public abstract M getCdTextPacket();
   
   public PqStream<?> getPqStream() {
-    return (PqStream<?>)getPqSubCodePacket().getDataStream();
+    PqStream<?> stream = null;
+    M mapPacket = getPqSubCodePacket();
+    if(mapPacket != null) {
+      stream = (PqStream<?>)mapPacket.getDataStream();
+    }
+    return stream;
   }
+  
+  public LeadInCdTextStream getCdTextStream() {
+    LeadInCdTextStream stream = null;
+    M mapPacket = getCdTextPacket();
+    if(mapPacket != null) {
+      stream = (LeadInCdTextStream)mapPacket.getDataStream();
+    }
+    return stream;
+  }
+
+  
   
   public PcmInputStream openTrackStream(int i) throws IOException {
     return openTrackStream(i, false);
@@ -92,78 +108,66 @@ public abstract class AbstractDdpImage<I extends AbstractDdpId, M extends Abstra
     }
   }
 
-  
+  /**
+   * There's at least 1 track on a CD, so I'm not testing whether we have a PQ stream
+   */
   public int getTrackStartBytes(int trackNumber, boolean withPreGap) {
-    return getTrackStartBytes(trackNumber, withPreGap ? 0 : 1);
+    return getPqStream().getTrackStartBytes(trackNumber, withPreGap) - getStartOfset(trackNumber);
   }
 
+  /**
+   * There's at least 1 track on a CD, so I'm not testing whether we have a PQ stream
+   */
   public int getTrackStartBytes(int trackNumber, int indexNumber) {
-    int length = 0;
-    
-    M mapPacket = getPqSubCodePacket();
-    if(mapPacket != null) {
-      PqStream<?> pqStream = (PqStream<?>)mapPacket.getDataStream();
-      AbstractPqDescriptorPacket pqPacketStart = pqStream.getIndexPacket(trackNumber, indexNumber).getPacket();
-      //Removing 2 seconds because there's ALWAYS 2 seconds silence added in the final cd compared to the image data
-      int start = pqPacketStart.getCdaCueBytes();
-      if(trackNumber > 1) { 
-        start -= DataUnits.BYTES_MUSIC_TWO_SECONDS;
-      }
-      return start;
-    }
-    return length;
+    return getPqStream().getTrackStartBytes(trackNumber, indexNumber) - getStartOfset(trackNumber);
   }
 
+  private int getStartOfset(int trackNumber) {
+    int offset = 0;
+    M mapPacket = getPqSubCodePacket();
+    if(mapPacket != null) {
+      Integer dss = getMainDataPacket().getDataStreamStart();
+      if(dss != null) {
+        offset = dss * DataUnits.BYTES_MUSIC_PER_SECTOR;
+      }
+    }
+    return offset;
+  }
+  
+  /**
+   * There's at least 1 track on a CD, so I'm not testing whether we have a PQ stream
+   */
   public int getTrackLengthBytes(int trackNumber, boolean withPreGap) {
-    int length = 0;
-    
-    M mapPacket = getPqSubCodePacket();
-    if(mapPacket != null) {
-      PqStream<?> pqStream = (PqStream<?>)mapPacket.getDataStream();
-      AbstractPqDescriptorPacket pqPacketStart = pqStream.getIndexPacket(trackNumber, withPreGap ? 0 : 1).getPacket();
-      AbstractPqDescriptorPacket pqPacketEnd;
-      if(pqPacketStart.isLeadOut()) {
-        pqPacketEnd = pqStream.getIndexPacket(trackNumber, 1).getPacket();
-      }
-      else {
-        pqPacketEnd = pqStream.getIndexPacket(trackNumber+1, 0).getPacket();  
-      }
-      length = pqPacketEnd.getCdaCueBytes() - pqPacketStart.getCdaCueBytes();
-    }
-    return length;
+    return getPqStream().getTrackLengthBytes(trackNumber, withPreGap);
   }
 
+  /**
+   * There's at least 1 track on a CD, so I'm not testing whether we have a PQ stream
+   */
   public int getTrackLengthBytes(int trackNumber, int indexNumber) {
-    int length = 0;
-    
-    M mapPacket = getPqSubCodePacket();
-    if(mapPacket != null) {
-      PqStream<?> pqStream = (PqStream<?>)mapPacket.getDataStream();
-      int position = pqStream.getIndexPacket(trackNumber, indexNumber).getPosition();
-      AbstractPqDescriptorPacket pqPacketStart = pqStream.get(position);
-      AbstractPqDescriptorPacket pqPacketEnd = pqStream.get(position+1);
-      length = pqPacketEnd.getCdaCueBytes() - pqPacketStart.getCdaCueBytes();
-    }
-    return length;
+    return getPqStream().getTrackLengthBytes(trackNumber, indexNumber);
   }
 
   
-  private LeadInCdTextStream getCdTextStream() {
-    M mapPacket = getCdTextPacket();
-    if(mapPacket != null) {
-      return (LeadInCdTextStream)mapPacket.getDataStream();
+  
+  public Collection<Locale> getCdTextLocales() {
+    LeadInCdTextStream cdTextStream = getCdTextStream();
+    if(cdTextStream != null) {
+      return cdTextStream.getAvailableLocales();
     }
     else {
       return null;
     }
   }
-  
-  public Collection<Locale> getCdTextLocales() {
-    return getCdTextStream().getAvailableLocales();
-  }
 
   public Locale getCdTextDefaultLocale() {
-    return getCdTextStream().getDefaultLocale();
+    LeadInCdTextStream cdTextStream = getCdTextStream();
+    if(cdTextStream != null) {
+      return cdTextStream.getDefaultLocale();
+    }
+    else {
+      return null;
+    }
   }
 
   public String getCdText(int trackNumber, PackType packType, Locale locale) {
