@@ -2,6 +2,7 @@ package org.mars.ddp.v20;
 
 import org.mars.ddp.common.AbstractDdpImage;
 import org.mars.ddp.common.AbstractDdpImageLoader;
+import org.mars.ddp.common.MapPackable;
 
 public class DdpImage extends AbstractDdpImage<DdpId, MapPacket> {
 
@@ -11,8 +12,8 @@ public class DdpImage extends AbstractDdpImage<DdpId, MapPacket> {
   }
 
   @Override
-  public MapPacket getMainDataPacket() {
-    return getDataStreamPacket(DataStreamType.Data_Stream);
+  public MapPackable<?, ?>[] getDataMainPackets() {
+    return getDataStreamPackets(DataStreamType.Data_Stream);
   }
   
   @Override

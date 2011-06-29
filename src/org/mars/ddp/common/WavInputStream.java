@@ -29,7 +29,7 @@ public class WavInputStream extends InputStream {
   private PcmInputStream in;
 
   
-  public WavInputStream(PcmInputStream in) throws IOException {
+  public WavInputStream(PcmInputStream in) {
     this.in = in;
     createCanonicalWavHeader();
   }
@@ -38,12 +38,12 @@ public class WavInputStream extends InputStream {
     this( new PcmInputStream(in, start, length));
   }
 
-  private void createCanonicalWavHeader() throws IOException {
+  private void createCanonicalWavHeader() {
     ByteBuffer  bb = ByteBuffer.allocate(CANONICAL_WAV_HEADER_LENGTH);
     
     //RIFF chunk
     int subChunk1Size = 16; //PCM, so 16
-    int subChunk2Size = in.available(); //The whole data
+    int subChunk2Size = in.getLength(); //The whole data
     int chunkSize = 4 + (8 + subChunk1Size) + (8 + subChunk2Size);
     bb.put(RIFF_CHUNK_ID.getBytes());
 

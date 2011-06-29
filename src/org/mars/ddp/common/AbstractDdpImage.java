@@ -42,11 +42,20 @@ public abstract class AbstractDdpImage<I extends AbstractDdpId, M extends Abstra
     return getMapStreams().getSubCodePacket(subCodeDesc); 
   }
   
+  public MapPackable<?, ?>[] getDataStreamPackets(DataStreamTypeable dataStreamType) {
+    return getMapStreams().getDataStreamPackets(dataStreamType); 
+  }
+
   public M getDataStreamPacket(DataStreamTypeable dataStreamType) {
     return getMapStreams().getDataStreamPacket(dataStreamType); 
   }
 
-  public abstract M getMainDataPacket(); //FIXME
+  public abstract MapPackable<?, ?>[] getDataMainPackets();
+  
+  public DataMainStream getMainDataStream() {
+    return new DataMainStream( getDataMainPackets());
+  }
+  
   public abstract M getPqSubCodePacket();
   public abstract M getCdTextPacket();
   
@@ -90,18 +99,16 @@ public abstract class AbstractDdpImage<I extends AbstractDdpId, M extends Abstra
     return openMainDataStream(start, length);
   }
 
-  //FIXME redo that, if we have several DATA tracks in separate files, that won't work. Must be an intelligent loop somewhere
   public PcmInputStream openMainDataStream(int start, int length) throws IOException {
-    M mapPacket = getMainDataPacket();
-    if(mapPacket != null) {
-      Integer ofs = mapPacket.getStartingFileOffSet();
+    MapPackable<?, ?>[] dataPackets = getDataMainPackets();
+    if(dataPackets.length > 0) {
+      Integer ofs = dataPackets[0].getStartingFileOffSet();
       if(ofs != null) {
         start += ofs;
       }
       
-      DataStreamable ds = mapPacket.getDataStream();
-      URL streamUrl = ds.getStreamUrl();
-      return new PcmInputStream(streamUrl.openStream(), start, length);
+      DataMainStream dms = new DataMainStream(dataPackets);
+      return new PcmInputStream(dms, start, length);
     }
     else {
       throw new IllegalArgumentException("No DM stream where to extract data from");
@@ -112,21 +119,21 @@ public abstract class AbstractDdpImage<I extends AbstractDdpId, M extends Abstra
    * There's at least 1 track on a CD, so I'm not testing whether we have a PQ stream
    */
   public int getTrackStartBytes(int trackNumber, boolean withPreGap) {
-    return getPqStream().getTrackStartBytes(trackNumber, withPreGap) - getStartOfset(trackNumber);
+    return getPqStream().getTrackStartBytes(trackNumber, withPreGap) - getStartOffsetBytes(trackNumber);
   }
 
   /**
    * There's at least 1 track on a CD, so I'm not testing whether we have a PQ stream
    */
   public int getTrackStartBytes(int trackNumber, int indexNumber) {
-    return getPqStream().getTrackStartBytes(trackNumber, indexNumber) - getStartOfset(trackNumber);
+    return getPqStream().getTrackStartBytes(trackNumber, indexNumber) - getStartOffsetBytes(trackNumber);
   }
 
-  private int getStartOfset(int trackNumber) {
+  private int getStartOffsetBytes(int trackNumber) {
     int offset = 0;
     M mapPacket = getPqSubCodePacket();
     if(mapPacket != null) {
-      Integer dss = getMainDataPacket().getDataStreamStart();
+      Integer dss = getDataMainPackets()[0].getDataStreamStart();
       if(dss != null) {
         offset = dss * DataUnits.BYTES_MUSIC_PER_SECTOR;
       }

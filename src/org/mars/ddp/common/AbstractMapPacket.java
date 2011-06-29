@@ -103,8 +103,6 @@ public abstract class AbstractMapPacket<T extends DataStreamTypeable, S extends 
     return dataStream;
   }
   
-  public abstract Integer getStartingFileOffSet();
-  
   public void setDataStreamType(T dataStreamType) {
     this.dataStreamType = dataStreamType;
   }
@@ -155,5 +153,16 @@ public abstract class AbstractMapPacket<T extends DataStreamTypeable, S extends 
   }
   public void setDataStream(DataStreamable dataStream) {
     this.dataStream = dataStream;
+  }
+
+  @Override
+  public int compareTo(MapPackable<?, ?> mp) {
+    Integer mpDataStreamStart = mp.getDataStreamStart();
+    if(dataStreamStart != null && mpDataStreamStart != null) {
+      return dataStreamStart.compareTo(mpDataStreamStart);
+    }
+    else {
+      return (dataStreamStart != null ? 1 : (mpDataStreamStart != null ? -1 : 0));
+    }
   }
 }

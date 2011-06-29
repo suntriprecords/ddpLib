@@ -1,5 +1,9 @@
 package org.mars.ddp.common;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 
 public class MapStream<T extends MapPackable<?, ?>> extends AbstractStreamCollection<T> {
   private static final long serialVersionUID = 1L;
@@ -28,6 +32,20 @@ public class MapStream<T extends MapPackable<?, ?>> extends AbstractStreamCollec
   }
 
 
+  public MapPackable<?, ?>[] getDataStreamPackets(DataStreamTypeable dataStreamType) {
+    List<T> dataPackets = new ArrayList<T>();
+    for(T mapPacket : this) {
+      if(mapPacket.getDataStreamType() == dataStreamType) {
+        dataPackets.add(mapPacket);
+      }
+    }
+    
+    MapPackable<?, ?>[] result = new MapPackable[dataPackets.size()];
+    result = dataPackets.toArray(result);
+    Arrays.sort(result); //sorting to have a consistent chain
+    return result;
+  }
+
   public T getDataStreamPacket(DataStreamTypeable dataStreamType) {
     T result = null;
     for(T mapPacket : this) {
@@ -37,15 +55,5 @@ public class MapStream<T extends MapPackable<?, ?>> extends AbstractStreamCollec
       }
     }
     return result;
-  }
-
-  @SuppressWarnings("unchecked")
-  public <D extends DataStreamable> D getDataStream(DataStreamTypeable dataStreamType) {
-    D stream = null;
-    T packet = getDataStreamPacket(dataStreamType);
-    if(packet != null) {
-      stream = (D)packet.getDataStream();
-    }
-    return stream;
   }
 }

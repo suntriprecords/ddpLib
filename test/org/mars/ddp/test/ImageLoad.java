@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URL;
+import java.util.Collection;
 import java.util.Locale;
 
 import org.mars.cdtext.PackType;
@@ -17,7 +18,7 @@ import org.mars.ddp.common.WavInputStream;
 public class ImageLoad {
 
   public static void main(String... args) throws IOException, DdpException {
-    String imagePath = "D:/Temp/DDP - SUNCD22 - Artifact303 - Back To Space";
+    String imagePath = "D:/Temp/SUNCD01.DDP"; //"D:/Temp/DDP - SUNCD22 - Artifact303 - Back To Space";
     File imageDir = new File(imagePath);
     URL imageUrl = imageDir.toURI().toURL();
     AbstractDdpImage<?, ?> image = DdpImageFactory.load(imageUrl);
@@ -30,22 +31,27 @@ public class ImageLoad {
     String albumTitle = image.getCdText(PackType.Album_Title);
     System.out.println("Album: " + albumArtist + " - " + albumTitle);
 
-    for(Locale locale : image.getCdTextLocales()) {
-      System.out.println("Locale: " + locale.getDisplayLanguage());
-      for(int t = 1; t <= tracksCount; t++) {
-        String trackArtist = image.getCdText(t, PackType.Track_Performers, locale);
-        String trackTitle = image.getCdText(t, PackType.Track_Title, locale);
-        System.out.println("Track " + t + ": " + trackArtist + " - " + trackTitle);
+    Collection<Locale> cdTextLocales = image.getCdTextLocales();
+    if(cdTextLocales != null) {
+      for(Locale locale : cdTextLocales) {
+        System.out.println("Locale: " + locale.getDisplayLanguage());
+        for(int t = 1; t <= tracksCount; t++) {
+          String trackArtist = image.getCdText(t, PackType.Track_Performers, locale);
+          String trackTitle = image.getCdText(t, PackType.Track_Title, locale);
+          System.out.println("Track " + t + ": " + trackArtist + " - " + trackTitle);
+        }
       }
     }
     System.out.println("UPC/EAN: " + image.getCdText(PackType.UPC_EAN));
 
     //dumping one track
-    int trackToDump = 1; //1+(int)(Math.random() * tracksCount);
-    System.out.println("Dumping track " + trackToDump);
-    InputStream tis = new WavInputStream(image.openTrackStream(trackToDump, false));
-    FileOutputStream fos = new FileOutputStream(new File(imageDir, "track" + trackToDump + ".wav"));
-    copy(tis, fos);
+    //int trackToDump = 1; //1+(int)(Math.random() * tracksCount);
+    for(int trackToDump = 1; trackToDump <= tracksCount; trackToDump++) {
+      System.out.println("Dumping track " + trackToDump);
+      InputStream tis = new WavInputStream(image.openTrackStream(trackToDump, false));
+      FileOutputStream fos = new FileOutputStream(new File(imageDir, "track" + trackToDump + ".wav"));
+      copy(tis, fos);
+    }
   }
 
   private static void copy(InputStream tis, OutputStream fos) throws IOException {
