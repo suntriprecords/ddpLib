@@ -102,7 +102,7 @@ public class LeadInStream implements Iterable<LeadInPack> {
       if(block != 0) { //block is always zero for a text global to the cd-text
         throw new IllegalArgumentException("Block requested " + block + " for unique type: " + packType);
       }
-      else if(track != LeadInTextPack.TRACK_NUMBER_UNIQUE){
+      else if(track != LeadInTextPack.TRACK_NUMBER_UNIQUE) {
         throw new IllegalArgumentException("Track requested: " + track + " for unique type: " + packType);
       }
     }
@@ -113,26 +113,36 @@ public class LeadInStream implements Iterable<LeadInPack> {
     boolean assemblyStarted = false;
 
     for(LeadInTextPack pack : textPacks) {
-      if(pack.getType() == packType && pack.getTrackNumber() == track && pack.getBlockNumber() == block) {
-        
-        if(pack.isTab()) {
-          return getData(track-1, packType, block);
+      if(pack.getType() == packType && pack.getBlockNumber() == block) {
+        if(pack.getTrackNumber() < track) {
+          //nothing, not in the right place yet
         }
-        else if(!assemblyStarted && pack.isStartsBefore()) { //assuming they're in order, we don't need to test pack.isStartsBeforePrevious()
-          byte[] previousData = previous.getDataFromNextStart();
-          bb.put(previousData);
-        }
-        
-        int end = pack.getEndPos();
-        if(end < 0) { //the end marker isn't here
-          bb.put(pack.getData());
-          //and continue looping
-        }
-        else { //the end marker is in this pack
-          bb.put(pack.getDataTillEnd()); //not comying the terminator(s) of course
+        else if(pack.getTrackNumber() > track) {
+          //damn, we are too far, meaning the previous pack contained a part of the previous track's text and the whole text of this track (and maybe others)
+          byte[] data = previous.getDataAtFollowingStart(track-previous.getTrackNumber());
+          bb.put(data);
           break;
         }
-        assemblyStarted = true;
+        else { //right track
+          if(pack.isTab()) {
+            return getData(track-1, packType, block);
+          }
+          else if(!assemblyStarted && pack.isStartsBefore()) { //assuming they're in order, we don't need to test pack.isStartsBeforePrevious()
+            byte[] previousData = previous.getLastData();
+            bb.put(previousData);
+          }
+          
+          int end = pack.getEndPosForth(0);
+          if(end < 0) { //the end marker isn't here
+            bb.put(pack.getData());
+            //and continue looping
+          }
+          else { //the end marker is in this pack
+            bb.put(pack.getDataToNextEnd()); //not copying the terminator(s) of course
+            break;
+          }
+          assemblyStarted = true;
+        }
       }
       previous = pack;
     }

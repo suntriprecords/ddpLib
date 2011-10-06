@@ -3,6 +3,8 @@ package org.mars.cdtext;
 import java.util.Arrays;
 
 /**
+ * ATTENTION you have to Override in LeadInTextPack all methods using END
+ * 
  * @see ftp://ftp.iist.unu.edu/pub/software/linux/multimedia/cdrtools/cdrtools-2.0/cdrecord/cdtext.c
  * @see ftp://ftp.iist.unu.edu/pub/software/linux/multimedia/cdrtools/cdrtools-2.0/cdrecord/crc16.c
  */
@@ -46,10 +48,10 @@ public abstract class LeadInPack {
     return (charPosition == POSITION_PREVIOUS_PREVIOUS);
   }
 
-  public int getEndPos() {
+  public int getEndPosForth(int start) {
     byte[] data = getData();
     int end = -1;
-    for(int i = 0; i < data.length; i++) {
+    for(int i = start; i < data.length; i++) {
       if(data[i] == END) {
         end = i;
         break;
@@ -58,8 +60,28 @@ public abstract class LeadInPack {
     return end;
   }
 
+  public int getEndPosBack() {
+    return getEndPosBack(data.length-1);
+  }
+
+  public int getEndPosBack(int from) {
+    byte[] data = getData();
+    int end = -1;
+    for(int i = from; i >= 0; i--) {
+      if(data[i] == END) {
+        end = i;
+        break;
+      }
+    }
+    return end;
+  }
+  
   public int getNextStartPos() {
-    int end = getEndPos();
+    return getNextStartPos(0);
+  }
+
+  public int getNextStartPos(int from) {
+    int end = getEndPosForth(from);
     return (end < 0 ? -1 : end+1);
   }
 
@@ -79,8 +101,9 @@ public abstract class LeadInPack {
     return data;
   }
   
-  public byte[] getDataTillEnd() {
-    int end = getEndPos();
+
+  public byte[] getDataToNextEnd() {
+    int end = getEndPosForth(0);
     if(end < 0) {
       return data;
     }
@@ -89,13 +112,37 @@ public abstract class LeadInPack {
     }
   }
 
-  public byte[] getDataFromNextStart() {
-    int start = getNextStartPos();
-    if(start < 0) {
-      return null;
+  public byte[] getDataAtNextStart() {
+    return getDataAtFollowingStart(1);
+  }
+
+  public byte[] getDataAtFollowingStart(int which) {
+    int start = 0;
+    for(int w = 0; w < which; w++) {
+      start = getNextStartPos(start);
+      if(start < 0) {
+        return null;
+      }
+    }
+
+    int end  = getEndPosForth(start);
+    if(end < 0) {
+      end = data.length;
+    }
+    return Arrays.copyOfRange(data, start, end);
+  }
+
+  public byte[] getLastData() {
+    int end = getEndPosBack();
+    if(end < 0) {
+      return data;
+    }
+    else if(end == data.length-1) {
+      int start = getEndPosBack(end-1); //value still ok if -1 because of copy range start below
+      return Arrays.copyOfRange(data, start+1, end);
     }
     else {
-      return Arrays.copyOfRange(data, start, data.length);
+      return Arrays.copyOfRange(data, end+1, data.length);
     }
   }
 
