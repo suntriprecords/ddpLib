@@ -6,8 +6,6 @@ import java.util.List;
 
 
 public class MapStream<T extends MapPackable<?, ?>> extends AbstractStreamCollection<T> {
-  private static final long serialVersionUID = 1L;
-  
   public final static String STREAM_NAME = "DDPMS";
   
   public T getSubCodePacket(SubCodeDescribable subCodeDesc) {

@@ -6,7 +6,6 @@ package org.mars.ddp.common;
  * Lead-out is actually at size()-2 or the getTracksCount()+1 track and has twice index 1
  */
 public class PqStream<P extends AbstractPqDescriptorPacket> extends AbstractStreamCollection<P> {
-  private static final long serialVersionUID = 1L;
 
   /**
    * Gets the number of tracks without the lead-in/out
