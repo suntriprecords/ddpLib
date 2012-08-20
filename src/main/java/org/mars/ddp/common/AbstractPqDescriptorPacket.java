@@ -124,7 +124,7 @@ public abstract class AbstractPqDescriptorPacket extends AbstractPacket implemen
   }
 
   /**
-   * At 24 bytes per frame (33 actuzlly but the image doesn't contain CIRC/Control bytes)
+   * At 24 bytes per frame (33 actually but the image doesn't contain CIRC/Control bytes)
    * @see http://en.wikipedia.org/wiki/Compact_Disc#Data_structure
    */
   public int getCdaCueBytes() {
