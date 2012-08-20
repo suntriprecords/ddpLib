@@ -1,5 +1,6 @@
 package org.mars.ddp.common;
 
+
 /**
  * Tracks are one-based in case you didn't know
  * One lead-in, 2 lead-outs, 1 pause per track
@@ -7,10 +8,15 @@ package org.mars.ddp.common;
  */
 public class PqStream<P extends AbstractPqDescriptorPacket> extends AbstractStreamCollection<P> {
 
+  @Override
+  public PqStreamIterator<P> iterator() {
+    return new PqStreamIterator<P>(super.iterator());
+  }
+  
   /**
    * Gets the number of tracks without the lead-in/out
    * easy way: return (size()-3)/2 but will nto work when more than 2 indexes for one track
-   * accurate way: below
+   * accurate way: just below
    */
   public int getTracksCount() {
     return getIndexPacket(-1, -1).getTrackCount();
@@ -27,18 +33,28 @@ public class PqStream<P extends AbstractPqDescriptorPacket> extends AbstractStre
   }
 
   /**
-   * Must work with lead-in/out
+   * Must work with lead-in/out too
+   * 
+   * Caution, the code cannot be just return (track == count+1 ? 1 : 0)
+   * (with lead out always having index 1) because a DDP may omit index 0
+   * if the pause between 2 tracks is 0 (despite what the books may say).
+   *  
+   * @param track the track number
+   * @return the start index of a given track
+   * 
    */
   public int getStartIndex(int track) {
-    int count = getTracksCount();
-    if(track < 0 || track > count+1) { //+1 to allow lead-out
-      throw new IllegalArgumentException("Track: " + track);
+    PqStreamIterator<P> it = iterator();
+    while(it.hasNext()) {
+      it.next();
+      
+      if(track == it.getTrkNr()) {
+        return it.getIdxNr();
+      }
     }
-    else {
-      return (track == count+1 ? 1 : 0); //lead-out only has index == 1
-    }
+    throw new IllegalArgumentException("Track not found");
   }
-
+  
   /**
    * Easy way: get(2*(i-1)+1)
    * Accurate way: see below
@@ -120,74 +136,24 @@ public class PqStream<P extends AbstractPqDescriptorPacket> extends AbstractStre
    * Works with lead-in/out too
    * @return PacketCounter with (packet found, index in pqStream, track count until found) 
    */
+  @Deprecated
   public PacketCounter<P> getIndexPacket(int track, int index) {
-    int loop = 0;
-    int trackCount = 0;
-    int prevTrkNr = -1; //may be guessed
-    int prevIdxNr = -1; //may be guessed
-    
-    for(P packet : this) {
-      boolean newTrack = false;
-      //if these are null, we'll try to guess them
-      Integer trkNr = null;
-      if(packet.isLeadOut()) {
-        trkNr = trackCount + 1;
+
+    PqStreamIterator<P> it = iterator();
+    while(it.hasNext()) {
+      P packet = it.next();
+
+      if(track == it.getTrkNr() && index == it.getIdxNr()) {
+        return new PacketCounter<P>(packet, it.getPosition(), it.getTrackCount());
       }
-      else if(packet.getTrackNumber() != null) {
-        trkNr = new Integer( packet.getTrackNumber()); 
-      }
-      Integer idxNr = packet.getIndexNumber();
-      
-      
-      if(trkNr == null) {
-        if(idxNr == null) { //then we really don't know where we are
-          if(prevIdxNr == 0) { //there must be an index 1 now, same track
-            trkNr = prevTrkNr;
-            idxNr = 1;
-          }
-          else { //new track assuming they are ordered with indexes 0-1-0-1...
-            newTrack = true; 
-            trkNr = prevTrkNr + 1;
-            idxNr = 0;
-          }
-        }
-        else if(idxNr == 0) {
-          newTrack = true; 
-          trkNr = prevTrkNr + 1;
-        }
-        else { //else we don't change track
-          trkNr = prevTrkNr;
-        }
-      }
-      else if(!trkNr.equals(prevTrkNr)) {
-        newTrack = true; 
-        if(idxNr == null) {
-          idxNr = 0;
-        }
-      }
-      else if(idxNr == null) { //it's the same track.
-        idxNr = prevIdxNr + 1;
-      }
-      
-      if(newTrack && !packet.isLeadInOrOut()) {
-        trackCount++;
-      }
-      
-      if(track == trkNr && index == idxNr) {
-        return new PacketCounter<P>(packet, loop, trackCount);
-      }
-      
-      prevTrkNr = trkNr;
-      prevIdxNr = idxNr;
-      loop++;
     }
-    return new PacketCounter<P>(trackCount); //requested index not found, then return only track count
+    return new PacketCounter<P>(it.getTrackCount()); //requested index not found, then return only track count
   }
 
 
   public final static class PacketCounter<T extends AbstractPqDescriptorPacket> {
     private T packet;
-    private int position;
+    private int position; //0-based position of the packet in the pqStream
     private int trackCount;
     
     public PacketCounter(T packet, int position, int trackCount) {
@@ -211,4 +177,3 @@ public class PqStream<P extends AbstractPqDescriptorPacket> extends AbstractStre
     }
   }
 }
-
