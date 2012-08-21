@@ -19,7 +19,7 @@ public class PqStream<P extends AbstractPqDescriptorPacket> extends AbstractStre
    * accurate way: just below
    */
   public int getTracksCount() {
-    return getIndexPacket(-1, -1).getTrackCount();
+    return getPacketCursor(-1).getTrackCount();
   }
 
   public P getLeadInPacket() {
@@ -28,19 +28,22 @@ public class PqStream<P extends AbstractPqDescriptorPacket> extends AbstractStre
 
   public P getLeadOutPacket() {
     int track = getTracksCount() + 1;
-    int index = getStartIndex(track);
-    return getIndexPacket(track, index).getPacket();
+    return getPacketCursor(track).getPacket();
+  }
+
+  public int getStartIndex(int track, boolean withPreGap) {
+    return (withPreGap ? getStartIndex(track) : AbstractPqDescriptorPacket.TRACK_DATA_INDEX);
   }
 
   /**
    * Must work with lead-in/out too
    * 
-   * Caution, the code cannot be just return (track == count+1 ? 1 : 0)
+   * Caution, the code cannot be just "return (track == count+1 ? 1 : 0)"
    * (with lead out always having index 1) because a DDP may omit index 0
    * if the pause between 2 tracks is 0 (despite what the books may say).
    *  
    * @param track the track number
-   * @return the start index of a given track
+   * @return the start index of a given track including preGap
    * 
    */
   public int getStartIndex(int track) {
@@ -61,8 +64,7 @@ public class PqStream<P extends AbstractPqDescriptorPacket> extends AbstractStre
    */
   public P getPreGapPacket(int track) {
     isTrackExistsOrComplain(track);
-    int index = getStartIndex(track);
-    return getIndexPacket(track, index).getPacket();
+    return getPacketCursor(track).getPacket();
   }
 
   /**
@@ -71,7 +73,7 @@ public class PqStream<P extends AbstractPqDescriptorPacket> extends AbstractStre
    */
   public P getTrackPacket(int track) {
     isTrackExistsOrComplain(track);
-    return getIndexPacket(track, 1).getPacket();
+    return getPacketCursor(track, AbstractPqDescriptorPacket.TRACK_DATA_INDEX).getPacket();
   }
 
 
@@ -89,7 +91,8 @@ public class PqStream<P extends AbstractPqDescriptorPacket> extends AbstractStre
    * Attention this is without Offsets/PreGaps
    */
   public int getTrackStartBytes(int track, boolean withPreGap) {
-    return getTrackStartBytes(track, withPreGap ? 0 : 1);
+    int indexStart = getStartIndex(track, withPreGap);
+    return getTrackStartBytes(track, indexStart);
   }
 
   /**
@@ -97,15 +100,15 @@ public class PqStream<P extends AbstractPqDescriptorPacket> extends AbstractStre
    */
   public int getTrackStartBytes(int track, int index) {
     isTrackExistsOrComplain(track);
-    AbstractPqDescriptorPacket pqPacketStart = getIndexPacket(track, index).getPacket();
+    AbstractPqDescriptorPacket pqPacketStart = getPacketCursor(track, index).getPacket();
     return pqPacketStart.getCdaCueBytes();
   }
 
   public int getTrackLengthBytes(int track, boolean withPreGap) {
     isTrackExistsOrComplain(track);
 
-    int indexStart = (withPreGap ? getStartIndex(track) : 1);
-    PacketCounter<?> counter = getIndexPacket(track, indexStart);
+    int indexStart = getStartIndex(track, withPreGap);
+    PacketCounter<?> counter = getPacketCursor(track, indexStart);
     AbstractPqDescriptorPacket pqPacketStart = counter.getPacket();
     
     AbstractPqDescriptorPacket pqPacketEnd;
@@ -113,8 +116,7 @@ public class PqStream<P extends AbstractPqDescriptorPacket> extends AbstractStre
       pqPacketEnd = get(counter.getPosition() + 1);
     }
     else {
-      int indexEnd = getStartIndex(track+1);
-      pqPacketEnd = getIndexPacket(track+1, indexEnd).getPacket();  
+      pqPacketEnd = getPacketCursor(track+1).getPacket();  
     }
 
     int length = pqPacketEnd.getCdaCueBytes() - pqPacketStart.getCdaCueBytes();
@@ -124,7 +126,7 @@ public class PqStream<P extends AbstractPqDescriptorPacket> extends AbstractStre
   public int getTrackLengthBytes(int track, int index) {
     isTrackExistsOrComplain(track);
     
-    int position = getIndexPacket(track, index).getPosition();
+    int position = getPacketCursor(track, index).getPosition();
     AbstractPqDescriptorPacket pqPacketStart = get(position);
     AbstractPqDescriptorPacket pqPacketEnd   = get(position+1);
     int length = pqPacketEnd.getCdaCueBytes() - pqPacketStart.getCdaCueBytes();
@@ -132,12 +134,30 @@ public class PqStream<P extends AbstractPqDescriptorPacket> extends AbstractStre
   }
 
   /**
-   * The miracle method to get the index of a track/index
+   * The miracle method to get the position of a track within the stream
    * Works with lead-in/out too
-   * @return PacketCounter with (packet found, index in pqStream, track count until found) 
+   * @return PacketCounter with (packet found, position in pqStream, track count until found) 
    */
-  @Deprecated
-  public PacketCounter<P> getIndexPacket(int track, int index) {
+  public PacketCounter<P> getPacketCursor(int track) {
+
+    PqStreamIterator<P> it = iterator();
+    while(it.hasNext()) {
+      P packet = it.next();
+
+      if(track == it.getTrkNr() && it.isNewTrack()) {
+        return new PacketCounter<P>(packet, it.getPosition(), it.getTrackCount());
+      }
+    }
+    
+    return new PacketCounter<P>(it.getTrackCount()); //requested index not found, then return only track count
+  }
+
+  /**
+   * The miracle method to get the position of a track/index within the stream
+   * Works with lead-in/out too
+   * @return PacketCounter with (packet found, position in pqStream, track count until found) 
+   */
+  public PacketCounter<P> getPacketCursor(int track, int index) {
 
     PqStreamIterator<P> it = iterator();
     while(it.hasNext()) {
@@ -147,6 +167,7 @@ public class PqStream<P extends AbstractPqDescriptorPacket> extends AbstractStre
         return new PacketCounter<P>(packet, it.getPosition(), it.getTrackCount());
       }
     }
+    
     return new PacketCounter<P>(it.getTrackCount()); //requested index not found, then return only track count
   }
 

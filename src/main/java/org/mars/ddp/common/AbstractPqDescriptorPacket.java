@@ -9,6 +9,7 @@ public abstract class AbstractPqDescriptorPacket extends AbstractPacket implemen
 
   public final static String LEAD_IN_TRACK_NUMBER = "00";
   public final static String LEAD_OUT_TRACK_NUMBER = "AA";
+  public final static int TRACK_DATA_INDEX = 1;
 
   public final static String STREAM_NAME = "PQDESCR";
   public static String SUBCODE_PACKET_VALID = "VVVS";
