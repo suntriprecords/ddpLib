@@ -19,7 +19,11 @@ public class PqStream<P extends AbstractPqDescriptorPacket> extends AbstractStre
    * accurate way: just below
    */
   public int getTracksCount() {
-    return getPacketCursor(-1).getTrackCount();
+    PqStreamIterator<P> it = iterator();
+    while(it.hasNext()) {
+      it.next();
+    }
+    return it.getTracksCount();
   }
 
   public P getLeadInPacket() {
@@ -55,7 +59,7 @@ public class PqStream<P extends AbstractPqDescriptorPacket> extends AbstractStre
         return it.getIdxNr();
       }
     }
-    throw new IllegalArgumentException("Track not found");
+    throw new IllegalArgumentException("Track not found: " + track);
   }
   
   /**
@@ -79,7 +83,7 @@ public class PqStream<P extends AbstractPqDescriptorPacket> extends AbstractStre
 
   private void isTrackExistsOrComplain(int track) {
     if(!isTrackExists(track)) {
-      throw new IllegalArgumentException("Non existent track: " + track);
+      throw new IllegalArgumentException("Track not found: " + track);
     }
   }
 
@@ -108,7 +112,7 @@ public class PqStream<P extends AbstractPqDescriptorPacket> extends AbstractStre
     isTrackExistsOrComplain(track);
 
     int indexStart = getStartIndex(track, withPreGap);
-    PacketCounter<?> counter = getPacketCursor(track, indexStart);
+    PacketCursor<?> counter = getPacketCursor(track, indexStart);
     AbstractPqDescriptorPacket pqPacketStart = counter.getPacket();
     
     AbstractPqDescriptorPacket pqPacketEnd;
@@ -136,65 +140,38 @@ public class PqStream<P extends AbstractPqDescriptorPacket> extends AbstractStre
   /**
    * The miracle method to get the position of a track within the stream
    * Works with lead-in/out too
-   * @return PacketCounter with (packet found, position in pqStream, track count until found) 
+   * @return PacketCursor with (packet found, position in pqStream, track count until found) 
    */
-  public PacketCounter<P> getPacketCursor(int track) {
+  public PacketCursor<P> getPacketCursor(int track) {
 
     PqStreamIterator<P> it = iterator();
     while(it.hasNext()) {
-      P packet = it.next();
+      it.next();
 
       if(track == it.getTrkNr() && it.isNewTrack()) {
-        return new PacketCounter<P>(packet, it.getPosition(), it.getTrackCount());
+        return it.freeze();
       }
     }
     
-    return new PacketCounter<P>(it.getTrackCount()); //requested index not found, then return only track count
+    throw new IllegalArgumentException("Track not found: " + track);
   }
 
   /**
    * The miracle method to get the position of a track/index within the stream
    * Works with lead-in/out too
-   * @return PacketCounter with (packet found, position in pqStream, track count until found) 
+   * @return PacketCursor with (packet found, position in pqStream, track count until found) 
    */
-  public PacketCounter<P> getPacketCursor(int track, int index) {
+  public PacketCursor<P> getPacketCursor(int track, int index) {
 
     PqStreamIterator<P> it = iterator();
     while(it.hasNext()) {
-      P packet = it.next();
+      it.next();
 
       if(track == it.getTrkNr() && index == it.getIdxNr()) {
-        return new PacketCounter<P>(packet, it.getPosition(), it.getTrackCount());
+        return it.freeze();
       }
     }
     
-    return new PacketCounter<P>(it.getTrackCount()); //requested index not found, then return only track count
-  }
-
-
-  public final static class PacketCounter<T extends AbstractPqDescriptorPacket> {
-    private T packet;
-    private int position; //0-based position of the packet in the pqStream
-    private int trackCount;
-    
-    public PacketCounter(T packet, int position, int trackCount) {
-      this.packet = packet;
-      this.position = position;
-      this.trackCount = trackCount;
-    }
-
-    public PacketCounter(int trackCount) {
-      this.trackCount = trackCount;
-    }
-    
-    public T getPacket() {
-      return packet;
-    }
-    public int getPosition() {
-      return position;
-    }
-    public int getTrackCount() {
-      return trackCount;
-    }
+    throw new IllegalArgumentException("Track/Index not found: " + track + "/" + index);
   }
 }

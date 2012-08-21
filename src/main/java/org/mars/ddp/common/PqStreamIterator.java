@@ -8,10 +8,11 @@ import java.util.Iterator;
  *
  * @param <P>
  */
-public class PqStreamIterator<P extends AbstractPqDescriptorPacket> implements Iterator<P> {
+public class PqStreamIterator<P extends AbstractPqDescriptorPacket> implements Iterator<P>, PacketCursor<P> {
   
   private Iterator<P> delegate;
 
+  private P packet;
   private Integer trkNr;
   private Integer idxNr;
   private int prevTrkNr = -1; //may be guessed
@@ -35,7 +36,7 @@ public class PqStreamIterator<P extends AbstractPqDescriptorPacket> implements I
   
   @Override
   public synchronized P next() {
-    P packet = delegate.next();
+    packet = delegate.next();
 
     newTrack = false;
     //if these are null, we'll try to guess them
@@ -96,23 +97,38 @@ public class PqStreamIterator<P extends AbstractPqDescriptorPacket> implements I
   }
 
 
+  @Override
+  public P getPacket() {
+    return packet;
+  }
+
+  @Override
   public Integer getTrkNr() {
     return trkNr;
   }
 
+  @Override
   public Integer getIdxNr() {
     return idxNr;
   }
 
+  @Override
   public boolean isNewTrack() {
     return newTrack;
   }
 
-  public int getTrackCount() {
+  @Override
+  public int getTracksCount() {
     return trackCount;
   }
 
+  @Override
   public int getPosition() {
     return position;
+  }
+  
+  public PqStreamIterator<P> freeze() {
+    delegate = null;
+    return this;
   }
 }
