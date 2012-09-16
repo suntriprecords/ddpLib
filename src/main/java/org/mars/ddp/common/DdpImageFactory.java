@@ -1,5 +1,6 @@
 package org.mars.ddp.common;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 
@@ -32,4 +33,8 @@ public class DdpImageFactory {
     loader.load(image);
     return image;
   }
+  
+  public static <I extends AbstractDdpId, M extends AbstractMapPacket<?, ?, ?>> AbstractDdpImage<I, M> load(File imageDir) throws DdpException, IOException {
+    return load(imageDir.toURI().toURL());
+  }  
 }
