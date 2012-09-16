@@ -1,5 +1,8 @@
 package org.mars.ddp.common;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -242,5 +245,56 @@ public abstract class AbstractDdpImage<I extends AbstractDdpId, M extends Abstra
     catch (NoSuchMethodException e) {
       throw new DdpException(e);
     }
+  }
+  
+  public void dumpTo(File imageDir) throws IOException {
+    if(!imageDir.exists()) {
+      throw new FileNotFoundException(imageDir.getAbsolutePath());
+    }
+    else if(imageDir.isDirectory()) {
+      throw new IOException("Not a directory: " + imageDir.getAbsolutePath());
+    }
+    
+    int tracksCount = getPqStream().getTracksCount();
+    for(int trackToDump = 1; trackToDump <= tracksCount; trackToDump++) {
+      System.out.println("Dumping track " + trackToDump);
+      WavInputStream wis = new WavInputStream(openTrackStream(trackToDump, false));
+      FileOutputStream fos = new FileOutputStream(new File(imageDir, "track" + trackToDump + ".wav"));
+      wis.copyTo(fos);
+      wis.close();
+      fos.close();
+    }
+  }
+
+  public String getInfo() {
+    StringBuilder sb = new StringBuilder();
+    
+    sb.append("DDP Level: ").append(getDdpId().getDdpLevel()).append("\n");
+
+    int tracksCount = getPqStream().getTracksCount();
+    sb.append("Tracks count: ").append(tracksCount).append("\n");
+    
+    String albumArtist = getCdText(0, PackType.Album_Performers);
+    String albumTitle = getCdText(PackType.Album_Title);
+    sb.append("Album: ").append(albumArtist).append(" - ").append(albumTitle).append("\n");
+
+    Collection<Locale> cdTextLocales = getCdTextLocales();
+    if(cdTextLocales != null) {
+      for(Locale locale : cdTextLocales) {
+        sb.append("Locale: ").append(locale.getDisplayLanguage()).append("\n");
+        for(int t = 1; t <= tracksCount; t++) {
+          String trackArtist = getCdText(t, PackType.Track_Performers, locale);
+          String trackTitle = getCdText(t, PackType.Track_Title, locale);
+          sb.append("Track ").append(t).append(": ").append(trackArtist).append(" - ").append(trackTitle).append("\n");
+        }
+      }
+    }
+    sb.append("UPC/EAN: ").append(getCdText(PackType.UPC_EAN)).append("\n");
+    return sb.toString();
+  }
+  
+  @Override
+  public String toString() {
+    return getInfo();
   }
 }

@@ -2,6 +2,7 @@ package org.mars.ddp.common;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 
@@ -129,5 +130,19 @@ public class WavInputStream extends InputStream {
   @Override
   public void close() throws IOException {
     in.close();
+  }
+  
+  public void copyTo(OutputStream fos, int bufferLength) throws IOException {
+    byte[] buffer = new byte[bufferLength];
+    int read;
+    while((read = read(buffer)) != -1) {
+      fos.write(buffer, 0, read);
+    }
+    this.close();
+    fos.close();
+  }
+
+  public void copyTo(OutputStream fos) throws IOException {
+    copyTo(fos, 65535);
   }
 }
