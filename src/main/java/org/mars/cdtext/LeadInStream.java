@@ -111,13 +111,20 @@ public class LeadInStream implements Iterable<LeadInPack> {
 
     LeadInTextPack previous = null; 
     boolean assemblyStarted = false;
+    int penultimateTrack = getLastTrack()-1;
 
     for(LeadInTextPack pack : textPacks) {
       if(pack.getType() == packType && pack.getBlockNumber() == block) {
-        if(pack.getTrackNumber() < track) {
-          //nothing, not in the right place yet
+        int packTrack = pack.getTrackNumber();
+        if(packTrack < track) { //not in the right place yet
+          //BUT, if we're asking for the last track, and its data fits in one pack (thus 2*END within the pack), which starts with the end of the previous data, then it won't have a dedicated pack with its track number so we have to extract it on the fly.  
+          if(packTrack == penultimateTrack && pack.getDataAtFollowingStart(2) != null) {
+            byte[] data = pack.getDataAtNextStart();
+            bb.put(data);
+            break;
+          }
         }
-        else if(pack.getTrackNumber() > track) {
+        else if(packTrack > track) {
           //damn, we are too far, meaning the previous pack contained a part of the previous track's text and the whole text of this track (and maybe others)
           byte[] data = previous.getDataAtFollowingStart(track-previous.getTrackNumber());
           bb.put(data);
