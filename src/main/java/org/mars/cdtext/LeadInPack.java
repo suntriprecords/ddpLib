@@ -76,6 +76,17 @@ public abstract class LeadInPack {
     return end;
   }
   
+  public int getFollowingStartPos(int which) {
+    int start = 0;
+    for(int w = 0; w < which; w++) {
+      start = getNextStartPos(start);
+      if(start < 0) {
+        return -1;
+      }
+    }
+    return start;
+  }
+  
   public int getNextStartPos() {
     return getNextStartPos(0);
   }

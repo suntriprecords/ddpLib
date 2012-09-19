@@ -1,7 +1,6 @@
 package org.mars.cdtext;
 
 import java.nio.charset.Charset;
-import java.util.Arrays;
 
 /**
  *  CD-Text examples:
@@ -35,12 +34,10 @@ public class LeadInTextPack extends LeadInPack {
   private int blockNumber;
 
   /**
-   * Meaning the data is the same as the previous pack
+   * A data equal to this (with the same charWidth) would mean we have copy the previous track's data
    */
-  public boolean isTab() {
-    int charWidth = (isDoubleByte() ? 2 : 1);
-    byte[] start = Arrays.copyOfRange(getData(), 0, charWidth);
-    return Arrays.equals(start, TABS[charWidth-1]);
+  public byte[] getTab() {
+    return TABS[getCharWidth()-1];
   }
 
   /**
@@ -106,6 +103,10 @@ public class LeadInTextPack extends LeadInPack {
     setPackNumber(trackNumber);
   }
 
+  public int getCharWidth() {
+    return (isDoubleByte() ? 2 : 1);
+  }
+  
   /* (non-Javadoc)
    * @see org.mars.cdtext.CdTextable#isDoubleByte()
    */

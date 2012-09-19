@@ -5,6 +5,7 @@ import java.io.InputStream;
 import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
@@ -109,19 +110,19 @@ public class LeadInStream implements Iterable<LeadInPack> {
     
     ByteBuffer bb = ByteBuffer.allocate(LeadInPack.MAX_DATA_LENGTH_PREFERRED);
 
-    LeadInTextPack previous = null; 
-    boolean assemblyStarted = false;
-    int penultimateTrack = getLastTrack()-1;
+    LeadInTextPack previous = null;
+    byte[] tabs = null;
 
     for(LeadInTextPack pack : textPacks) {
       if(pack.getType() == packType && pack.getBlockNumber() == block) {
         int packTrack = pack.getTrackNumber();
-        if(packTrack < track) { //not in the right place yet
-          //BUT, if we're asking for the last track, and its data fits in one pack (thus 2*END within the pack), which starts with the end of the previous data, then it won't have a dedicated pack with its track number so we have to extract it on the fly.  
-          if(packTrack == penultimateTrack && pack.getDataAtFollowingStart(2) != null) {
-            byte[] data = pack.getDataAtNextStart();
+        
+        if(packTrack < track) { //not in the right place yet, but if tracknames are short, ours might be in the same pack
+          int start = pack.getFollowingStartPos(track - packTrack);
+          if(start >= 0) {
+            byte[] data = pack.getDataAtFollowingStart(track - packTrack);
             bb.put(data);
-            break;
+            tabs = pack.getTab();
           }
         }
         else if(packTrack > track) {
@@ -131,12 +132,15 @@ public class LeadInStream implements Iterable<LeadInPack> {
           break;
         }
         else { //right track
-          if(pack.isTab()) {
-            return getData(track-1, packType, block);
-          }
-          else if(!assemblyStarted && pack.isStartsBefore()) { //assuming they're in order, we don't need to test pack.isStartsBeforePrevious()
-            byte[] previousData = previous.getLastData();
-            bb.put(previousData);
+          if(bb.position() == 0) { //assembly not yet started
+            if(pack.isStartsBefore()) { //assuming they're in order, we don't need to test pack.isStartsBeforePrevious()
+              byte[] previousData = previous.getLastData();
+              bb.put(previousData);
+              tabs = previous.getTab(); //which can't but be the same as the current pack
+            }
+            else {
+              tabs = pack.getTab();
+            }
           }
           
           int end = pack.getEndPosForth(0);
@@ -148,7 +152,6 @@ public class LeadInStream implements Iterable<LeadInPack> {
             bb.put(pack.getDataToNextEnd()); //not copying the terminator(s) of course
             break;
           }
-          assemblyStarted = true;
         }
       }
       previous = pack;
@@ -158,16 +161,21 @@ public class LeadInStream implements Iterable<LeadInPack> {
       byte[] result = new byte[bb.position()];
       bb.flip();
       bb.get(result);
-      return result;
+
+      if(Arrays.equals(result, tabs)) { //means "same as previous track"
+        return getData(track-1, packType, block);
+      }
+      else {
+        return result;
+      }
     }
     else {
       return null;
     }
   }
   
-
   /**
-   * Assumming they're in the right order in the list
+   * Assuming they're in the right order in the list
    */
   private byte[] getCompleteBlockSize() {
     ByteBuffer bb = ByteBuffer.allocate(controlPacks.size() * LeadInPack.DATA_LENGTH);
