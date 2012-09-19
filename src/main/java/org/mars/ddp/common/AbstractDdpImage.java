@@ -251,7 +251,7 @@ public abstract class AbstractDdpImage<I extends AbstractDdpId, M extends Abstra
     if(!imageDir.exists()) {
       throw new FileNotFoundException(imageDir.getAbsolutePath());
     }
-    else if(imageDir.isDirectory()) {
+    else if(!imageDir.isDirectory()) {
       throw new IOException("Not a directory: " + imageDir.getAbsolutePath());
     }
     
