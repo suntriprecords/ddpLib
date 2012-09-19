@@ -76,17 +76,6 @@ public abstract class LeadInPack {
     return end;
   }
   
-  public int getFollowingStartPos(int which) {
-    int start = 0;
-    for(int w = 0; w < which; w++) {
-      start = getNextStartPos(start);
-      if(start < 0) {
-        return -1;
-      }
-    }
-    return start;
-  }
-  
   public int getNextStartPos() {
     return getNextStartPos(0);
   }
@@ -94,6 +83,21 @@ public abstract class LeadInPack {
   public int getNextStartPos(int from) {
     int end = getEndPosForth(from);
     return (end < 0 ? -1 : end+1);
+  }
+
+  public int getFollowingStartPos(int which) {
+    return getFollowingStartPos(0, which);
+  }
+
+  public int getFollowingStartPos(int from, int which) {
+    int start = from;
+    for(int w = 0; w < which; w++) {
+      start = getNextStartPos(start);
+      if(start < 0) {
+        return -1;
+      }
+    }
+    return start;
   }
 
   public PackType getType() {
