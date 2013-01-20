@@ -15,8 +15,8 @@ public class PqStream<P extends AbstractPqDescriptorPacket> extends AbstractStre
   
   /**
    * Gets the number of tracks without the lead-in/out
-   * easy way: return (size()-3)/2 but will nto work when more than 2 indexes for one track
-   * accurate way: just below
+   * Easy way: return (size()-3)/2 but will not work when more than 2 indexes for one track
+   * Accurate way: just below
    */
   public int getTracksCount() {
     PqStreamIterator<P> it = iterator();
