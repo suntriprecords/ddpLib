@@ -10,11 +10,11 @@ import org.mars.ddp.common.DdpImageFactory;
 public class ImageLoad {
 
   public static void main(String... args) throws IOException, DdpException {
-    File imageDir = new File( args[0]);
+    File imageDir = new File("D:/Temp/DDP - SUNCD24 - V.A. - Shaltu"); //new File( args[0]);
     AbstractDdpImage<?, ?> image = DdpImageFactory.load(imageDir);
     
     System.out.println(image.getInfo()); // printing cd-text
-    image.dumpTo(imageDir); // dumping all tracks
+    //image.dumpTo(imageDir); // dumping all tracks
     
     System.out.println("Done.");
   }
