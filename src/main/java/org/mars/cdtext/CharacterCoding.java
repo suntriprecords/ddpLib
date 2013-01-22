@@ -4,11 +4,11 @@ import java.nio.charset.Charset;
 
 /**
  * Character codings used in CD-Text data.
- * Available character sets are 7 bit ASCII, ISO 8859-1, and Music Shift JIS–Kanji.
+ * Available character sets are 7 bit ASCII, ISO 8859-1, and Music Shift JIS-Kanji.
  * Korean and Mandarin Chinese to be defined in sept 1996
  * 
  * The ASCII and 8859-1 sets use only one byte per character (single byte).
- * The Music Shift JIS–Kanji character set, used for Japanese, uses two bytes per character (double byte).
+ * The Music Shift JIS-Kanji character set, used for Japanese, uses two bytes per character (double byte).
  * Using single-byte format will provide a user with twice as much space to write CD-Text data as double byte.
  */
 public enum CharacterCoding {
