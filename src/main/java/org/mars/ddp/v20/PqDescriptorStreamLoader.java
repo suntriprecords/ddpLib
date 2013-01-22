@@ -16,7 +16,8 @@ public class PqDescriptorStreamLoader extends AbstractLoader<PqStream<PqDescript
   @SuppressWarnings("unchecked")
   @Override
   public Class<? extends PqStream<PqDescriptorPacket>> getLoadableClass() {
-    return (Class<? extends PqStream<PqDescriptorPacket>>) PqStream.class;
+    Object clazz = PqStream.class;
+    return (Class<? extends PqStream<PqDescriptorPacket>>) clazz; //FIXME ugly fix for regression in javac typechecker (jdk 1.7.0_11)
   }
 
   @Override
