@@ -289,7 +289,13 @@ public abstract class AbstractDdpImage<I extends AbstractDdpId, M extends Abstra
         }
       }
     }
-    sb.append("UPC/EAN: ").append(getCdText(PackType.UPC_EAN)).append("\n");
+    
+    String upcEan = getDdpId().getUpcEan(); //try getting it from the image identifier
+    if(upcEan == null) {
+      upcEan = getCdText(PackType.UPC_EAN); //try getting it form the cd-text instead.
+    }
+    
+    sb.append("UPC/EAN: ").append(upcEan).append("\n");
     return sb.toString();
   }
   
