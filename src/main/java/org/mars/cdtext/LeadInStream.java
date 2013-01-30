@@ -13,8 +13,8 @@ import java.util.Locale;
 
 public class LeadInStream implements Iterable<LeadInPack> {
 
-  private List<LeadInTextPack> textPacks = new ArrayList<LeadInTextPack>();
-  private List<LeadInControlPack> controlPacks = new ArrayList<LeadInControlPack>();
+  private List<LeadInTextPack> textPacks = new ArrayList<>();
+  private List<LeadInControlPack> controlPacks = new ArrayList<>();
   
   
   public void readAll(InputStream is) throws IOException {
@@ -257,7 +257,7 @@ public class LeadInStream implements Iterable<LeadInPack> {
   }
   
   public List<Language> getAvailableLanguages() {
-    List<Language> result = new ArrayList<Language>();
+    List<Language> result = new ArrayList<>();
     
     for(int b = 0; b < LeadInControlPack.BLOCKS_COUNT; b++) {
       Language lang = getLanguage(b);
@@ -269,7 +269,7 @@ public class LeadInStream implements Iterable<LeadInPack> {
   }
 
   public List<Locale> getAvailableLocales() {
-    List<Locale> result = new ArrayList<Locale>();
+    List<Locale> result = new ArrayList<>();
     for(Language lang : getAvailableLanguages()) {
       result.add(lang.getLocale());
     }
