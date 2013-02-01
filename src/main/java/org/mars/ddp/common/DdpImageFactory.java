@@ -41,5 +41,19 @@ public class DdpImageFactory {
 
   public static <I extends AbstractDdpId, M extends AbstractMapPacket<?, ?, ?>> AbstractDdpImage<I, M> load(File imageDir) throws DdpException, IOException {
     return load(imageDir.toURI().toURL());
-  }  
+  }
+  
+  public static boolean isDDPImage(URL imageUrl) {
+      String imagePath = imageUrl.toExternalForm();
+      try {
+        URL ddpIdUrl = new URL(imagePath + AbstractDdpId.STREAM_NAME);
+        ddpIdUrl.openStream().close();
+        URL ddpMsUrl = new URL(imagePath + MapStream.STREAM_NAME);
+        ddpMsUrl.openStream().close();
+        return true;
+      }
+      catch (IOException e) {
+        return false;
+      }
+  }
 }
