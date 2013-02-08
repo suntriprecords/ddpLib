@@ -3,6 +3,7 @@ package org.mars.ddp.common;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.nio.file.Files;
 import java.nio.file.Path;
 
 public class DdpImageFactory {
@@ -55,5 +56,15 @@ public class DdpImageFactory {
       catch (IOException e) {
         return false;
       }
+  }
+  
+  public static boolean isDDPImage(File imageDir) {
+    return isDDPImage(imageDir.toPath());
+  }
+  
+  public static boolean isDDPImage(Path imagePath) {
+    Path ddpIdPath = imagePath.resolve(AbstractDdpId.STREAM_NAME);
+    Path ddpMsPath = imagePath.resolve(MapStream.STREAM_NAME);
+    return Files.exists(ddpIdPath) && Files.exists(ddpMsPath);
   }
 }
