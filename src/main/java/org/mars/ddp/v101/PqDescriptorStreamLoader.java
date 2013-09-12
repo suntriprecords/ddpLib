@@ -13,13 +13,6 @@ public class PqDescriptorStreamLoader extends AbstractLoader<PqStream<PqDescript
     super(baseUrl, fileName);
   }
 
-  @SuppressWarnings("unchecked")
-  @Override
-  public Class<? extends PqStream<PqDescriptorPacket>> getLoadableClass() {
-    Object clazz = PqStream.class;
-    return (Class<? extends PqStream<PqDescriptorPacket>>) clazz; //FIXME ugly fix for regression in javac typechecker (jdk 1.7.0_11)
-  }
-
   @Override
   protected void load(PqStream<PqDescriptorPacket> stream) throws IOException, DdpException {
     PqDescriptorPacketLoader pqDescPacketLoader = new PqDescriptorPacketLoader(getBaseUrl(), getFileName());
@@ -28,5 +21,10 @@ public class PqDescriptorStreamLoader extends AbstractLoader<PqStream<PqDescript
       stream.add(pqDescPacket);
     }
     pqDescPacketLoader.close();
+  }
+
+  @Override
+  public PqStream<PqDescriptorPacket> newLoadable() throws DdpException {
+    return new PqStream<>();
   }
 }

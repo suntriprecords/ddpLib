@@ -13,11 +13,6 @@ public class MapPacketLoader extends AbstractMapPacketLoader<MapPacket, DataStre
   }
 
   @Override
-  public Class<? extends MapPacket> getLoadableClass() {
-    return MapPacket.class;
-  }
-
-  @Override
   protected void load(MapPacket mapPacket) throws IOException, DdpException {
     super.load(mapPacket);
     readString(37); //padding
@@ -48,5 +43,10 @@ public class MapPacketLoader extends AbstractMapPacketLoader<MapPacket, DataStre
       ssm = SourceStorageMode.idOf(id);
     }
     return ssm;
+  }
+
+  @Override
+  public MapPacket newLoadable() throws DdpException {
+    return new MapPacket();
   }
 }

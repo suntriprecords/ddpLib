@@ -10,13 +10,13 @@ public class SubCodeLoader extends AbstractLoader<SubCodeByte> {
   }
 
   @Override
-  public Class<? extends SubCodeByte> getLoadableClass() {
-    return SubCodeByte.class;
-  }
-
-  @Override
   protected void load(SubCodeByte loadable) throws IOException, DdpException {
     byte subCode = readByte();
     loadable.setSubcode(subCode);
+  }
+
+  @Override
+  public SubCodeByte newLoadable() throws DdpException {
+    return new SubCodeByte();
   }
 }

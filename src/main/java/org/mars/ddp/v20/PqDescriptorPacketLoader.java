@@ -3,6 +3,7 @@ package org.mars.ddp.v20;
 import java.net.URL;
 
 import org.mars.ddp.common.AbstractPqDescriptorLoader;
+import org.mars.ddp.common.DdpException;
 
 public class PqDescriptorPacketLoader extends AbstractPqDescriptorLoader<PqDescriptorPacket> {
 
@@ -11,7 +12,7 @@ public class PqDescriptorPacketLoader extends AbstractPqDescriptorLoader<PqDescr
   }
 
   @Override
-  public Class<? extends PqDescriptorPacket> getLoadableClass() {
-    return PqDescriptorPacket.class;
+  public PqDescriptorPacket newLoadable() throws DdpException {
+    return new PqDescriptorPacket();
   }
 }

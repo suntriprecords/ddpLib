@@ -3,6 +3,7 @@ package org.mars.ddp.v20;
 import java.net.URL;
 
 import org.mars.ddp.common.AbstractDdpIdLoader;
+import org.mars.ddp.common.DdpException;
 
 public class DdpIdLoader extends AbstractDdpIdLoader<DdpId> {
 
@@ -11,7 +12,7 @@ public class DdpIdLoader extends AbstractDdpIdLoader<DdpId> {
   }
 
   @Override
-  public Class<? extends DdpId> getLoadableClass() {
-    return DdpId.class;
+  public DdpId newLoadable() throws DdpException {
+    return new DdpId();
   }
 }

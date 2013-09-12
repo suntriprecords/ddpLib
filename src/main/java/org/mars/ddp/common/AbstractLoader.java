@@ -34,9 +34,9 @@ public abstract class AbstractLoader<P> implements Loader<P> {
     return new URL(baseUrl.toExternalForm() + fileName);
   }
 
-  public static <P> Loader<P> newInstance(Class<? extends Loader<P>> loaderClass, URL baseUrl, String fileName) throws DdpException {
+  public static <P> Loader<? extends P> newInstance(Class<? extends Loader<? extends P>> loaderClass, URL baseUrl, String fileName) throws DdpException {
     try {
-      Constructor<? extends Loader<P>> ctor = loaderClass.getConstructor(URL.class, String.class);
+      Constructor<? extends Loader<? extends P>> ctor = loaderClass.getConstructor(URL.class, String.class);
       return ctor.newInstance(baseUrl, fileName);
     }
     catch (SecurityException e) {
@@ -116,19 +116,6 @@ public abstract class AbstractLoader<P> implements Loader<P> {
       close();
     }
     return loadable;
-  }
-
-  @Override
-  public P newLoadable() throws DdpException {
-    try {
-      return getLoadableClass().newInstance();
-    }
-    catch (InstantiationException e) {
-      throw new DdpException(e);
-    }
-    catch (IllegalAccessException e) {
-      throw new DdpException(e);
-    }
   }
 
   protected byte readHexByte(boolean trim) throws IOException {

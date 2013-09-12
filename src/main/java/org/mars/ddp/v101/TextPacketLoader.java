@@ -4,6 +4,7 @@ import java.net.URL;
 
 import org.mars.ddp.common.AbstractTextPacket;
 import org.mars.ddp.common.AbstractTextPacketLoader;
+import org.mars.ddp.common.DdpException;
 
 public class TextPacketLoader extends AbstractTextPacketLoader {
 
@@ -12,7 +13,7 @@ public class TextPacketLoader extends AbstractTextPacketLoader {
   }
 
   @Override
-  public Class<? extends AbstractTextPacket> getLoadableClass() {
-    return TextPacket.class;
+  public AbstractTextPacket newLoadable() throws DdpException {
+    return new TextPacket();
   }
 }

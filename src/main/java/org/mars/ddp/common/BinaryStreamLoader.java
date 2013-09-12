@@ -10,12 +10,12 @@ public class BinaryStreamLoader extends AbstractLoader<BinaryStream> {
   }
 
   @Override
-  public Class<? extends BinaryStream> getLoadableClass() {
-    return BinaryStream.class;
+  protected void load(BinaryStream bs) throws IOException {
+    //nothing to load spcifically
   }
 
   @Override
-  protected void load(BinaryStream bs) throws IOException {
-    //nothing to load spcifically
+  public BinaryStream newLoadable() throws DdpException {
+    return new BinaryStream();
   }
 }

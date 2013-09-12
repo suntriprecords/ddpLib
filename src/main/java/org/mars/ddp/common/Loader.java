@@ -8,6 +8,5 @@ public interface Loader<T> {
   public void close() throws IOException;
   public abstract T load(boolean close) throws IOException, DdpException;
 
-  public Class<? extends T> getLoadableClass();
   public T newLoadable() throws DdpException;
 }

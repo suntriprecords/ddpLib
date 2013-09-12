@@ -14,14 +14,14 @@ public class LeadInCdTextStreamLoader extends AbstractLoader<LeadInCdTextStream>
   }
 
   @Override
-  public Class<? extends LeadInCdTextStream> getLoadableClass() {
-    return LeadInCdTextStream.class;
-  }
-
-  @Override
   protected void load(LeadInCdTextStream stream) throws IOException, DdpException {
     InputStream is = new URL( getBaseUrl().toExternalForm() + getFileName()).openStream();
     stream.readAll(is);
     is.close();
+  }
+
+  @Override
+  public LeadInCdTextStream newLoadable() throws DdpException {
+    return new LeadInCdTextStream();
   }
 }

@@ -131,7 +131,10 @@ public class WavInputStream extends InputStream {
   public void close() throws IOException {
     in.close();
   }
-  
+
+  /**
+   * Use Files#copy instead when possible
+   */
   public void copyTo(OutputStream fos, int bufferLength) throws IOException {
     byte[] buffer = new byte[bufferLength];
     int read;
@@ -142,6 +145,9 @@ public class WavInputStream extends InputStream {
     fos.close();
   }
 
+  /**
+   * Use Files#copy instead when possible
+   */
   public void copyTo(OutputStream fos) throws IOException {
     copyTo(fos, 65535);
   }

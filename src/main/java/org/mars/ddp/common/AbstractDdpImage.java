@@ -1,26 +1,30 @@
 package org.mars.ddp.common;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
-import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 import java.util.Collection;
 import java.util.Locale;
 
 import org.mars.cdtext.PackType;
 import org.mars.ddp.v20.LeadInCdTextStream;
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Carfull to getParametrizedType calls if you change the erasure of this class
  */
 public abstract class AbstractDdpImage<I extends AbstractDdpId, M extends AbstractMapPacket<?, ?, ?>> {
 
+  private final Logger log;
   private I ddpId;
   private MapStream<M> mapStreams;
+  
+  
+  public AbstractDdpImage() {
+    log = LoggerFactory.getLogger(getClass());
+  }
   
   public I getDdpId() {
     return ddpId;
@@ -220,49 +224,29 @@ public abstract class AbstractDdpImage<I extends AbstractDdpId, M extends Abstra
     }
   }
   
-  public abstract Class<? extends AbstractDdpImageLoader<I, M>> getLoaderClass();
   
-  public AbstractDdpImageLoader<I, M> newLoader(URL imageDirUrl) throws DdpException {
-    try {
-      Constructor<? extends AbstractDdpImageLoader<I, M>> ctor = getLoaderClass().getConstructor(URL.class);
-      return ctor.newInstance(imageDirUrl);
-    }
-    catch (InstantiationException e) {
-      throw new DdpException(e);
-    }
-    catch (IllegalAccessException e) {
-      throw new DdpException(e);
-    }
-    catch (IllegalArgumentException e) {
-      throw new DdpException(e);
-    }
-    catch (InvocationTargetException e) {
-      throw new DdpException(e);
-    }
-    catch (SecurityException e) {
-      throw new DdpException(e);
-    }
-    catch (NoSuchMethodException e) {
-      throw new DdpException(e);
-    }
-  }
-  
-  public void dumpTo(File imageDir) throws IOException {
-    if(!imageDir.exists()) {
-      throw new FileNotFoundException(imageDir.getAbsolutePath());
-    }
-    else if(!imageDir.isDirectory()) {
-      throw new IOException("Not a directory: " + imageDir.getAbsolutePath());
+  public void dumpTo(Path imageDir, boolean withCompleteNames) throws IOException {
+    if(!Files.isDirectory(imageDir)) {
+      throw new IOException("Not a directory: " + imageDir);
     }
     
     int tracksCount = getPqStream().getTracksCount();
     for(int trackToDump = 1; trackToDump <= tracksCount; trackToDump++) {
-      System.out.println("Dumping track " + trackToDump);
-      WavInputStream wis = new WavInputStream(openTrackStream(trackToDump, false));
-      FileOutputStream fos = new FileOutputStream(new File(imageDir, "track" + trackToDump + ".wav"));
-      wis.copyTo(fos);
-      wis.close();
-      fos.close();
+      log.info("Dumping track " + trackToDump);
+      
+      try(WavInputStream wis = new WavInputStream(openTrackStream(trackToDump, false))) {
+        // Creating file name
+        String trackArtist = getCdText(trackToDump, PackType.Track_Performers);
+        String trackTitle = getCdText(trackToDump, PackType.Track_Title);
+        StringBuilder sb = new StringBuilder().append(String.format("%02d", trackToDump));
+        if(withCompleteNames) {
+          sb.append(' ').append(trackArtist).append(" - ").append(trackTitle);
+        }
+        sb.append(".wav");
+        Path wavFile = imageDir.resolve(sb.toString());
+  
+        Files.copy(wis,  wavFile,  StandardCopyOption.REPLACE_EXISTING);
+      }
     }
   }
 

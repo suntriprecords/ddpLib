@@ -38,15 +38,9 @@ public enum SubCodeDescriptor implements SubCodeDescribable {
     return id;
   }
 
-  @SuppressWarnings("unchecked")
   @Override
-  public Class<? extends Loader<DataStreamable>> getLoaderClass() {
-    return (Class<? extends Loader<DataStreamable>>) loaderClass;
-  }
-
-  @Override
-  public Loader<DataStreamable> newLoader(URL baseUrl, String fileName) throws DdpException {
-    return AbstractLoader.newInstance(getLoaderClass(), baseUrl, fileName);
+  public Loader<? extends DataStreamable> newLoader(URL baseUrl, String fileName) throws DdpException {
+    return AbstractLoader.newInstance(loaderClass, baseUrl, fileName);
   }
   
   public static SubCodeDescriptor idOf(String id) {

@@ -10,11 +10,6 @@ public class SubCodeStreamLoader extends AbstractLoader<SubCodeStream> {
   }
 
   @Override
-  public Class<? extends SubCodeStream> getLoadableClass() {
-    return SubCodeStream.class;
-  }
-
-  @Override
   protected void load(SubCodeStream stream) throws IOException, DdpException {
     SubCodeLoader subCodeLoader = new SubCodeLoader(getBaseUrl(), getFileName());
 //FIXME leads to out of memory errors
@@ -24,5 +19,10 @@ public class SubCodeStreamLoader extends AbstractLoader<SubCodeStream> {
 //      stream.add(subCodeByte);
 //    }
     subCodeLoader.close();
+  }
+
+  @Override
+  public SubCodeStream newLoadable() throws DdpException {
+    return new SubCodeStream();
   }
 }

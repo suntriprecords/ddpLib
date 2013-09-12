@@ -29,11 +29,6 @@ public class NullDataStreamLoader implements Loader<DataStreamable> {
   }
 
   @Override
-  public Class<? extends DataStreamable> getLoadableClass() {
-    return null;
-  }
-
-  @Override
   public DataStreamable newLoadable() throws DdpException {
     return null;
   }
