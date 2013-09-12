@@ -1,7 +1,9 @@
-- Registry of Objects/Readers/Writers
+OK Registry of Objects/Readers/Writers
+- Psec for trackNumber is 00h and indexNumber is A0h 
+- Still error in cdtext decoding: on suncd28 khetzalkhetzal is the artistname extracted
 - Handle subcode loading better (what's commented leads to out-of-memory errors)
 - Handle RW subcode better (extract P-Q and R-W channels independently...)
 - Handle Philips CD-Text
 - Implement DDP 2.10
 - TS data handling
-- Psec for trackNumber is 00h and indexNumber is A0h 
+- md5 check or whatevr check there might be in the folder
