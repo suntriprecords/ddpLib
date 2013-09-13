@@ -18,4 +18,9 @@ public class LeadInCdTextStream extends LeadInStream implements DataStreamable {
   public void setStreamUrl(URL streamUrl) {
     this.streamUrl = streamUrl;
   }
+  
+  @Override
+  public String toString() {
+    return streamUrl.toExternalForm();
+  }
 }

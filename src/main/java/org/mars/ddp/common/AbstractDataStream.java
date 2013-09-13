@@ -15,4 +15,9 @@ public abstract class AbstractDataStream implements DataStreamable {
   public void setStreamUrl(URL streamUrl) {
     this.streamUrl = streamUrl;
   }
+  
+  @Override
+  public String toString() {
+    return streamUrl.toExternalForm();
+  }
 }

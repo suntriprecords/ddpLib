@@ -15,22 +15,20 @@ public class DdpImageLoader extends AbstractDdpImageLoader<DdpId, MapPacket> {
     super(baseUrl);
   }
 
-  @Override
-  public AbstractDdpImage<DdpId, MapPacket> load() throws IOException, DdpException {
-    DdpImage image = new DdpImage();
-    load(image);
-    return image;
-  }
-  
-  
   /**
    * Caution: same code as in v20 package. Change one, change the other!
    */
+  @Override
   protected void load(AbstractDdpImage<DdpId, MapPacket> image) throws IOException, DdpException {
     DdpIdLoader ddpIdLoader = new DdpIdLoader(getBaseUrl(), AbstractDdpId.STREAM_NAME);
     image.setDdpId(ddpIdLoader.load(true));
     
     MapStreamLoader mapStreamLoader = new MapStreamLoader(getBaseUrl(), MapStream.STREAM_NAME);
     image.setMapStream(mapStreamLoader.load(true));
+  }
+
+  @Override
+  public AbstractDdpImage<DdpId, MapPacket> spawn() throws DdpException {
+    return new DdpImage();
   }
 }

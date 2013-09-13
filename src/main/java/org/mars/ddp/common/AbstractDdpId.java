@@ -124,4 +124,9 @@ public abstract class AbstractDdpId extends AbstractPacket implements DataStream
   public void setUserText(String userText) {
     this.userText = userText;
   }
+  
+  @Override
+  public String toString() {
+    return streamUrl.toExternalForm();
+  }
 }

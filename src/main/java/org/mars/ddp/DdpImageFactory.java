@@ -28,7 +28,7 @@ public class DdpImageFactory {
       Constructor<? extends AbstractDdpImageLoader<?, ?>> ctor = loaderClass.getConstructor(URL.class);
       AbstractDdpImageLoader<?, ?> loader = ctor.newInstance(imageDirUrl);
       
-      return loader.load();
+      return loader.load(true);
     }
     catch (NoSuchMethodException | SecurityException | InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
       throw new DdpException(e);

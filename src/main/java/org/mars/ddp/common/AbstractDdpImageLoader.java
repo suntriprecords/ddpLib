@@ -1,20 +1,22 @@
 package org.mars.ddp.common;
 
-import java.io.IOException;
+import java.net.MalformedURLException;
 import java.net.URL;
 
 
-public abstract class AbstractDdpImageLoader<I extends AbstractDdpId, M extends AbstractMapPacket<?, ?, ?>> {
-
-  private URL baseUrl;
+public abstract class AbstractDdpImageLoader<I extends AbstractDdpId, M extends AbstractMapPacket<?, ?, ?>> extends AbstractLoader<AbstractDdpImage<I, M>> {
 
   public AbstractDdpImageLoader(URL baseUrl) {
-    this.baseUrl = baseUrl;
+    super(baseUrl, null);
   }
 
-  public URL getBaseUrl() {
-    return baseUrl;
+  @Override
+  public String getFileName() {
+    throw new UnsupportedOperationException("No file, the image only supports its baseDir");
   }
-  
-  public abstract AbstractDdpImage<I, M> load() throws IOException, DdpException;
+
+  @Override
+  public URL getFileUrl() throws MalformedURLException {
+    return getBaseUrl();
+  }
 }

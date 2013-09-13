@@ -2,6 +2,9 @@ package org.mars.ddp.common;
 
 import java.net.URL;
 
+/**
+ * Please implement toString() as streamUrl().toExternalForm() to have readable logs
+ */
 public interface DataStreamable {
 
   /**
