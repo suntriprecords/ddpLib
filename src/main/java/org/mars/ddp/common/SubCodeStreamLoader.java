@@ -3,7 +3,7 @@ package org.mars.ddp.common;
 import java.io.IOException;
 import java.net.URL;
 
-public class SubCodeStreamLoader extends AbstractLoader<SubCodeStream> {
+public class SubCodeStreamLoader extends DataStreamLoader<SubCodeStream> {
 
   public SubCodeStreamLoader(URL baseUrl, String fileName) {
     super(baseUrl, fileName);
@@ -22,7 +22,7 @@ public class SubCodeStreamLoader extends AbstractLoader<SubCodeStream> {
   }
 
   @Override
-  public SubCodeStream newLoadable() throws DdpException {
+  public SubCodeStream spawn() throws DdpException {
     return new SubCodeStream();
   }
 }

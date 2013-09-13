@@ -3,11 +3,11 @@ package org.mars.ddp.v101;
 import java.io.IOException;
 import java.net.URL;
 
-import org.mars.ddp.common.AbstractLoader;
+import org.mars.ddp.common.DataStreamLoader;
 import org.mars.ddp.common.DdpException;
 import org.mars.ddp.common.PqStream;
 
-public class PqDescriptorStreamLoader extends AbstractLoader<PqStream<PqDescriptorPacket>> {
+public class PqDescriptorStreamLoader extends DataStreamLoader<PqStream<PqDescriptorPacket>> {
 
   public PqDescriptorStreamLoader(URL baseUrl, String fileName) {
     super(baseUrl, fileName);
@@ -24,7 +24,7 @@ public class PqDescriptorStreamLoader extends AbstractLoader<PqStream<PqDescript
   }
 
   @Override
-  public PqStream<PqDescriptorPacket> newLoadable() throws DdpException {
+  public PqStream<PqDescriptorPacket> spawn() throws DdpException {
     return new PqStream<>();
   }
 }

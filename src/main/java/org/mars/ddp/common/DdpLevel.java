@@ -5,7 +5,7 @@ package org.mars.ddp.common;
 public enum DdpLevel {
   DDP101("DDP 1.01", org.mars.ddp.v101.DdpImageLoader.class),
   DDP20("DDP 2.00", org.mars.ddp.v20.DdpImageLoader.class),
-  DDP21("DDP 2.10", null); //TODO
+  DDP21("DDP 2.10", null); //TODO for DVD's
   
   private String id;
   private Class<? extends AbstractDdpImageLoader<?, ?>> loaderClass;

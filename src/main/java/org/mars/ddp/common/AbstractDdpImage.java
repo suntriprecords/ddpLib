@@ -19,7 +19,7 @@ public abstract class AbstractDdpImage<I extends AbstractDdpId, M extends Abstra
 
   private final Logger log;
   private I ddpId;
-  private MapStream<M> mapStreams;
+  private MapStream<M> mapStream;
   
   
   public AbstractDdpImage() {
@@ -34,27 +34,31 @@ public abstract class AbstractDdpImage<I extends AbstractDdpId, M extends Abstra
     this.ddpId = ddpId;
   }
 
-  public MapStream<M> getMapStreams() {
-    if(mapStreams == null) {
-      mapStreams = new MapStream<M>();
+  public MapStream<M> getMapStream() {
+    if(mapStream == null) {
+      mapStream = new MapStream<M>();
     }
-    return mapStreams;
+    return mapStream;
   }
-  
-  public void clearMapStreams() {
-    getMapStreams().clear();
+
+  public void setMapStream(MapStream<M> mapStreams) {
+    this.mapStream = mapStreams;
+  }
+
+  public void clearMapStream() {
+    getMapStream().clear();
   }
 
   public M getSubCodePacket(SubCodeDescribable subCodeDesc) {
-    return getMapStreams().getSubCodePacket(subCodeDesc); 
+    return getMapStream().getSubCodePacket(subCodeDesc); 
   }
   
   public MapPackable<?, ?>[] getDataStreamPackets(DataStreamTypeable dataStreamType) {
-    return getMapStreams().getDataStreamPackets(dataStreamType); 
+    return getMapStream().getDataStreamPackets(dataStreamType); 
   }
 
   public M getDataStreamPacket(DataStreamTypeable dataStreamType) {
-    return getMapStreams().getDataStreamPacket(dataStreamType); 
+    return getMapStream().getDataStreamPacket(dataStreamType); 
   }
 
   public abstract MapPackable<?, ?>[] getDataMainPackets();

@@ -29,7 +29,7 @@ public class NullDataStreamLoader implements Loader<DataStreamable> {
   }
 
   @Override
-  public DataStreamable newLoadable() throws DdpException {
+  public DataStreamable spawn() throws DdpException {
     return null;
   }
 }

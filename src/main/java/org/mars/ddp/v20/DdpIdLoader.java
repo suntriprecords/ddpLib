@@ -12,7 +12,7 @@ public class DdpIdLoader extends AbstractDdpIdLoader<DdpId> {
   }
 
   @Override
-  public DdpId newLoadable() throws DdpException {
+  public DdpId spawn() throws DdpException {
     return new DdpId();
   }
 }

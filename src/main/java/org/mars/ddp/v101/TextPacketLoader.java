@@ -13,7 +13,7 @@ public class TextPacketLoader extends AbstractTextPacketLoader {
   }
 
   @Override
-  public AbstractTextPacket newLoadable() throws DdpException {
+  public AbstractTextPacket spawn() throws DdpException {
     return new TextPacket();
   }
 }

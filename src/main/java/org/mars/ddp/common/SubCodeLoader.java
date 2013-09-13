@@ -16,7 +16,7 @@ public class SubCodeLoader extends AbstractLoader<SubCodeByte> {
   }
 
   @Override
-  public SubCodeByte newLoadable() throws DdpException {
+  public SubCodeByte spawn() throws DdpException {
     return new SubCodeByte();
   }
 }

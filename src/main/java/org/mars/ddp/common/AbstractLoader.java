@@ -81,18 +81,31 @@ public abstract class AbstractLoader<P> implements Loader<P> {
     return bytesRead;
   }
 
-  protected abstract void load(P loadable) throws IOException, DdpException;
+  @Override
+  public P load(boolean close) throws IOException, DdpException {
+    P loadable = spawn();
+
+    preLoad(loadable);
+    load(loadable);
+    postLoad(loadable);
+
+    if (close) {
+      close();
+    }
+    return loadable;
+  }
 
   /**
    * May be overridden
    * 
+   * @throws IOException
    * @throws DdpException
    */
-  protected void preLoad(P loadable) throws DdpException, IOException {
-    if (loadable instanceof DataStreamable) {
-      ((DataStreamable) loadable).setStreamUrl(getFileUrl());
-    }
+  protected void preLoad(P loadable) throws IOException, DdpException {
+    // nothing
   }
+
+  protected abstract void load(P loadable) throws IOException, DdpException;
 
   /**
    * May be overridden
@@ -104,19 +117,6 @@ public abstract class AbstractLoader<P> implements Loader<P> {
     // nothing
   }
 
-  @Override
-  public P load(boolean close) throws IOException, DdpException {
-    P loadable = newLoadable();
-
-    preLoad(loadable);
-    load(loadable);
-    postLoad(loadable);
-
-    if (close) {
-      close();
-    }
-    return loadable;
-  }
 
   protected byte readHexByte(boolean trim) throws IOException {
     return readHexBytes(1, trim)[0];

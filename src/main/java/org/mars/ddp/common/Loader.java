@@ -4,9 +4,9 @@ import java.io.IOException;
 
 public interface Loader<T> {
   
-  public int available() throws IOException;
-  public void close() throws IOException;
+  public T spawn() throws DdpException; /// FIXME not nice
   public abstract T load(boolean close) throws IOException, DdpException;
 
-  public T newLoadable() throws DdpException;
+  public int available() throws IOException;
+  public void close() throws IOException;
 }

@@ -46,7 +46,7 @@ public class MapPacketLoader extends AbstractMapPacketLoader<MapPacket, DataStre
   }
 
   @Override
-  public MapPacket newLoadable() throws DdpException {
+  public MapPacket spawn() throws DdpException {
     return new MapPacket();
   }
 }

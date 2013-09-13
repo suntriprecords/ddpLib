@@ -3,7 +3,7 @@ package org.mars.ddp.common;
 import java.io.IOException;
 import java.net.URL;
 
-public class BinaryStreamLoader extends AbstractLoader<BinaryStream> {
+public class BinaryStreamLoader extends DataStreamLoader<BinaryStream> {
 
   public BinaryStreamLoader(URL baseUrl, String fileName) {
     super(baseUrl, fileName);
@@ -15,7 +15,7 @@ public class BinaryStreamLoader extends AbstractLoader<BinaryStream> {
   }
 
   @Override
-  public BinaryStream newLoadable() throws DdpException {
+  public BinaryStream spawn() throws DdpException {
     return new BinaryStream();
   }
 }
