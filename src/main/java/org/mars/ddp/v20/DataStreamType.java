@@ -4,15 +4,15 @@ import org.mars.ddp.common.DataStreamTypeable;
 
 public enum DataStreamType implements DataStreamTypeable {
 
-  Data_Stream("D0", "DM"),
-  Lead_In_Data("D2", "DM"),
-  Lead_Out_Data("D3", "DM"),
-  Fill_Data("D4", "DM"),
-  Volume_Track_Index_Text("T0", "TS"),
-  Commentary_Text("T1", "TS"),
-  Customer_Information("T2", "TS"),
-  ITTS_Fformat("T3", "TS"),
-  Subcode_Data("S0", "SD");
+  Data_Stream("D0", TYPE_DM_MAIN),
+  Lead_In_Data("D2", TYPE_DM_MAIN),
+  Lead_Out_Data("D3", TYPE_DM_MAIN),
+  Fill_Data("D4", TYPE_DM_MAIN),
+  Volume_Track_Index_Text("T0", TYPE_TEXT),
+  Commentary_Text("T1", TYPE_TEXT),
+  Customer_Information("T2", TYPE_TEXT),
+  ITTS_Fformat("T3", TYPE_TEXT),
+  Subcode_Data("S0", TYPE_SUBCODE);
 
   
   private String id;
