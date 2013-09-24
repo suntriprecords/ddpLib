@@ -1,10 +1,6 @@
 package org.mars.ddp.v20;
 
-import java.net.URL;
-
-import org.mars.ddp.common.AbstractLoader;
 import org.mars.ddp.common.DataStreamable;
-import org.mars.ddp.common.DdpException;
 import org.mars.ddp.common.Loader;
 import org.mars.ddp.common.SubCodeDescribable;
 import org.mars.ddp.common.SubCodeStreamLoader;
@@ -39,8 +35,8 @@ public enum SubCodeDescriptor implements SubCodeDescribable {
   }
 
   @Override
-  public Loader<? extends DataStreamable> newLoader(URL baseUrl, String fileName) throws DdpException {
-    return AbstractLoader.newInstance(loaderClass, baseUrl, fileName);
+  public Class<? extends Loader<? extends DataStreamable>> getLoaderClass() {
+    return loaderClass;
   }
   
   public static SubCodeDescriptor idOf(String id) {

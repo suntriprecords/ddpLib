@@ -1,11 +1,7 @@
 package org.mars.ddp.v20;
 
-import java.net.URL;
-
-import org.mars.ddp.common.AbstractLoader;
 import org.mars.ddp.common.BinaryStreamLoader;
 import org.mars.ddp.common.DataStreamable;
-import org.mars.ddp.common.DdpException;
 import org.mars.ddp.common.Loader;
 import org.mars.ddp.common.NullDataStreamLoader;
 import org.mars.ddp.common.SourceStorageModable;
@@ -34,11 +30,12 @@ public enum SourceStorageMode implements SourceStorageModable {
     return id;
   }
 
-  @Override
-  public Loader<? extends DataStreamable> newLoader(URL baseUrl, String fileName) throws DdpException {
-    return AbstractLoader.newInstance(loaderClass, baseUrl, fileName);
-  }
   
+  @Override
+  public Class<? extends Loader<? extends DataStreamable>> getLoaderClass() {
+    return loaderClass;
+  }
+
   public static SourceStorageMode idOf(int id) {
     for(SourceStorageMode mode : values()) {
       if(mode.getId() == id) {

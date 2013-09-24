@@ -1,6 +1,7 @@
 package org.mars.ddp.common;
 
 
-public interface SubCodeDescribable extends Loadable<DataStreamable> {
+public interface SubCodeDescribable {
   public String getId();
+  public abstract Class<? extends Loader<? extends DataStreamable>> getLoaderClass();
 }

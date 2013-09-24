@@ -87,7 +87,8 @@ public abstract class AbstractMapPacketLoader<P extends AbstractMapPacket<T, S, 
      * SUB is not used for Super Density (DV) or Multimedia CD (MMCD).
      */
     if(sub != null && ssm != SourceStorageMode.Complete_2352_Bytes_Plus_R_W_data) {
-      Loader<? extends DataStreamable> loader = sub.newLoader(getBaseUrl(), loadable.getDataStreamIdentifier());
+      Class<? extends Loader<? extends DataStreamable>> loaderClass = sub.getLoaderClass();
+      Loader<? extends DataStreamable> loader = AbstractLoader.newInstance(loaderClass, getBaseUrl(), loadable.getDataStreamIdentifier());
       DataStreamable stream = loader.load(true);
       loadable.setDataStream(stream);
     }
@@ -99,7 +100,8 @@ public abstract class AbstractMapPacketLoader<P extends AbstractMapPacket<T, S, 
       //TODO
     }
     else {
-      Loader<? extends DataStreamable> loader = ssm.newLoader(getBaseUrl(), loadable.getDataStreamIdentifier());
+      Class<? extends Loader<? extends DataStreamable>> loaderClass = ssm.getLoaderClass();
+      Loader<? extends DataStreamable> loader = AbstractLoader.newInstance(loaderClass, getBaseUrl(), loadable.getDataStreamIdentifier());
       DataStreamable stream = loader.load(true);
       loadable.setDataStream(stream);
     }
