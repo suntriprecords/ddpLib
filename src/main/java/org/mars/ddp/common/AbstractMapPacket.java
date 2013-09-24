@@ -28,6 +28,7 @@ public abstract class AbstractMapPacket<T extends DataStreamTypeable, S extends 
   private String isrc; //null when map packet is used for DS (Subcode) and TS (Text) data, as well as DM (Main) lead-in and lead-out
   private String dataStreamIdentifier; //name of the TS (Text) or DS (Subcode) file when used with logically accessed input media such as labeled tape or disc files. DSI also contains the name of DM (Main) files when used with logically accessed direct access media such as DOS files
   private DataStreamable dataStream; //the parsed data steam
+  private TextStream textStream; //the parsed text stream
   
   @Override
   public int getPacketLength() {
@@ -102,7 +103,11 @@ public abstract class AbstractMapPacket<T extends DataStreamTypeable, S extends 
   public DataStreamable getDataStream() {
     return dataStream;
   }
-  
+  public TextStream getTextStream() {
+    return textStream;
+  }
+
+
   public void setDataStreamType(T dataStreamType) {
     this.dataStreamType = dataStreamType;
   }
@@ -153,6 +158,9 @@ public abstract class AbstractMapPacket<T extends DataStreamTypeable, S extends 
   }
   public void setDataStream(DataStreamable dataStream) {
     this.dataStream = dataStream;
+  }
+  public void setTextStream(TextStream textStream) {
+    this.textStream = textStream;
   }
 
   @Override
