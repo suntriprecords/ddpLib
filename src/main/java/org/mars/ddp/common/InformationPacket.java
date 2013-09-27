@@ -6,6 +6,7 @@ public abstract class InformationPacket extends AbstractPacket implements TextPa
 
   private String information; //T0 title text or T1 commentary text or T2 customer info
 
+  
   @Override
   public String getInformation() {
     return information;

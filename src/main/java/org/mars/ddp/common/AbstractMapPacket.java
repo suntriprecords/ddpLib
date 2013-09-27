@@ -27,8 +27,9 @@ public abstract class AbstractMapPacket<T extends DataStreamTypeable, S extends 
   private Integer indexNumber; //null for all TS (Text) data and DS (Subcode) data that contains PQ information. When null for DM (Main) data, mastering assigns index numbers based upon the Red, Yellow and Green book specifications (either 00 or 01)
   private String isrc; //null when map packet is used for DS (Subcode) and TS (Text) data, as well as DM (Main) lead-in and lead-out
   private String dataStreamIdentifier; //name of the TS (Text) or DS (Subcode) file when used with logically accessed input media such as labeled tape or disc files. DSI also contains the name of DM (Main) files when used with logically accessed direct access media such as DOS files
+
   private DataStreamable dataStream; //the parsed data steam
-  private TextStream textStream; //the parsed text stream
+  private TextStreamable textStream; //the parsed text stream
   
   @Override
   public int getPacketLength() {
@@ -103,7 +104,7 @@ public abstract class AbstractMapPacket<T extends DataStreamTypeable, S extends 
   public DataStreamable getDataStream() {
     return dataStream;
   }
-  public TextStream getTextStream() {
+  public TextStreamable getTextStream() {
     return textStream;
   }
 
@@ -159,7 +160,7 @@ public abstract class AbstractMapPacket<T extends DataStreamTypeable, S extends 
   public void setDataStream(DataStreamable dataStream) {
     this.dataStream = dataStream;
   }
-  public void setTextStream(TextStream textStream) {
+  public void setTextStream(TextStreamable textStream) {
     this.textStream = textStream;
   }
 

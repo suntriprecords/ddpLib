@@ -63,9 +63,10 @@ public abstract class AbstractDdpIdLoader<P extends AbstractDdpId> extends DataS
   }
 
   public static DdpLevel readDdpLevel(URL ddpIdUrl) throws IOException {
-    DataInputStream dis = new DataInputStream( ddpIdUrl.openStream());
-    String levelId = readString(dis, 8, true);
-    dis.close();
-    return DdpLevel.levelOf(levelId);
+    try(DataInputStream dis = new DataInputStream( ddpIdUrl.openStream())) {
+      String levelId = readString(dis, 8, true);
+      dis.close();
+      return DdpLevel.levelOf(levelId);
+    }
   }
 }

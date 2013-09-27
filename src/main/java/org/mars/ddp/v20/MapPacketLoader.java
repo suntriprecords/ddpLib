@@ -4,9 +4,10 @@ import java.io.IOException;
 import java.net.URL;
 
 import org.mars.ddp.common.AbstractMapPacketLoader;
+import org.mars.ddp.common.DataStreamTypeable;
 import org.mars.ddp.common.DdpException;
 
-public class MapPacketLoader extends AbstractMapPacketLoader<MapPacket, DataStreamType, SubCodeDescriptor, SourceStorageMode> {
+public class MapPacketLoader extends AbstractMapPacketLoader<MapPacket, DataStreamType, SubCodeDescriptor, SourceStorageMode, TextStreamType> {
   
   public MapPacketLoader(URL baseUrl, String fileName) {
     super(baseUrl, fileName);
@@ -57,6 +58,16 @@ public class MapPacketLoader extends AbstractMapPacketLoader<MapPacket, DataStre
       ssm = SourceStorageMode.idOf(id);
     }
     return ssm;
+  }
+
+  @Override
+  public TextStreamType getTextStreamType(DataStreamTypeable dst) throws IOException {
+    if(dst.getType() == DataStreamTypeable.TYPE_TEXT) {
+      return TextStreamType.idOf(dst.getId());
+    }
+    else {
+      return null;
+    }
   }
 
   @Override

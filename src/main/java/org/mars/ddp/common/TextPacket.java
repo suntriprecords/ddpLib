@@ -4,7 +4,7 @@ package org.mars.ddp.common;
 /**
  * T0, T1, T3 types
  */
-public abstract class AbstractTextPacket extends InformationPacket {
+public class TextPacket extends InformationPacket {
 
   public static String TEXT_PACKET_VALID = "VVVT";
   @SuppressWarnings("hiding")

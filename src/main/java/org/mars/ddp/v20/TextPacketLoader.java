@@ -2,9 +2,9 @@ package org.mars.ddp.v20;
 
 import java.net.URL;
 
-import org.mars.ddp.common.AbstractTextPacket;
 import org.mars.ddp.common.AbstractTextPacketLoader;
 import org.mars.ddp.common.DdpException;
+import org.mars.ddp.common.TextPacket;
 
 public class TextPacketLoader extends AbstractTextPacketLoader {
 
@@ -13,7 +13,7 @@ public class TextPacketLoader extends AbstractTextPacketLoader {
   }
 
   @Override
-  public AbstractTextPacket spawn() throws DdpException {
+  public TextPacket spawn() throws DdpException {
     return new TextPacket();
   }
 }

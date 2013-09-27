@@ -4,9 +4,14 @@ import java.io.IOException;
 import java.net.URL;
 
 import org.mars.ddp.v20.SourceStorageMode;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-public abstract class AbstractMapPacketLoader<P extends AbstractMapPacket<T, S, M>, T extends DataStreamTypeable, S extends SubCodeDescribable, M extends SourceStorageModable> extends AbstractLoader<P> {
+public abstract class AbstractMapPacketLoader<P extends AbstractMapPacket<D, S, M>, D extends DataStreamTypeable, S extends SubCodeDescribable, M extends SourceStorageModable, T extends TextStreamTypeable> extends AbstractLoader<P> {
 
+  private final static Logger log = LoggerFactory.getLogger(AbstractMapPacketLoader.class);
+  
+  
   public AbstractMapPacketLoader(URL baseUrl, String fileName) {
     super(baseUrl, fileName);
   }
@@ -18,7 +23,7 @@ public abstract class AbstractMapPacketLoader<P extends AbstractMapPacket<T, S, 
       throw new IllegalArgumentException("mapPacketValid = " + mapPacketValid);
     }
     
-    T dataStreamType = readDataStreamType();
+    D dataStreamType = readDataStreamType();
     mapPacket.setDataStreamType(dataStreamType);
     
     Integer dataStreamPointer = readIntFromString(8);
@@ -88,26 +93,43 @@ public abstract class AbstractMapPacketLoader<P extends AbstractMapPacket<T, S, 
      */
     if(sub != null && ssm != SourceStorageMode.Complete_2352_Bytes_Plus_R_W_data) {
       Class<? extends Loader<? extends DataStreamable>> loaderClass = sub.getLoaderClass();
-      Loader<? extends DataStreamable> loader = AbstractLoader.newInstance(loaderClass, getBaseUrl(), loadable.getDataStreamIdentifier());
-      DataStreamable stream = loader.load(true);
-      loadable.setDataStream(stream);
+      if(loaderClass != null) {
+        Loader<? extends DataStreamable> loader = AbstractLoader.newInstance(loaderClass, getBaseUrl(), loadable.getDataStreamIdentifier());
+        DataStreamable stream = loader.load(true);
+        loadable.setDataStream(stream);
+      }
     }
     else if(ssm == null) {
       /**
        * SSM is null when the map packet is used for DS (Subcode) and TS (Text) data
        * But all SubCode cases are handled above, so let's load TS data
+       * NOTE: TS are described sincd DDP 1.0 but is actually used with DVDs (DDP v2+).
        */
-      //TODO
+      if(loadable.getDataStreamType().getType() == DataStreamTypeable.TYPE_TEXT) { //sure it's a TS now
+        T textType = getTextStreamType(loadable.getDataStreamType());
+        Class<? extends Loader<? extends TextStreamable>> loaderClass = textType.getLoaderClass();
+        if(loaderClass != null) {
+          Loader<? extends TextStreamable> loader = AbstractLoader.newInstance(loaderClass, getBaseUrl(), InformationPacket.STREAM_NAME);
+          TextStreamable stream = loader.load(true);
+          loadable.setTextStream(stream);
+        }
+      }
+      else {
+        log.warn("Got conditions for TS, but the stream is not TS (DS then ?)");
+      }
     }
     else {
       Class<? extends Loader<? extends DataStreamable>> loaderClass = ssm.getLoaderClass();
-      Loader<? extends DataStreamable> loader = AbstractLoader.newInstance(loaderClass, getBaseUrl(), loadable.getDataStreamIdentifier());
-      DataStreamable stream = loader.load(true);
-      loadable.setDataStream(stream);
+      if(loaderClass != null) {
+        Loader<? extends DataStreamable> loader = AbstractLoader.newInstance(loaderClass, getBaseUrl(), loadable.getDataStreamIdentifier());
+        DataStreamable stream = loader.load(true);
+        loadable.setDataStream(stream);
+      }
     }
   }
 
-  public abstract T readDataStreamType() throws IOException;
+  public abstract D readDataStreamType() throws IOException;
   public abstract S readSubCodeDescriptor() throws IOException;
   public abstract M readSourceStorageMode() throws IOException;
+  public abstract T getTextStreamType(DataStreamTypeable dst) throws IOException;
 }

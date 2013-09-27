@@ -15,9 +15,9 @@ public class LeadInCdTextStreamLoader extends DataStreamLoader<LeadInCdTextStrea
 
   @Override
   protected void load(LeadInCdTextStream stream) throws IOException, DdpException {
-    InputStream is = new URL( getBaseUrl().toExternalForm() + getFileName()).openStream();
-    stream.readAll(is);
-    is.close();
+    try(InputStream is = new URL( getBaseUrl().toExternalForm() + getFileName()).openStream()) {
+      stream.readAll(is);
+    }
   }
 
   @Override
