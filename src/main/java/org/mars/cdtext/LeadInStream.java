@@ -126,9 +126,11 @@ public class LeadInStream implements Iterable<LeadInPack> {
           }
         }
         else if(packTrack > track) {
-          //damn, we are too far, meaning the previous pack contained a part of the previous track's text and the whole text of this track (and maybe others)
-          byte[] data = previous.getDataAtFollowingStart(track-previous.getTrackNumber());
-          bb.put(data);
+          if(bb.position() == 0) { //that's for the case where the track N data fit completely in the track N-1 data (case above) UP TO FILLING IT, thus there is no block for track N and we're going to fetch N-1 again here
+            //damn, we are too far, meaning the previous pack contained a part of the previous track's text and the whole text of this track (and maybe others)
+            byte[] data = previous.getDataAtFollowingStart(track-previous.getTrackNumber());
+            bb.put(data);
+          }
           break;
         }
         else { //right track
