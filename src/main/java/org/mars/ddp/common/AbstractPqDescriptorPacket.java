@@ -129,7 +129,7 @@ public abstract class AbstractPqDescriptorPacket extends AbstractPacket implemen
    * @see http://en.wikipedia.org/wiki/Compact_Disc#Data_structure
    */
   public int getCdaCueBytes() {
-    return getCdaCueFrames() * BYTES_MUSIC_PER_FRAME;
+    return getCdaCueFrames() * BYTES_DATA_PER_FRAME;
   }
   
   public boolean isLeadIn() {
