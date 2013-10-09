@@ -1,7 +1,7 @@
 package org.mars.ddp.common;
 
 public class SubCodeByte {
-  private byte subcode;
+  private byte data;
   private int position; //position in sector [0..97]
 
   public final static int START_MARKER_POSITION = 0; 
@@ -14,25 +14,25 @@ public class SubCodeByte {
     //nothing
   }
 
-  public SubCodeByte(byte subcode) {
-    this.subcode = subcode;
+  public SubCodeByte(byte data) {
+    this.data = data;
   }
 
-  public SubCodeByte(byte subcode, int position) {
-    this(subcode);
+  public SubCodeByte(byte data, int position) {
+    this(data);
     this.position = position;
   }
 
   public byte getSubcode() {
-    return subcode;
+    return data;
   }
   
   public int getPosition() {
     return position;
   }
   
-  public void setSubcode(byte subcode) {
-    this.subcode = subcode;
+  public void setSubcode(byte data) {
+    this.data = data;
   }
 
   public void setPosition(int position) {
@@ -51,5 +51,6 @@ public class SubCodeByte {
     return !(isStartMarker() || isEndMarker());
   }
 
+  
   //TODO extract P-W depending on SubCode format
 }
