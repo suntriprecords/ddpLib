@@ -240,10 +240,11 @@ public abstract class AbstractDdpImage<I extends AbstractDdpId, M extends Abstra
       
       try(WavInputStream wis = new WavInputStream(openTrackStream(trackToDump, false))) {
         // Creating file name
-        String trackArtist = getCdText(trackToDump, PackType.Track_Performers);
-        String trackTitle = getCdText(trackToDump, PackType.Track_Title);
         StringBuilder sb = new StringBuilder().append(String.format("%02d", trackToDump));
-        if(withCompleteNames) {
+        
+        if(withCompleteNames && getCdTextStream() != null) {
+          String trackArtist = getCdText(trackToDump, PackType.Track_Performers);
+          String trackTitle = getCdText(trackToDump, PackType.Track_Title);
           sb.append(' ').append(trackArtist).append(" - ").append(trackTitle);
         }
         sb.append(".wav");
