@@ -87,16 +87,24 @@ public abstract class AbstractMapPacketLoader<P extends AbstractMapPacket<D, S, 
     
     /**
      * SUB is null when the map packet is used for DM (Main) or TS (Text) data.
-     * One exception exists, however: If R-W subcode data is appended to each block
-     * of the main channel data (SSM = 8), this field describes the format of that data.
      * SUB is not used for Super Density (DV) or Multimedia CD (MMCD).
      */
-    if(sub != null && ssm != SourceStorageMode.Complete_2352_Bytes_Plus_R_W_data) {
-      Class<? extends Loader<? extends DataStreamable>> loaderClass = sub.getLoaderClass();
-      if(loaderClass != null) {
-        Loader<? extends DataStreamable> loader = AbstractLoader.newInstance(loaderClass, getBaseUrl(), loadable.getDataStreamIdentifier());
-        DataStreamable stream = loader.load(true);
-        loadable.setDataStream(stream);
+    if(sub != null) {
+      if(ssm != SourceStorageMode.Complete_2352_Bytes_Plus_R_W_data) {
+        // PQ DESCR and individual Subcode streams case
+        Class<? extends Loader<? extends DataStreamable>> loaderClass = sub.getLoaderClass();
+        if(loaderClass != null) {
+          Loader<? extends DataStreamable> loader = AbstractLoader.newInstance(loaderClass, getBaseUrl(), loadable.getDataStreamIdentifier());
+          DataStreamable stream = loader.load(true);
+          loadable.setDataStream(stream);
+        }
+      }
+      else {
+        //TODO Interleaved data+subcode case. SUB equals one of the full or partial RW/WR formats
+        /**
+         * If R-W subcode data is appended to each block of the main channel data (SSM = 8),
+         * this field describes the format of that data.
+         */
       }
     }
     else if(ssm == null) {
@@ -119,6 +127,7 @@ public abstract class AbstractMapPacketLoader<P extends AbstractMapPacket<D, S, 
       }
     }
     else {
+      //DM (Main) case
       Class<? extends Loader<? extends DataStreamable>> loaderClass = ssm.getLoaderClass();
       if(loaderClass != null) {
         Loader<? extends DataStreamable> loader = AbstractLoader.newInstance(loaderClass, getBaseUrl(), loadable.getDataStreamIdentifier());

@@ -3,6 +3,9 @@ package org.mars.ddp.common;
 import java.io.IOException;
 import java.net.URL;
 
+/**
+ * FIXME this class is mainly a stub. There should be as many SubCodeStreamLoader's as there are R-W layouts.
+ */
 public class SubCodeStreamLoader extends DataStreamLoader<SubCodeStream> {
 
   public SubCodeStreamLoader(URL baseUrl, String fileName) {

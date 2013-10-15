@@ -5,6 +5,6 @@ package org.mars.ddp.common;
  * @see http://www.cdrfaq.org/faq02.html
  */
 public class SubCodeStream extends AbstractStreamCollection<SubCodeByte> {
-  // nothing
+  public final static String STREAM_EXTENSION = ".RW";
 }
 
