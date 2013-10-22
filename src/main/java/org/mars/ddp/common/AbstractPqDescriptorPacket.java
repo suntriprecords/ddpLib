@@ -5,7 +5,7 @@ package org.mars.ddp.common;
  * @see http://en.wikipedia.org/wiki/Pregap
  * @see http://desolationvalley.com/wj/oddcd/
  */
-public abstract class AbstractPqDescriptorPacket extends AbstractPacket implements DataUnits {
+public abstract class AbstractPqDescriptorPacket extends AbstractPacket {
 
   public final static String LEAD_IN_TRACK_NUMBER = "00";
   public final static String LEAD_OUT_TRACK_NUMBER = "AA";
@@ -113,7 +113,7 @@ public abstract class AbstractPqDescriptorPacket extends AbstractPacket implemen
    * @see http://en.wikipedia.org/wiki/Compact_Disc#.22Frame.22
    */
   public int getCdaCueSectors() {
-    return getCdaCueSeconds() * SECTORS_PER_SECOND + cdaTimeFrames;
+    return getCdaCueSeconds() * DataUnits.SECTORS_PER_SECOND + cdaTimeFrames;
   }
 
   /**
@@ -121,7 +121,7 @@ public abstract class AbstractPqDescriptorPacket extends AbstractPacket implemen
    * @see http://en.wikipedia.org/wiki/Compact_Disc#Data_structure
    */
   public int getCdaCueFrames() {
-    return getCdaCueSectors() * FRAMES_PER_SECTOR;
+    return getCdaCueSectors() * DataUnits.FRAMES_PER_SECTOR;
   }
 
   /**
@@ -129,7 +129,7 @@ public abstract class AbstractPqDescriptorPacket extends AbstractPacket implemen
    * @see http://en.wikipedia.org/wiki/Compact_Disc#Data_structure
    */
   public int getCdaCueBytes() {
-    return getCdaCueFrames() * BYTES_DATA_PER_FRAME;
+    return getCdaCueFrames() * DataUnits.BYTES_DATA_PER_FRAME;
   }
   
   public boolean isLeadIn() {

@@ -85,42 +85,26 @@ public abstract class AbstractMapPacketLoader<P extends AbstractMapPacket<D, S, 
     SubCodeDescribable sub = loadable.getSubCodeDescriptor();
     SourceStorageModable ssm = loadable.getSourceStorageMode();
     
-    /**
-     * SUB is null when the map packet is used for DM (Main) or TS (Text) data.
-     * SUB is not used for Super Density (DV) or Multimedia CD (MMCD).
-     */
+     // SUB is null when the map packet is used for DM (Main) or TS (Text) data.
+     // SUB is not used for Super Density (DV) or Multimedia CD (MMCD).
     if(sub != null) {
       if(ssm != SourceStorageMode.Complete_2352_Bytes_Plus_R_W_data) {
-        // PQ DESCR and individual Subcode streams case
-        Class<? extends Loader<? extends DataStreamable>> loaderClass = sub.getLoaderClass();
-        if(loaderClass != null) {
-          Loader<? extends DataStreamable> loader = AbstractLoader.newInstance(loaderClass, getBaseUrl(), loadable.getDataStreamIdentifier());
-          DataStreamable stream = loader.load(true);
-          loadable.setDataStream(stream);
-        }
+        // Regular PQ DESCR and individual Subcode streams cases.
+        loadSubCodeStream(loadable, sub);
       }
       else {
-        //TODO Interleaved data+subcode case. SUB equals one of the full or partial RW/WR formats
-        /**
-         * If R-W subcode data is appended to each block of the main channel data (SSM = 8),
-         * this field describes the format of that data.
-         */
+        // Special case: If R-W subcode data is appended to each block of the
+        // main channel data (SSM = 8), SUB describes the format of that data.
+        // FIXME NOTE I'm not loading the subcode in this case, but I should (would require to pass an interleave amount to SubCodeStreamLoader)
+        loadDataStream(loadable, ssm);
       }
     }
     else if(ssm == null) {
-      /**
-       * SSM is null when the map packet is used for DS (Subcode) and TS (Text) data
-       * But all SubCode cases are handled above, so let's load TS data
-       * NOTE: TS are described sincd DDP 1.0 but is actually used with DVDs (DDP v2+).
-       */
+       // SSM is null when the map packet is used for DS (Subcode) and TS (Text) data
+       // But all SubCode cases are handled above, so let's load TS data
+       // NOTE: TS are described sincd DDP 1.0 but is actually used with DVDs (DDP v2+).
       if(loadable.getDataStreamType().getType() == DataStreamTypeable.TYPE_TEXT) { //sure it's a TS now
-        T textType = getTextStreamType(loadable.getDataStreamType());
-        Class<? extends Loader<? extends TextStreamable>> loaderClass = textType.getLoaderClass();
-        if(loaderClass != null) {
-          Loader<? extends TextStreamable> loader = AbstractLoader.newInstance(loaderClass, getBaseUrl(), InformationPacket.STREAM_NAME);
-          TextStreamable stream = loader.load(true);
-          loadable.setTextStream(stream);
-        }
+        loadTextStream(loadable);
       }
       else {
         log.warn("Got conditions for TS, but the stream is not TS (DS then ?)");
@@ -128,13 +112,30 @@ public abstract class AbstractMapPacketLoader<P extends AbstractMapPacket<D, S, 
     }
     else {
       //DM (Main) case
-      Class<? extends Loader<? extends DataStreamable>> loaderClass = ssm.getLoaderClass();
-      if(loaderClass != null) {
-        Loader<? extends DataStreamable> loader = AbstractLoader.newInstance(loaderClass, getBaseUrl(), loadable.getDataStreamIdentifier());
-        DataStreamable stream = loader.load(true);
-        loadable.setDataStream(stream);
-      }
+      loadDataStream(loadable, ssm);
     }
+  }
+
+  protected void loadDataStream(P loadable, SourceStorageModable ssm) throws DdpException, IOException {
+    Class<? extends Loader<? extends DataStreamable>> loaderClass = ssm.getLoaderClass();
+    Loader<? extends DataStreamable> loader = AbstractLoader.newInstance(loaderClass, getBaseUrl(), loadable.getDataStreamIdentifier());
+    DataStreamable stream = loader.load(true);
+    loadable.setDataStream(stream);
+  }
+
+  protected void loadSubCodeStream(P loadable, SubCodeDescribable sub) throws DdpException, IOException {
+    Class<? extends Loader<? extends DataStreamable>> loaderClass = sub.getLoaderClass();
+    Loader<? extends DataStreamable> loader = AbstractLoader.newInstance(loaderClass, getBaseUrl(), loadable.getDataStreamIdentifier());
+    DataStreamable stream = loader.load(true);
+    loadable.setSubCodeStream(stream);
+  }
+
+  protected void loadTextStream(P loadable) throws IOException, DdpException {
+    T textType = getTextStreamType(loadable.getDataStreamType());
+    Class<? extends Loader<? extends TextStreamable>> loaderClass = textType.getLoaderClass();
+    Loader<? extends TextStreamable> loader = AbstractLoader.newInstance(loaderClass, getBaseUrl(), InformationPacket.STREAM_NAME);
+    TextStreamable stream = loader.load(true);
+    loadable.setTextStream(stream);
   }
 
   public abstract D readDataStreamType() throws IOException;

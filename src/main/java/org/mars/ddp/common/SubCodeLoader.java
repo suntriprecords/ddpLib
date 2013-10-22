@@ -12,7 +12,7 @@ public class SubCodeLoader extends AbstractLoader<SubCodeByte> {
   @Override
   protected void load(SubCodeByte loadable) throws IOException, DdpException {
     byte subCode = readByte();
-    loadable.setSubcode(subCode);
+    loadable.setData(subCode);
   }
 
   @Override

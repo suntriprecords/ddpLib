@@ -8,7 +8,7 @@ public interface DataUnits {
   public final static int BYTES_DATA_PER_FRAME = 24;
   public final static int BYTES_SUBCODE_PER_FRAME = 1;
   public final static int BYTES_CIRC_PER_FRAME = 8;
-  public final static int BYTES_PER_FRAME = BYTES_DATA_PER_FRAME + BYTES_SUBCODE_PER_FRAME + BYTES_CIRC_PER_FRAME;
+  public final static int BYTES_PER_FRAME = BYTES_DATA_PER_FRAME + BYTES_SUBCODE_PER_FRAME + BYTES_CIRC_PER_FRAME; // 1 sub- code, 12 odd-audio, 4 Q-redundancy, 12 even-audio and 4 P-redundancy
   public final static int BYTES_MUSIC_PER_SECTOR = BYTES_DATA_PER_FRAME * FRAMES_PER_SECTOR;
   public final static int BYTES_DATA_PER_SECTOR = BYTES_PER_FRAME * FRAMES_PER_SECTOR;
   public final static int FRAMES_PER_SECOND = FRAMES_PER_SECTOR * SECTORS_PER_SECOND;

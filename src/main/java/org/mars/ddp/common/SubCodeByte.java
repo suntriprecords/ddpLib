@@ -1,56 +1,35 @@
 package org.mars.ddp.common;
 
+/**
+ * http://en.wikipedia.org/wiki/Compact_Disc_subcode
+ */
 public class SubCodeByte {
-  private byte data;
-  private int position; //position in sector [0..97]
+  protected byte data;
+  protected int frame; //Position in sector [2..98]. The 2 sync frames at the start of each sector aren't on the "master"
 
-  public final static int START_MARKER_POSITION = 0; 
-  public final static int END_MARKER_POSITION = 97; 
-  
-  /**
-   * Needed for reflect
-   */
+
   public SubCodeByte() {
     //nothing
   }
 
-  public SubCodeByte(byte data) {
+  public SubCodeByte(byte data, int frame) {
     this.data = data;
+    this.frame = frame;
   }
 
-  public SubCodeByte(byte data, int position) {
-    this(data);
-    this.position = position;
-  }
-
-  public byte getSubcode() {
+  public byte getData() {
     return data;
   }
   
-  public int getPosition() {
-    return position;
+  public int getFrame() {
+    return frame;
   }
   
-  public void setSubcode(byte data) {
+  public void setData(byte data) {
     this.data = data;
   }
 
-  public void setPosition(int position) {
-    this.position = position;
+  public void setFrame(int frame) {
+    this.frame = frame;
   }
-
-  public boolean isStartMarker() {
-    return (position == START_MARKER_POSITION);
-  }
-
-  public boolean isEndMarker() {
-    return (position == END_MARKER_POSITION);
-  }
-  
-  public boolean isPayload() {
-    return !(isStartMarker() || isEndMarker());
-  }
-
-  
-  //TODO extract P-W depending on SubCode format
 }
