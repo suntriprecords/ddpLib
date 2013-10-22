@@ -74,7 +74,7 @@ public abstract class AbstractDdpImage<I extends AbstractDdpId, M extends Abstra
     PqStream<?> stream = null;
     M mapPacket = getPqSubCodePacket();
     if(mapPacket != null) {
-      stream = (PqStream<?>)mapPacket.getDataStream();
+      stream = (PqStream<?>)mapPacket.getSubCodeStream();
     }
     return stream;
   }
@@ -83,7 +83,7 @@ public abstract class AbstractDdpImage<I extends AbstractDdpId, M extends Abstra
     LeadInCdTextStream stream = null;
     M mapPacket = getCdTextPacket();
     if(mapPacket != null) {
-      stream = (LeadInCdTextStream)mapPacket.getDataStream();
+      stream = (LeadInCdTextStream)mapPacket.getSubCodeStream();
     }
     return stream;
   }
