@@ -4,10 +4,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 
-import org.mars.ddp.common.DataStreamLoader;
+import org.mars.ddp.common.AbstractLoader;
 import org.mars.ddp.common.DdpException;
 
-public class LeadInCdTextStreamLoader extends DataStreamLoader<LeadInCdTextStream> {
+public class LeadInCdTextStreamLoader extends AbstractLoader<LeadInCdTextStream> {
 
   public LeadInCdTextStreamLoader(URL baseUrl, String fileName) {
     super(baseUrl, fileName);

@@ -8,7 +8,7 @@ import org.mars.ddp.v20.SubCodeInterleavedStreamLoader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public abstract class AbstractMapPacketLoader<P extends AbstractMapPacket<D, S, M>, D extends DataStreamTypeable, S extends SubCodeDescribable, M extends SourceStorageModable> extends AbstractLoader<P> {
+public abstract class AbstractMapPacketLoader<P extends AbstractMapPacket<D>, D extends DataStreamTypeable> extends AbstractLoader<P> {
 
   private final static Logger log = LoggerFactory.getLogger(AbstractMapPacketLoader.class);
   
@@ -36,7 +36,7 @@ public abstract class AbstractMapPacketLoader<P extends AbstractMapPacket<D, S, 
     Integer dataStreamStart = readIntFromString(8);
     mapPacket.setDataStreamStart(dataStreamStart);
     
-    S subCodeDescriptor = readSubCodeDescriptor();
+    SubCodeDescribable subCodeDescriptor = readSubCodeDescriptor();
     mapPacket.setSubCodeDescriptor(subCodeDescriptor);
     
     String cdm = readString(2, true);
@@ -45,7 +45,7 @@ public abstract class AbstractMapPacketLoader<P extends AbstractMapPacket<D, S, 
       mapPacket.setCdMode(cdMode);
     }
     
-    M sourceStorageMode = readSourceStorageMode();
+    SourceStorageModable sourceStorageMode = readSourceStorageMode();
     mapPacket.setSourceStorageMode(sourceStorageMode);
     
     Boolean sourceMaterialScrambled = readBooleanFromString(true);
@@ -143,7 +143,7 @@ public abstract class AbstractMapPacketLoader<P extends AbstractMapPacket<D, S, 
   }
 
   public abstract D readDataStreamType() throws IOException;
-  public abstract S readSubCodeDescriptor() throws IOException;
-  public abstract M readSourceStorageMode() throws IOException;
+  public abstract SubCodeDescribable readSubCodeDescriptor() throws IOException;
+  public abstract SourceStorageModable readSourceStorageMode() throws IOException;
   public abstract TextStreamTypeable getTextStreamType(DataStreamTypeable dst) throws IOException;
 }

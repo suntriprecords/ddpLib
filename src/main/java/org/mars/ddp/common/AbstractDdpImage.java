@@ -15,7 +15,7 @@ import org.slf4j.LoggerFactory;
 /**
  * Carfull to getParametrizedType calls if you change the erasure of this class
  */
-public abstract class AbstractDdpImage<I extends AbstractDdpId, M extends AbstractMapPacket<?, ?, ?>> {
+public abstract class AbstractDdpImage<I extends AbstractDdpId, M extends AbstractMapPacket<?>> {
 
   private final Logger log;
   private I ddpId;
@@ -50,7 +50,7 @@ public abstract class AbstractDdpImage<I extends AbstractDdpId, M extends Abstra
     return getMapStream().getSubCodePacket(subCodeDesc); 
   }
   
-  public MapPackable<?, ?>[] getDataStreamPackets(DataStreamTypeable dataStreamType) {
+  public MapPackable<?>[] getDataStreamPackets(DataStreamTypeable dataStreamType) {
     return getMapStream().getDataStreamPackets(dataStreamType); 
   }
 
@@ -58,7 +58,7 @@ public abstract class AbstractDdpImage<I extends AbstractDdpId, M extends Abstra
     return getMapStream().getDataStreamPacket(dataStreamType); 
   }
 
-  public abstract MapPackable<?, ?>[] getDataMainPackets();
+  public abstract MapPackable<?>[] getDataMainPackets();
   
   public DataMainStream getMainDataStream() {
     return new DataMainStream( getDataMainPackets());
@@ -108,7 +108,7 @@ public abstract class AbstractDdpImage<I extends AbstractDdpId, M extends Abstra
   }
 
   public PcmInputStream openMainDataStream(int start, int length) throws IOException {
-    MapPackable<?, ?>[] dataPackets = getDataMainPackets();
+    MapPackable<?>[] dataPackets = getDataMainPackets();
     if(dataPackets.length > 0) {
       Integer ofs = dataPackets[0].getStartingFileOffSet();
       if(ofs != null) {

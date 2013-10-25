@@ -6,24 +6,24 @@ import java.net.URL;
 
 public class DataMainStream extends InputStream {
 
-  private MapPackable<?, ?>[] dataPackets;
+  private MapPackable<?>[] dataPackets;
   private int packetIndex = -1; //MUST be -1 at init for #selectStream() and #available()
   private InputStream currentStream;
   private int currentLength;
   private int currentPosition;
   
   
-  protected DataMainStream(MapPackable<?, ?>[] dataPackets) {
+  protected DataMainStream(MapPackable<?>[] dataPackets) {
     this.dataPackets = dataPackets;
     checkConsistency();
   }
   
   private void checkConsistency() {
     if(dataPackets.length > 0) {
-      MapPackable<?, ?> prvPacket = dataPackets[0];
+      MapPackable<?> prvPacket = dataPackets[0];
       
       for(int i= 1; i < dataPackets.length; i++) {
-        MapPackable<?, ?> nextPacket = dataPackets[i];
+        MapPackable<?> nextPacket = dataPackets[i];
         if(prvPacket.getDataStreamStart() + prvPacket.getDataStreamLength() != nextPacket.getDataStreamStart()) {
           throw new IllegalArgumentException("DM packet " + nextPacket.getDataStreamIdentifier() + " doesn't match the end of the previous packet");
         }
@@ -39,7 +39,7 @@ public class DataMainStream extends InputStream {
 
       if(packetIndex < dataPackets.length - 1) { //have we reached the end ot the stream chain?
         packetIndex++;
-        MapPackable<?, ?> packet = dataPackets[packetIndex];
+        MapPackable<?> packet = dataPackets[packetIndex];
         URL streamUrl = packet.getDataStream().getStreamUrl();
         currentStream = streamUrl.openStream();
         currentLength = packet.getDataStreamLength() * DataUnits.BYTES_MUSIC_PER_SECTOR;

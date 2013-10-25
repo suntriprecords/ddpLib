@@ -20,7 +20,7 @@ import org.mars.ddp.common.MapStream;
 
 public class DdpImageFactory {
 
-  public static AbstractDdpImage<? extends AbstractDdpId, ? extends AbstractMapPacket<?, ?, ?>> load(URL imageDirUrl) throws DdpException, IOException {
+  public static AbstractDdpImage<? extends AbstractDdpId, ? extends AbstractMapPacket<?>> load(URL imageDirUrl) throws DdpException, IOException {
     DdpLevel level = readDdpLevel(imageDirUrl);
 
     try {
@@ -36,11 +36,11 @@ public class DdpImageFactory {
     
   }
   
-  public static AbstractDdpImage<? extends AbstractDdpId, ? extends AbstractMapPacket<?, ?, ?>> load(Path imageDir) throws DdpException, IOException {
+  public static AbstractDdpImage<? extends AbstractDdpId, ? extends AbstractMapPacket<?>> load(Path imageDir) throws DdpException, IOException {
     return load(imageDir.toUri().toURL());
   }  
 
-  public static AbstractDdpImage<? extends AbstractDdpId, ? extends AbstractMapPacket<?, ?, ?>> load(File imageDir) throws DdpException, IOException {
+  public static AbstractDdpImage<? extends AbstractDdpId, ? extends AbstractMapPacket<?>> load(File imageDir) throws DdpException, IOException {
     return load(imageDir.toURI().toURL());
   }
   

@@ -4,7 +4,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 
 
-public abstract class AbstractDdpImageLoader<I extends AbstractDdpId, M extends AbstractMapPacket<?, ?, ?>> extends AbstractLoader<AbstractDdpImage<I, M>> {
+public abstract class AbstractDdpImageLoader<I extends AbstractDdpId, M extends AbstractMapPacket<?>> extends AbstractLoader<AbstractDdpImage<I, M>> {
 
   public AbstractDdpImageLoader(URL baseUrl) {
     super(baseUrl, null);

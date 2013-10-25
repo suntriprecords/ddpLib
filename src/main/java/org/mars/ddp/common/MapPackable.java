@@ -1,11 +1,11 @@
 package org.mars.ddp.common;
 
-public interface MapPackable<D extends DataStreamTypeable, S extends SubCodeDescribable> extends Packetable, Comparable<MapPackable<?, ?>> {
+public interface MapPackable<D extends DataStreamTypeable> extends Packetable, Comparable<MapPackable<?>> {
   public D getDataStreamType();
   public Integer getDataStreamPointer();
   public Integer getDataStreamLength();
   public Integer getDataStreamStart();
-  public S getSubCodeDescriptor();
+  public SubCodeDescribable getSubCodeDescriptor();
   public CDMode getCdMode();
   public SourceStorageModable getSourceStorageMode();
   public Boolean isSourceMaterialScrambled();

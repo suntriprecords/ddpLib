@@ -6,7 +6,7 @@ package org.mars.ddp.common;
  * of the CD program area, but also subchannel files that may be present,
  * and other data such as ordering information.
  */
-public abstract class AbstractMapPacket<D extends DataStreamTypeable, S extends SubCodeDescribable, M extends SourceStorageModable> extends AbstractPacket implements MapPackable<D, S> {
+public abstract class AbstractMapPacket<D extends DataStreamTypeable> extends AbstractPacket implements MapPackable<D> {
 
   public static String MAP_PACKET_VALID = "VVVM";
   public final static int PACKET_LENGTH = 128;
@@ -15,9 +15,9 @@ public abstract class AbstractMapPacket<D extends DataStreamTypeable, S extends 
   private Integer dataStreamPointer; //For disc-based direct access devices, this is the exact sector number. For tape-based direct access devices this number is based upon SMPTE time conventions of 30 per second
   private Integer dataStreamLength; //the decimal number of sectors for DM (Main) data or the decimal number of bytes for DS and TS (Text) data
   private Integer dataStreamStart; //the decimal address of physical sector expressed in ASCII characters. If null, mastering will record DM (Main) data in the order in which they occur on the input media and map packets.
-  private S subCodeDescriptor; //null for Super Density (DV) or Multimedia CD (MMCD).
+  private SubCodeDescribable subCodeDescriptor; //null for Super Density (DV) or Multimedia CD (MMCD).
   private CDMode cdMode; //null when map packet is used for DS (Subcode) and TS (Text) data
-  private M sourceStorageMode; //null when a map packet is used for DS (Subcode) and TS (Text) data
+  private SourceStorageModable sourceStorageMode; //null when a map packet is used for DS (Subcode) and TS (Text) data
   private Boolean sourceMaterialScrambled; //null when the map packet is used for DS (Subcode) and TS (Text) data
   private Integer preGapPart1IncludedInDataStream; //null when the map packet is used for DS (Subcode) and TS (Text) data
   private Integer preGapPart2OrPauseInDataStream; //null when the map packet is used for DS (Subcode) and TS (Text) data
@@ -54,7 +54,7 @@ public abstract class AbstractMapPacket<D extends DataStreamTypeable, S extends 
     return dataStreamStart;
   }
   @Override
-  public S getSubCodeDescriptor() {
+  public SubCodeDescribable getSubCodeDescriptor() {
     return subCodeDescriptor;
   }
   @Override
@@ -62,7 +62,7 @@ public abstract class AbstractMapPacket<D extends DataStreamTypeable, S extends 
     return cdMode;
   }
   @Override
-  public M getSourceStorageMode() {
+  public SourceStorageModable getSourceStorageMode() {
     return sourceStorageMode;
   }
   @Override
@@ -124,13 +124,13 @@ public abstract class AbstractMapPacket<D extends DataStreamTypeable, S extends 
   public void setDataStreamStart(Integer dataStreamStart) {
     this.dataStreamStart = dataStreamStart;
   }
-  public void setSubCodeDescriptor(S subCodeDescriptor) {
+  public void setSubCodeDescriptor(SubCodeDescribable subCodeDescriptor) {
     this.subCodeDescriptor = subCodeDescriptor;
   }
   public void setCdMode(CDMode cdMode) {
     this.cdMode = cdMode;
   }
-  public void setSourceStorageMode(M sourceStorageMode) {
+  public void setSourceStorageMode(SourceStorageModable sourceStorageMode) {
     this.sourceStorageMode = sourceStorageMode;
   }
   public void setSourceMaterialScrambled(Boolean sourceMaterialScrambled) {
@@ -171,7 +171,7 @@ public abstract class AbstractMapPacket<D extends DataStreamTypeable, S extends 
   }
 
   @Override
-  public int compareTo(MapPackable<?, ?> mp) {
+  public int compareTo(MapPackable<?> mp) {
     Integer mpDataStreamStart = mp.getDataStreamStart();
     if(dataStreamStart != null && mpDataStreamStart != null) {
       return dataStreamStart.compareTo(mpDataStreamStart);
