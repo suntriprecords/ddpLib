@@ -6,7 +6,7 @@ import java.net.URL;
 /**
  * DDPID identifies the presence and level of DDP.
  */
-public abstract class AbstractDdpId extends AbstractPacket implements DataStreamable {
+public abstract class AbstractDdpId extends AbstractPacket implements GenericStreamable {
   
   public final static int PACKET_LENGTH = 128;
   public final static String STREAM_NAME = "DDPID";

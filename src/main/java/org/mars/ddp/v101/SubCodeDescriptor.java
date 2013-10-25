@@ -1,8 +1,8 @@
 package org.mars.ddp.v101;
 
-import org.mars.ddp.common.DataStreamable;
 import org.mars.ddp.common.Loader;
 import org.mars.ddp.common.SubCodeDescribable;
+import org.mars.ddp.common.SubCodeStreamable;
 
 
 public enum SubCodeDescriptor implements SubCodeDescribable {
@@ -11,9 +11,9 @@ public enum SubCodeDescriptor implements SubCodeDescribable {
   _02RSTUVW("02RSTUVW", SubCodeStreamLoader02RSTUVW.class);
   
   private String id;
-  private Class<? extends Loader<? extends DataStreamable>> loaderClass;
+  private Class<? extends Loader<? extends SubCodeStreamable>> loaderClass;
   
-  private SubCodeDescriptor(String id, Class<? extends Loader<? extends DataStreamable>> loaderClass) {
+  private SubCodeDescriptor(String id, Class<? extends Loader<? extends SubCodeStreamable>> loaderClass) {
     this.id = id;
     this.loaderClass = loaderClass;
   }
@@ -24,7 +24,7 @@ public enum SubCodeDescriptor implements SubCodeDescribable {
   }
 
   @Override
-  public Class<? extends Loader<? extends DataStreamable>> getLoaderClass() {
+  public Class<? extends Loader<? extends SubCodeStreamable>> getLoaderClass() {
     return loaderClass;
   }
 

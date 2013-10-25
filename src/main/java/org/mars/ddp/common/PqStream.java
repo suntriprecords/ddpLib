@@ -8,7 +8,7 @@ import java.net.URL;
  * One lead-in, 2 lead-outs, 1 pause per track
  * Lead-out is actually at size()-2 or the getTracksCount()+1 track and has twice index 1
  */
-public class PqStream<P extends AbstractPqDescriptorPacket> extends AbstractStreamCollection<P> {
+public class PqStream<P extends AbstractPqDescriptorPacket> extends AbstractStreamCollection<P> implements SubCodeStreamable {
 
   public PqStream(URL streamUrl) {
     super(streamUrl);

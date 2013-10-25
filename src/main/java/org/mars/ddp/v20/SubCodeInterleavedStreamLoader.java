@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.net.URL;
 
 import org.mars.ddp.common.AbstractLoader;
-import org.mars.ddp.common.DataStreamable;
 import org.mars.ddp.common.DataUnits;
 import org.mars.ddp.common.DdpException;
 import org.mars.ddp.common.Loader;
@@ -13,6 +12,7 @@ import org.mars.ddp.common.SubCodeDescribable;
 import org.mars.ddp.common.SubCodeLoader;
 import org.mars.ddp.common.SubCodeStream;
 import org.mars.ddp.common.SubCodeStreamLoader;
+import org.mars.ddp.common.SubCodeStreamable;
 
 /**
  * Support for Subcode stored as per SSM=8 (DDP v2.0 only)
@@ -20,13 +20,13 @@ import org.mars.ddp.common.SubCodeStreamLoader;
 public class SubCodeInterleavedStreamLoader extends SubCodeStreamLoader {
 
   private SubCodeDescribable sub;
-  private Loader<? extends DataStreamable> delegate; 
+  private Loader<? extends SubCodeStreamable> delegate; 
   
   public SubCodeInterleavedStreamLoader(URL baseUrl, String fileName, SubCodeDescribable sub) throws DdpException {
     super(baseUrl, fileName);
     this.sub = sub;
 
-    Class<? extends Loader<? extends DataStreamable>> loaderClass = sub.getLoaderClass();
+    Class<? extends Loader<? extends SubCodeStreamable>> loaderClass = sub.getLoaderClass();
     delegate = AbstractLoader.newInstance(loaderClass, getBaseUrl(), getFileName());
   }
   

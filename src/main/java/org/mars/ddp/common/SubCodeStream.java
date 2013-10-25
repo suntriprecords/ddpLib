@@ -6,7 +6,7 @@ import java.net.URL;
  * @see http://home.mira.net/~gnb/mac-cdis/cd4.html
  * @see http://www.cdrfaq.org/faq02.html
  */
-public abstract class SubCodeStream extends AbstractStreamCollection<SubCodeByte> {
+public abstract class SubCodeStream extends AbstractStreamCollection<SubCodeByte> implements SubCodeStreamable {
   public final static String STREAM_EXTENSION = ".RW";
   
   private SubCodePackSize packetSize; // 24 or 18 bytes, 4 packs per sector each (the 18 case seems related to SSM=8)

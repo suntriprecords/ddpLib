@@ -6,12 +6,12 @@ package org.mars.ddp.common;
  * of the CD program area, but also subchannel files that may be present,
  * and other data such as ordering information.
  */
-public abstract class AbstractMapPacket<T extends DataStreamTypeable, S extends SubCodeDescribable, M extends SourceStorageModable> extends AbstractPacket implements MapPackable<T, S> {
+public abstract class AbstractMapPacket<D extends DataStreamTypeable, S extends SubCodeDescribable, M extends SourceStorageModable> extends AbstractPacket implements MapPackable<D, S> {
 
   public static String MAP_PACKET_VALID = "VVVM";
   public final static int PACKET_LENGTH = 128;
 
-  private T dataStreamType; //identification for the type of data described by this map packet
+  private D dataStreamType; //identification for the type of data described by this map packet
   private Integer dataStreamPointer; //For disc-based direct access devices, this is the exact sector number. For tape-based direct access devices this number is based upon SMPTE time conventions of 30 per second
   private Integer dataStreamLength; //the decimal number of sectors for DM (Main) data or the decimal number of bytes for DS and TS (Text) data
   private Integer dataStreamStart; //the decimal address of physical sector expressed in ASCII characters. If null, mastering will record DM (Main) data in the order in which they occur on the input media and map packets.
@@ -29,7 +29,7 @@ public abstract class AbstractMapPacket<T extends DataStreamTypeable, S extends 
   private String dataStreamIdentifier; //name of the TS (Text) or DS (Subcode) file when used with logically accessed input media such as labeled tape or disc files. DSI also contains the name of DM (Main) files when used with logically accessed direct access media such as DOS files
 
   private DataStreamable dataStream; //the parsed data steam
-  private DataStreamable subCodeStream; //the subcode data steam
+  private SubCodeStreamable subCodeStream; //the subcode data steam
   private TextStreamable textStream; //the parsed text stream
   
   @Override
@@ -38,7 +38,7 @@ public abstract class AbstractMapPacket<T extends DataStreamTypeable, S extends 
   }
 
   @Override
-  public T getDataStreamType() {
+  public D getDataStreamType() {
     return dataStreamType;
   }
   @Override
@@ -108,11 +108,11 @@ public abstract class AbstractMapPacket<T extends DataStreamTypeable, S extends 
   public TextStreamable getTextStream() {
     return textStream;
   }
-  public DataStreamable getSubCodeStream() {
+  public SubCodeStreamable getSubCodeStream() {
     return subCodeStream;
   }
 
-  public void setDataStreamType(T dataStreamType) {
+  public void setDataStreamType(D dataStreamType) {
     this.dataStreamType = dataStreamType;
   }
   public void setDataStreamPointer(Integer dataStreamPointer) {
@@ -166,7 +166,7 @@ public abstract class AbstractMapPacket<T extends DataStreamTypeable, S extends 
   public void setTextStream(TextStreamable textStream) {
     this.textStream = textStream;
   }
-  public void setSubCodeStream(DataStreamable subCodeStream) {
+  public void setSubCodeStream(SubCodeStreamable subCodeStream) {
     this.subCodeStream = subCodeStream;
   }
 

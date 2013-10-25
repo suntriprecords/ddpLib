@@ -4,7 +4,7 @@ import java.io.DataInputStream;
 import java.io.IOException;
 import java.net.URL;
 
-public abstract class AbstractDdpIdLoader<P extends AbstractDdpId> extends DataStreamLoader<P> {
+public abstract class AbstractDdpIdLoader<P extends AbstractDdpId> extends AbstractLoader<P> {
 
   public AbstractDdpIdLoader(URL baseUrl, String fileName) {
     super(baseUrl, fileName);

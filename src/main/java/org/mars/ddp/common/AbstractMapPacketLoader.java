@@ -99,7 +99,7 @@ public abstract class AbstractMapPacketLoader<P extends AbstractMapPacket<D, S, 
         loadDataStream(loadable, ssm);
         
         SubCodeInterleavedStreamLoader interleavedLoader = new SubCodeInterleavedStreamLoader(getBaseUrl(), loadable.getDataStreamIdentifier(), sub);
-        SubCodeStream subCodeStream = interleavedLoader.load(true);
+        SubCodeStreamable subCodeStream = interleavedLoader.load(true);
         loadable.setSubCodeStream(subCodeStream);
       }
     }
@@ -128,9 +128,9 @@ public abstract class AbstractMapPacketLoader<P extends AbstractMapPacket<D, S, 
   }
 
   protected void loadSubCodeStream(P loadable, SubCodeDescribable sub) throws DdpException, IOException {
-    Class<? extends Loader<? extends DataStreamable>> loaderClass = sub.getLoaderClass();
-    Loader<? extends DataStreamable> loader = AbstractLoader.newInstance(loaderClass, getBaseUrl(), loadable.getDataStreamIdentifier());
-    DataStreamable stream = loader.load(true);
+    Class<? extends Loader<? extends SubCodeStreamable>> loaderClass = sub.getLoaderClass();
+    Loader<? extends SubCodeStreamable> loader = AbstractLoader.newInstance(loaderClass, getBaseUrl(), loadable.getDataStreamIdentifier());
+    SubCodeStreamable stream = loader.load(true);
     loadable.setSubCodeStream(stream);
   }
 
