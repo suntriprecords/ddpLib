@@ -10,7 +10,7 @@ import org.mars.ddp.common.DdpException;
 import org.mars.ddp.common.MapStream;
 import org.mars.ddp.v20.MapStreamLoader;
 
-public class DdpImageLoader extends AbstractDdpImageLoader<DdpId, MapPacket> {
+public class DdpImageLoader extends AbstractDdpImageLoader {
 
   public DdpImageLoader(URL baseUrl) {
     super(baseUrl);
@@ -20,7 +20,7 @@ public class DdpImageLoader extends AbstractDdpImageLoader<DdpId, MapPacket> {
    * Caution: same code as in v101 package. Change one, change the other!
    */
   @Override
-  protected void load(AbstractDdpImage<DdpId, MapPacket> image) throws IOException, DdpException {
+  protected void load(AbstractDdpImage image) throws IOException, DdpException {
     DdpIdLoader ddpIdLoader = new DdpIdLoader(getBaseUrl(), AbstractDdpId.STREAM_NAME);
     image.setDdpId(ddpIdLoader.load(true));
     
@@ -30,7 +30,7 @@ public class DdpImageLoader extends AbstractDdpImageLoader<DdpId, MapPacket> {
 
 
   @Override
-  public AbstractDdpImage<DdpId, MapPacket> spawn(URL streamUrl) throws DdpException {
+  public AbstractDdpImage spawn(URL streamUrl) throws DdpException {
     return new DdpImage();
   }
 }

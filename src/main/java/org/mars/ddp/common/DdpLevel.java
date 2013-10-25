@@ -8,9 +8,9 @@ public enum DdpLevel {
   DDP21("DDP 2.10", null); //TODO for DVD's
   
   private String id;
-  private Class<? extends AbstractDdpImageLoader<?, ?>> loaderClass;
+  private Class<? extends AbstractDdpImageLoader> loaderClass;
   
-  private DdpLevel(String id, Class<? extends AbstractDdpImageLoader<?, ?>> loaderClass) {
+  private DdpLevel(String id, Class<? extends AbstractDdpImageLoader> loaderClass) {
     this.id = id;
     this.loaderClass = loaderClass;
   }
@@ -19,7 +19,7 @@ public enum DdpLevel {
     return id;
   }
   
-  public Class<? extends AbstractDdpImageLoader<?, ?>> getLoaderClass() {
+  public Class<? extends AbstractDdpImageLoader> getLoaderClass() {
     return loaderClass;
   }
 

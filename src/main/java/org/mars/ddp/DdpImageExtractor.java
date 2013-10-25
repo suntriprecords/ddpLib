@@ -37,7 +37,7 @@ public class DdpImageExtractor {
     }
     
     
-    AbstractDdpImage<?, ?> image = DdpImageFactory.load(inputDir);
+    AbstractDdpImage image = DdpImageFactory.load(inputDir);
     
     log.info(image.getInfo()); // printing cd-text
     image.dumpTo(outputDir, fullNames); // dumping all tracks

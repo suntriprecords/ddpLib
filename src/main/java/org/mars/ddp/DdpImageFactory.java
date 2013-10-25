@@ -12,7 +12,6 @@ import org.mars.ddp.common.AbstractDdpId;
 import org.mars.ddp.common.AbstractDdpIdLoader;
 import org.mars.ddp.common.AbstractDdpImage;
 import org.mars.ddp.common.AbstractDdpImageLoader;
-import org.mars.ddp.common.AbstractMapPacket;
 import org.mars.ddp.common.DdpException;
 import org.mars.ddp.common.DdpLevel;
 import org.mars.ddp.common.MapStream;
@@ -20,13 +19,13 @@ import org.mars.ddp.common.MapStream;
 
 public class DdpImageFactory {
 
-  public static AbstractDdpImage<? extends AbstractDdpId, ? extends AbstractMapPacket> load(URL imageDirUrl) throws DdpException, IOException {
+  public static AbstractDdpImage load(URL imageDirUrl) throws DdpException, IOException {
     DdpLevel level = readDdpLevel(imageDirUrl);
 
     try {
-      Class<? extends AbstractDdpImageLoader<?, ?>> loaderClass = level.getLoaderClass();
-      Constructor<? extends AbstractDdpImageLoader<?, ?>> ctor = loaderClass.getConstructor(URL.class);
-      AbstractDdpImageLoader<?, ?> loader = ctor.newInstance(imageDirUrl);
+      Class<? extends AbstractDdpImageLoader> loaderClass = level.getLoaderClass();
+      Constructor<? extends AbstractDdpImageLoader> ctor = loaderClass.getConstructor(URL.class);
+      AbstractDdpImageLoader loader = ctor.newInstance(imageDirUrl);
       
       return loader.load(true);
     }
@@ -36,11 +35,11 @@ public class DdpImageFactory {
     
   }
   
-  public static AbstractDdpImage<? extends AbstractDdpId, ? extends AbstractMapPacket> load(Path imageDir) throws DdpException, IOException {
+  public static AbstractDdpImage load(Path imageDir) throws DdpException, IOException {
     return load(imageDir.toUri().toURL());
   }  
 
-  public static AbstractDdpImage<? extends AbstractDdpId, ? extends AbstractMapPacket> load(File imageDir) throws DdpException, IOException {
+  public static AbstractDdpImage load(File imageDir) throws DdpException, IOException {
     return load(imageDir.toURI().toURL());
   }
   

@@ -1,9 +1,10 @@
 package org.mars.ddp.v20;
 
 import org.mars.ddp.common.AbstractDdpImage;
+import org.mars.ddp.common.AbstractMapPacket;
 import org.mars.ddp.common.MapPackable;
 
-public class DdpImage extends AbstractDdpImage<DdpId, MapPacket> {
+public class DdpImage extends AbstractDdpImage {
 
   @Override
   public MapPackable[] getDataMainPackets() {
@@ -11,12 +12,12 @@ public class DdpImage extends AbstractDdpImage<DdpId, MapPacket> {
   }
   
   @Override
-  public MapPacket getCdTextPacket() {
+  public AbstractMapPacket getCdTextPacket() {
     return getSubCodePacket(SubCodeDescriptor.CDTEXT);
   }
 
   @Override
-  public MapPacket getPqSubCodePacket() {
+  public AbstractMapPacket getPqSubCodePacket() {
     return getSubCodePacket(SubCodeDescriptor.PQ_DESCR);
   }
 }

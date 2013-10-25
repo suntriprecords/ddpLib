@@ -15,30 +15,30 @@ import org.slf4j.LoggerFactory;
 /**
  * Carfull to getParametrizedType calls if you change the erasure of this class
  */
-public abstract class AbstractDdpImage<I extends AbstractDdpId, M extends AbstractMapPacket> {
+public abstract class AbstractDdpImage {
 
   private final Logger log;
-  private I ddpId;
-  private MapStream<M> mapStream;
+  private AbstractDdpId ddpId;
+  private MapStream<? extends AbstractMapPacket> mapStream;
   
   
   public AbstractDdpImage() {
     log = LoggerFactory.getLogger(getClass());
   }
   
-  public I getDdpId() {
+  public AbstractDdpId getDdpId() {
     return ddpId;
   }
 
-  public void setDdpId(I ddpId) {
+  public void setDdpId(AbstractDdpId ddpId) {
     this.ddpId = ddpId;
   }
 
-  public MapStream<M> getMapStream() {
+  public MapStream<? extends AbstractMapPacket> getMapStream() {
     return mapStream;
   }
 
-  public void setMapStream(MapStream<M> mapStreams) {
+  public void setMapStream(MapStream<? extends AbstractMapPacket> mapStreams) {
     this.mapStream = mapStreams;
   }
 
@@ -46,7 +46,7 @@ public abstract class AbstractDdpImage<I extends AbstractDdpId, M extends Abstra
     getMapStream().clear();
   }
 
-  public M getSubCodePacket(SubCodeDescribable subCodeDesc) {
+  public AbstractMapPacket getSubCodePacket(SubCodeDescribable subCodeDesc) {
     return getMapStream().getSubCodePacket(subCodeDesc); 
   }
   
@@ -54,7 +54,7 @@ public abstract class AbstractDdpImage<I extends AbstractDdpId, M extends Abstra
     return getMapStream().getDataStreamPackets(dataStreamType); 
   }
 
-  public M getDataStreamPacket(DataStreamTypeable dataStreamType) {
+  public AbstractMapPacket getDataStreamPacket(DataStreamTypeable dataStreamType) {
     return getMapStream().getDataStreamPacket(dataStreamType); 
   }
 
@@ -64,12 +64,12 @@ public abstract class AbstractDdpImage<I extends AbstractDdpId, M extends Abstra
     return new DataMainStream( getDataMainPackets());
   }
   
-  public abstract M getPqSubCodePacket();
-  public abstract M getCdTextPacket();
+  public abstract AbstractMapPacket getPqSubCodePacket();
+  public abstract AbstractMapPacket getCdTextPacket();
   
   public PqStream<?> getPqStream() {
     PqStream<?> stream = null;
-    M mapPacket = getPqSubCodePacket();
+    AbstractMapPacket mapPacket = getPqSubCodePacket();
     if(mapPacket != null) {
       stream = (PqStream<?>)mapPacket.getSubCodeStream();
     }
@@ -78,7 +78,7 @@ public abstract class AbstractDdpImage<I extends AbstractDdpId, M extends Abstra
   
   public LeadInCdTextStream getCdTextStream() {
     LeadInCdTextStream stream = null;
-    M mapPacket = getCdTextPacket();
+    AbstractMapPacket mapPacket = getCdTextPacket();
     if(mapPacket != null) {
       stream = (LeadInCdTextStream)mapPacket.getSubCodeStream();
     }
@@ -139,7 +139,7 @@ public abstract class AbstractDdpImage<I extends AbstractDdpId, M extends Abstra
 
   private int getStartOffsetBytes(int trackNumber) {
     int offset = 0;
-    M mapPacket = getPqSubCodePacket();
+    AbstractMapPacket mapPacket = getPqSubCodePacket();
     if(mapPacket != null) {
       Integer dss = getDataMainPackets()[0].getDataStreamStart();
       if(dss != null) {
