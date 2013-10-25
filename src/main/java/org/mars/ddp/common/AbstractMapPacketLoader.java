@@ -8,7 +8,7 @@ import org.mars.ddp.v20.SubCodeInterleavedStreamLoader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public abstract class AbstractMapPacketLoader<P extends AbstractMapPacket<D>, D extends DataStreamTypeable> extends AbstractLoader<P> {
+public abstract class AbstractMapPacketLoader<P extends AbstractMapPacket> extends AbstractLoader<P> {
 
   private final static Logger log = LoggerFactory.getLogger(AbstractMapPacketLoader.class);
   
@@ -24,7 +24,7 @@ public abstract class AbstractMapPacketLoader<P extends AbstractMapPacket<D>, D 
       throw new IllegalArgumentException("mapPacketValid = " + mapPacketValid);
     }
     
-    D dataStreamType = readDataStreamType();
+    DataStreamTypeable dataStreamType = readDataStreamType();
     mapPacket.setDataStreamType(dataStreamType);
     
     Integer dataStreamPointer = readIntFromString(8);
@@ -142,7 +142,7 @@ public abstract class AbstractMapPacketLoader<P extends AbstractMapPacket<D>, D 
     loadable.setTextStream(stream);
   }
 
-  public abstract D readDataStreamType() throws IOException;
+  public abstract DataStreamTypeable readDataStreamType() throws IOException;
   public abstract SubCodeDescribable readSubCodeDescriptor() throws IOException;
   public abstract SourceStorageModable readSourceStorageMode() throws IOException;
   public abstract TextStreamTypeable getTextStreamType(DataStreamTypeable dst) throws IOException;

@@ -6,7 +6,7 @@ import org.mars.ddp.common.MapPackable;
 public class DdpImage extends AbstractDdpImage<DdpId, MapPacket> {
 
   @Override
-  public MapPackable<?>[] getDataMainPackets() {
+  public MapPackable[] getDataMainPackets() {
     return getDataStreamPackets(DataStreamType.Data_Stream);
   }
   

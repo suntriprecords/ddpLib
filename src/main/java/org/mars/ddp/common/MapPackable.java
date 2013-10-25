@@ -1,7 +1,7 @@
 package org.mars.ddp.common;
 
-public interface MapPackable<D extends DataStreamTypeable> extends Packetable, Comparable<MapPackable<?>> {
-  public D getDataStreamType();
+public interface MapPackable extends Packetable, Comparable<MapPackable> {
+  public DataStreamTypeable getDataStreamType();
   public Integer getDataStreamPointer();
   public Integer getDataStreamLength();
   public Integer getDataStreamStart();

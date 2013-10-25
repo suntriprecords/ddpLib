@@ -8,7 +8,7 @@ import org.mars.ddp.common.DataStreamTypeable;
 import org.mars.ddp.common.DdpException;
 import org.mars.ddp.common.TextStreamTypeable;
 
-public class MapPacketLoader extends AbstractMapPacketLoader<MapPacket, DataStreamType> {
+public class MapPacketLoader extends AbstractMapPacketLoader<MapPacket> {
   
   public MapPacketLoader(URL baseUrl, String fileName) {
     super(baseUrl, fileName);

@@ -6,7 +6,7 @@ import java.util.Arrays;
 import java.util.List;
 
 
-public class MapStream<T extends MapPackable<?>> extends AbstractStreamCollection<T> {
+public class MapStream<T extends MapPackable> extends AbstractStreamCollection<T> {
 
   public final static String STREAM_NAME = "DDPMS";
 
@@ -36,7 +36,7 @@ public class MapStream<T extends MapPackable<?>> extends AbstractStreamCollectio
   }
 
 
-  public MapPackable<?>[] getDataStreamPackets(DataStreamTypeable dataStreamType) {
+  public MapPackable[] getDataStreamPackets(DataStreamTypeable dataStreamType) {
     List<T> dataPackets = new ArrayList<T>();
     for(T mapPacket : this) {
       if(mapPacket.getDataStreamType() == dataStreamType) {
@@ -44,7 +44,7 @@ public class MapStream<T extends MapPackable<?>> extends AbstractStreamCollectio
       }
     }
     
-    MapPackable<?>[] result = new MapPackable[dataPackets.size()];
+    MapPackable[] result = new MapPackable[dataPackets.size()];
     result = dataPackets.toArray(result);
     Arrays.sort(result); //sorting to have a consistent chain
     return result;

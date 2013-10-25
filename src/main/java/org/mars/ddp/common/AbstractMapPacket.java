@@ -6,12 +6,12 @@ package org.mars.ddp.common;
  * of the CD program area, but also subchannel files that may be present,
  * and other data such as ordering information.
  */
-public abstract class AbstractMapPacket<D extends DataStreamTypeable> extends AbstractPacket implements MapPackable<D> {
+public abstract class AbstractMapPacket extends AbstractPacket implements MapPackable {
 
   public static String MAP_PACKET_VALID = "VVVM";
   public final static int PACKET_LENGTH = 128;
 
-  private D dataStreamType; //identification for the type of data described by this map packet
+  private DataStreamTypeable dataStreamType; //identification for the type of data described by this map packet
   private Integer dataStreamPointer; //For disc-based direct access devices, this is the exact sector number. For tape-based direct access devices this number is based upon SMPTE time conventions of 30 per second
   private Integer dataStreamLength; //the decimal number of sectors for DM (Main) data or the decimal number of bytes for DS and TS (Text) data
   private Integer dataStreamStart; //the decimal address of physical sector expressed in ASCII characters. If null, mastering will record DM (Main) data in the order in which they occur on the input media and map packets.
@@ -38,7 +38,7 @@ public abstract class AbstractMapPacket<D extends DataStreamTypeable> extends Ab
   }
 
   @Override
-  public D getDataStreamType() {
+  public DataStreamTypeable getDataStreamType() {
     return dataStreamType;
   }
   @Override
@@ -112,7 +112,7 @@ public abstract class AbstractMapPacket<D extends DataStreamTypeable> extends Ab
     return subCodeStream;
   }
 
-  public void setDataStreamType(D dataStreamType) {
+  public void setDataStreamType(DataStreamTypeable dataStreamType) {
     this.dataStreamType = dataStreamType;
   }
   public void setDataStreamPointer(Integer dataStreamPointer) {
@@ -171,7 +171,7 @@ public abstract class AbstractMapPacket<D extends DataStreamTypeable> extends Ab
   }
 
   @Override
-  public int compareTo(MapPackable<?> mp) {
+  public int compareTo(MapPackable mp) {
     Integer mpDataStreamStart = mp.getDataStreamStart();
     if(dataStreamStart != null && mpDataStreamStart != null) {
       return dataStreamStart.compareTo(mpDataStreamStart);

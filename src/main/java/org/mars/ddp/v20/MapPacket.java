@@ -3,7 +3,7 @@ package org.mars.ddp.v20;
 import org.mars.ddp.common.AbstractMapPacket;
 
 
-public class MapPacket extends AbstractMapPacket<DataStreamType> {
+public class MapPacket extends AbstractMapPacket {
 
   private Character newOrange; //Reserved
   private Integer preGap1NextTrackIncludedInDataStream;
