@@ -6,8 +6,9 @@ import java.net.URL;
 import org.mars.ddp.common.AbstractMapPacketLoader;
 import org.mars.ddp.common.DataStreamTypeable;
 import org.mars.ddp.common.DdpException;
+import org.mars.ddp.common.TextStreamTypeable;
 
-public class MapPacketLoader extends AbstractMapPacketLoader<MapPacket, DataStreamType, SubCodeDescriptor, SourceStorageMode, TextStreamType> {
+public class MapPacketLoader extends AbstractMapPacketLoader<MapPacket, DataStreamType, SubCodeDescriptor, SourceStorageMode> {
   
   public MapPacketLoader(URL baseUrl, String fileName) {
     super(baseUrl, fileName);
@@ -61,7 +62,7 @@ public class MapPacketLoader extends AbstractMapPacketLoader<MapPacket, DataStre
   }
 
   @Override
-  public TextStreamType getTextStreamType(DataStreamTypeable dst) throws IOException {
+  public TextStreamTypeable getTextStreamType(DataStreamTypeable dst) throws IOException {
     if(dst.getType() == DataStreamTypeable.TYPE_TEXT) {
       return TextStreamType.idOf(dst.getId());
     }

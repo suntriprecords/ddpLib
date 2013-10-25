@@ -8,7 +8,7 @@ import org.mars.ddp.v20.SubCodeInterleavedStreamLoader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public abstract class AbstractMapPacketLoader<P extends AbstractMapPacket<D, S, M>, D extends DataStreamTypeable, S extends SubCodeDescribable, M extends SourceStorageModable, T extends TextStreamTypeable> extends AbstractLoader<P> {
+public abstract class AbstractMapPacketLoader<P extends AbstractMapPacket<D, S, M>, D extends DataStreamTypeable, S extends SubCodeDescribable, M extends SourceStorageModable> extends AbstractLoader<P> {
 
   private final static Logger log = LoggerFactory.getLogger(AbstractMapPacketLoader.class);
   
@@ -135,7 +135,7 @@ public abstract class AbstractMapPacketLoader<P extends AbstractMapPacket<D, S, 
   }
 
   protected void loadTextStream(P loadable) throws IOException, DdpException {
-    T textType = getTextStreamType(loadable.getDataStreamType());
+    TextStreamTypeable textType = getTextStreamType(loadable.getDataStreamType());
     Class<? extends Loader<? extends TextStreamable>> loaderClass = textType.getLoaderClass();
     Loader<? extends TextStreamable> loader = AbstractLoader.newInstance(loaderClass, getBaseUrl(), InformationPacket.STREAM_NAME);
     TextStreamable stream = loader.load(true);
@@ -145,5 +145,5 @@ public abstract class AbstractMapPacketLoader<P extends AbstractMapPacket<D, S, 
   public abstract D readDataStreamType() throws IOException;
   public abstract S readSubCodeDescriptor() throws IOException;
   public abstract M readSourceStorageMode() throws IOException;
-  public abstract T getTextStreamType(DataStreamTypeable dst) throws IOException;
+  public abstract TextStreamTypeable getTextStreamType(DataStreamTypeable dst) throws IOException;
 }
