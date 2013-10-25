@@ -27,6 +27,10 @@ public abstract class AbstractDdpId extends AbstractPacket implements DataStream
   private Character directionOfTranslation; //Reserved for DVD
   private String userText; //can be used for any purpose. information not placed onto CD
 
+  public AbstractDdpId(URL streamUrl) {
+    this.streamUrl = streamUrl;
+  }
+  
   @Override
   public int getPacketLength() {
     return PACKET_LENGTH;
@@ -77,10 +81,6 @@ public abstract class AbstractDdpId extends AbstractPacket implements DataStream
   }
   public String getUserText() {
     return userText;
-  }
-  @Override
-  public void setStreamUrl(URL streamUrl) {
-    this.streamUrl = streamUrl;
   }
   public void setDdpLevel(DdpLevel ddpLevel) {
     this.ddpLevel = ddpLevel;

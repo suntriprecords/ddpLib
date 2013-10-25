@@ -1,5 +1,7 @@
 package org.mars.ddp.common;
 
+import java.net.URL;
+
 
 /**
  * Tracks are one-based in case you didn't know
@@ -7,6 +9,10 @@ package org.mars.ddp.common;
  * Lead-out is actually at size()-2 or the getTracksCount()+1 track and has twice index 1
  */
 public class PqStream<P extends AbstractPqDescriptorPacket> extends AbstractStreamCollection<P> {
+
+  public PqStream(URL streamUrl) {
+    super(streamUrl);
+  }
 
   @Override
   public PqStreamIterator<P> iterator() {

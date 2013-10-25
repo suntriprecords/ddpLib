@@ -1,7 +1,12 @@
 package org.mars.ddp.common;
 
+import java.net.URL;
+
 
 
 public class BinaryStream extends AbstractDataStream {
-  //nothing more
+
+  public BinaryStream(URL streamUrl) {
+    super(streamUrl);
+  }
 }

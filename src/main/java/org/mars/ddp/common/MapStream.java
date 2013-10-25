@@ -1,12 +1,18 @@
 package org.mars.ddp.common;
 
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 
 public class MapStream<T extends MapPackable<?, ?>> extends AbstractStreamCollection<T> {
+
   public final static String STREAM_NAME = "DDPMS";
+
+  public MapStream(URL streamUrl) {
+    super(streamUrl);
+  }
   
   public T getSubCodePacket(SubCodeDescribable subCodeDesc) {
     T result = null;

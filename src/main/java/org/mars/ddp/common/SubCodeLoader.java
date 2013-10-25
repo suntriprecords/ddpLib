@@ -14,9 +14,14 @@ public class SubCodeLoader extends AbstractLoader<SubCodeByte> {
     byte subCode = readByte();
     loadable.setData(subCode);
   }
-
+  
   @Override
-  public SubCodeByte spawn() throws DdpException {
+  public void skip(long bytes) throws IOException {
+    super.skip(bytes);
+  }
+  
+  @Override
+  public SubCodeByte spawn(URL streamUrl) throws DdpException {
     return new SubCodeByte();
   }
 }

@@ -1,5 +1,7 @@
 package org.mars.ddp.common;
 
+import java.net.URL;
+
 /**
  * @see http://home.mira.net/~gnb/mac-cdis/cd4.html
  * @see http://www.cdrfaq.org/faq02.html
@@ -11,8 +13,8 @@ public abstract class SubCodeStream extends AbstractStreamCollection<SubCodeByte
   private boolean fullyProcessed; // Means P and Q parities should be correctly processsed
   private boolean interleaved; // The packs are interleaved in the input DS (Subcode) stream
 
-  public SubCodeStream(SubCodePackSize packetSize, boolean fullyProcessed, boolean interleaved) {
-    super();
+  public SubCodeStream(URL streamUrl, SubCodePackSize packetSize, boolean fullyProcessed, boolean interleaved) {
+    super(streamUrl);
     this.packetSize = packetSize;
     this.fullyProcessed = fullyProcessed;
     this.interleaved = interleaved;

@@ -12,7 +12,7 @@ public class PqDescriptorPacketLoader extends AbstractPqDescriptorLoader<PqDescr
   }
 
   @Override
-  public PqDescriptorPacket spawn() throws DdpException {
+  public PqDescriptorPacket spawn(URL streamUrl) throws DdpException {
     return new PqDescriptorPacket();
   }
 }

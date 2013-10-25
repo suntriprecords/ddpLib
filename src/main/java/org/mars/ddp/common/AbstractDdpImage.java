@@ -35,9 +35,6 @@ public abstract class AbstractDdpImage<I extends AbstractDdpId, M extends Abstra
   }
 
   public MapStream<M> getMapStream() {
-    if(mapStream == null) {
-      mapStream = new MapStream<M>();
-    }
     return mapStream;
   }
 

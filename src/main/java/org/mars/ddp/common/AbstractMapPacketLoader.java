@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.net.URL;
 
 import org.mars.ddp.v20.SourceStorageMode;
+import org.mars.ddp.v20.SubCodeInterleavedStreamLoader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -95,8 +96,11 @@ public abstract class AbstractMapPacketLoader<P extends AbstractMapPacket<D, S, 
       else {
         // Special case: If R-W subcode data is appended to each block of the
         // main channel data (SSM = 8), SUB describes the format of that data.
-        // FIXME NOTE I'm not loading the subcode in this case, but I should (would require to pass an interleave amount to SubCodeStreamLoader)
         loadDataStream(loadable, ssm);
+        
+        SubCodeInterleavedStreamLoader interleavedLoader = new SubCodeInterleavedStreamLoader(getBaseUrl(), loadable.getDataStreamIdentifier(), sub);
+        SubCodeStream subCodeStream = interleavedLoader.load(true);
+        loadable.setSubCodeStream(subCodeStream);
       }
     }
     else if(ssm == null) {

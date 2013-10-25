@@ -21,7 +21,7 @@ public class LeadInCdTextStreamLoader extends DataStreamLoader<LeadInCdTextStrea
   }
 
   @Override
-  public LeadInCdTextStream spawn() throws DdpException {
-    return new LeadInCdTextStream();
+  public LeadInCdTextStream spawn(URL streamUrl) throws DdpException {
+    return new LeadInCdTextStream(streamUrl);
   }
 }

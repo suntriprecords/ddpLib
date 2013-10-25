@@ -14,8 +14,8 @@ public class TextInfoStreamLoader extends TextStreamLoader<TextStream> {
   }
 
   @Override
-  public TextStream spawn() throws DdpException {
-    return new TextStream();
+  public TextStream spawn(URL streamUrl) throws DdpException {
+    return new TextStream(streamUrl);
   }
 
   @Override

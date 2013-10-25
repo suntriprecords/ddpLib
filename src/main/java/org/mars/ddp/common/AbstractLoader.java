@@ -39,22 +39,7 @@ public abstract class AbstractLoader<P> implements Loader<P> {
       Constructor<? extends Loader<? extends P>> ctor = loaderClass.getConstructor(URL.class, String.class);
       return ctor.newInstance(baseUrl, fileName);
     }
-    catch (SecurityException e) {
-      throw new DdpException(e);
-    }
-    catch (NoSuchMethodException e) {
-      throw new DdpException(e);
-    }
-    catch (IllegalArgumentException e) {
-      throw new DdpException(e);
-    }
-    catch (InstantiationException e) {
-      throw new DdpException(e);
-    }
-    catch (IllegalAccessException e) {
-      throw new DdpException(e);
-    }
-    catch (InvocationTargetException e) {
+    catch (SecurityException | NoSuchMethodException | IllegalArgumentException | InstantiationException | IllegalAccessException | InvocationTargetException e) {
       throw new DdpException(e);
     }
   }
@@ -83,7 +68,7 @@ public abstract class AbstractLoader<P> implements Loader<P> {
 
   @Override
   public P load(boolean close) throws IOException, DdpException {
-    P loadable = spawn();
+    P loadable = spawn(getFileUrl());
 
     preLoad(loadable);
     load(loadable);
@@ -117,6 +102,10 @@ public abstract class AbstractLoader<P> implements Loader<P> {
     // nothing
   }
 
+
+  protected void skip(long bytes) throws IOException {
+    getInputStream().skip(bytes);
+  }
 
   protected byte readHexByte(boolean trim) throws IOException {
     return readHexBytes(1, trim)[0];
@@ -177,7 +166,9 @@ public abstract class AbstractLoader<P> implements Loader<P> {
   }
 
   protected byte[] readBytes(int length) throws IOException {
-    return readBytes(getInputStream(), length);
+    byte[] result = readBytes(getInputStream(), length);
+    bytesRead += length;
+    return result;
   }
 
   protected static byte[] readBytes(DataInputStream dis, int length) throws IOException {
@@ -187,27 +178,39 @@ public abstract class AbstractLoader<P> implements Loader<P> {
   }
 
   protected byte readByte() throws IOException {
-    return getInputStream().readByte();
+    byte result = getInputStream().readByte();
+    bytesRead ++;
+    return result;
   }
 
   protected int readUnsignedByte() throws IOException {
-    return getInputStream().readUnsignedByte();
+    int result = getInputStream().readUnsignedByte();
+    bytesRead += 4;
+    return result;
   }
 
   protected int readUnsignedShort() throws IOException {
-    return getInputStream().readUnsignedShort();
+    int result = getInputStream().readUnsignedShort();
+    bytesRead += 4;
+    return result;
   }
 
   protected short readShort() throws IOException {
-    return getInputStream().readShort();
+    short result = getInputStream().readShort();
+    bytesRead += 2;
+    return result;
   }
 
   protected int readInt() throws IOException {
-    return getInputStream().readInt();
+    int result = getInputStream().readInt();
+    bytesRead += 4;
+    return result;
   }
 
   protected long readLong() throws IOException {
-    return getInputStream().readLong();
+    long result = getInputStream().readLong();
+    bytesRead += 8;
+    return result;
   }
 
   protected Boolean readBooleanFromString(boolean trim) throws IOException {

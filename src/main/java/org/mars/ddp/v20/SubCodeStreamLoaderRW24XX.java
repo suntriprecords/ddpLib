@@ -15,7 +15,7 @@ public class SubCodeStreamLoaderRW24XX extends SubCodeStreamLoader {
   }
 
   @Override
-  public SubCodeStream spawn() throws DdpException {
-    return new SubCodeStreamRW(SubCodePackSize.TWENTY_FOUR, false, false);
+  public SubCodeStream spawn(URL streamUrl) throws DdpException {
+    return new SubCodeStreamRW(streamUrl, SubCodePackSize.TWENTY_FOUR, false, false);
   }
 }

@@ -15,7 +15,7 @@ public class BinaryStreamLoader extends DataStreamLoader<BinaryStream> {
   }
 
   @Override
-  public BinaryStream spawn() throws DdpException {
-    return new BinaryStream();
+  public BinaryStream spawn(URL streamUrl) throws DdpException {
+    return new BinaryStream(streamUrl);
   }
 }

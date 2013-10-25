@@ -30,7 +30,7 @@ public class DdpImageLoader extends AbstractDdpImageLoader<DdpId, MapPacket> {
 
 
   @Override
-  public AbstractDdpImage<DdpId, MapPacket> spawn() throws DdpException {
+  public AbstractDdpImage<DdpId, MapPacket> spawn(URL streamUrl) throws DdpException {
     return new DdpImage();
   }
 }

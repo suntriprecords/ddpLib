@@ -1,9 +1,11 @@
 package org.mars.ddp.common;
 
+import java.net.URL;
+
 public class SubCodeStreamWR extends SubCodeStream {
 
-  public SubCodeStreamWR(SubCodePackSize packetSize, boolean fullyProcessed, boolean interleaved) {
-    super(packetSize, fullyProcessed, interleaved);
+  public SubCodeStreamWR(URL streamUrl, SubCodePackSize packetSize, boolean fullyProcessed, boolean interleaved) {
+    super(streamUrl, packetSize, fullyProcessed, interleaved);
   }
 
   @Override

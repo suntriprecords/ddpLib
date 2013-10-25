@@ -13,7 +13,7 @@ public class TextPacketLoader extends AbstractTextPacketLoader {
   }
 
   @Override
-  public TextPacket spawn() throws DdpException {
+  public TextPacket spawn(URL streamUrl) throws DdpException {
     return new TextPacket();
   }
 }

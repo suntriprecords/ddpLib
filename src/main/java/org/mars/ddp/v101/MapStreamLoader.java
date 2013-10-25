@@ -15,8 +15,8 @@ public class MapStreamLoader extends DataStreamLoader<MapStream<MapPacket>> {
   }
 
   @Override
-  public MapStream<MapPacket> spawn() throws DdpException {
-    return new MapStream<>();
+  public MapStream<MapPacket> spawn(URL streamUrl) throws DdpException {
+    return new MapStream<>(streamUrl);
   }
 
   /**

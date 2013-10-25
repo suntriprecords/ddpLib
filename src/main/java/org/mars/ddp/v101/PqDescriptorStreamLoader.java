@@ -24,7 +24,7 @@ public class PqDescriptorStreamLoader extends DataStreamLoader<PqStream<PqDescri
   }
 
   @Override
-  public PqStream<PqDescriptorPacket> spawn() throws DdpException {
-    return new PqStream<>();
+  public PqStream<PqDescriptorPacket> spawn(URL streamUrl) throws DdpException {
+    return new PqStream<>(streamUrl);
   }
 }
