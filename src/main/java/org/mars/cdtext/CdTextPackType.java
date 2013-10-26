@@ -62,10 +62,7 @@ public enum CdTextPackType {
     try {
       return packClass.newInstance();
     }
-    catch (InstantiationException e) {
-      throw new RuntimeException();
-    }
-    catch (IllegalAccessException e) {
+    catch (InstantiationException | IllegalAccessException e) {
       throw new RuntimeException();
     }
   }

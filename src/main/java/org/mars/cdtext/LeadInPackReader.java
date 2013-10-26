@@ -54,10 +54,9 @@ public class LeadInPackReader {
     //filling
     LeadInPack pack = packType.newPack();
     if(pack instanceof LeadInTextPack) {
-      LeadInTextPack textPack = new LeadInTextPack();
+      LeadInTextPack textPack = (LeadInTextPack)pack;
       textPack.setDoubleByte(doubleByte);
       textPack.setBlockNumber(blockNumber);
-      pack = textPack;
     }
     
     pack.setPackType(packType);

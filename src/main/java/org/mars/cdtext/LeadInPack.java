@@ -14,7 +14,7 @@ public abstract class LeadInPack {
   public final static int PACK_NUMBER_MASK = 0x7F;
 
   public final static int PACK_NUMBER_MAX = 99; //like tracks in a CD...
-  public final static int SEQUENCE_NUMBER_MAX = 255; //max 255 packs in a block
+  public final static int SEQUENCE_NUMBER_MAX = 255; //max 255 packs in a language Block
 
   public final static int PACKET_LENGTH = 18; 
   public final static int DATA_LENGTH = 12;
@@ -31,7 +31,7 @@ public abstract class LeadInPack {
   private CdTextPackType type;
   private boolean extension;
   private int packNumber; //[00-99]
-  private int sequenceNumber; //[00-255] per block
+  private int sequenceNumber; //number incrementally increased from the first Pack to the end in each Block
   private int charPosition;
   private byte[] data; // CD-Text Data field. Can be 1 or 2 bytes based depending on the charset used (defined in the block size info pack...at the end), so keeping the bytes here
   private int crc; //CRC16, that is, polynomial is X^16 + X^12 + X^5 + 1. All bits shall be inverted.

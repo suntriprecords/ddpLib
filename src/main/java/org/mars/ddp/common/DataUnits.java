@@ -15,4 +15,7 @@ public interface DataUnits {
   public final static int BYTES_MUSIC_PER_SECOND = BYTES_DATA_PER_FRAME * FRAMES_PER_SECOND; 
   public final static int BYTES_DATA_PER_SECOND = BYTES_PER_FRAME * FRAMES_PER_SECOND; 
   public final static int BYTES_MUSIC_TWO_SECONDS = 2 * BYTES_MUSIC_PER_SECOND;
+  public final static int MIN_TRACK_DURATION = 4; //seconds
+  public final static int MAX_TRACKS_PER_CD = 99;
+  public final static int MAX_INDEXES_PER_TRACK = 99; //tracks subdivisions
 }

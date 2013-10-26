@@ -22,8 +22,9 @@ public class LeadInTextPack extends LeadInPack {
   public final static int BLOCK_MASK = 0x70;
   public final static int POSITION_MASK = 0x0F;
 
-  public final static int TRACK_NUMBER_UNIQUE = 0; //for Cd text areas which aren't per track
-  public final static int BLOCK_DEFAULT = 0;
+  public final static int TRACK_NUMBER_UNIQUE = 0; //for CD-Text areas which aren't per track (album title, album performer...)
+  public final static int BLOCK_DEFAULT = 0; //will point at the first language used in the CD-Text
+  public final static int MAX_BLOCKS = 8; //there are maximum 8 language blocks in a CD-Text
 
   public final static byte TAB = (byte)0x09;
   public final static byte[] TAB_SINGLE = {TAB};
@@ -83,9 +84,6 @@ public class LeadInTextPack extends LeadInPack {
     }
   }
   
-  /* (non-Javadoc)
-   * @see org.mars.cdtext.CdTextable#getText(java.nio.charset.Charset)
-   */
   public String getText(Charset cs) {
     return new String(getData(), cs);
   }
@@ -93,9 +91,6 @@ public class LeadInTextPack extends LeadInPack {
     setData( text.getBytes(cs));
   }
   
-  /* (non-Javadoc)
-   * @see org.mars.cdtext.CdTextable#getTrackNumber()
-   */
   public int getTrackNumber() {
     return getPackNumber();
   }
@@ -107,9 +102,6 @@ public class LeadInTextPack extends LeadInPack {
     return (isDoubleByte() ? 2 : 1);
   }
   
-  /* (non-Javadoc)
-   * @see org.mars.cdtext.CdTextable#isDoubleByte()
-   */
   public boolean isDoubleByte() {
     return doubleByte;
   }
@@ -117,9 +109,6 @@ public class LeadInTextPack extends LeadInPack {
     this.doubleByte = doubleByte;
   }
 
-  /* (non-Javadoc)
-   * @see org.mars.cdtext.CdTextable#getBlockNumber()
-   */
   public int getBlockNumber() {
     return blockNumber;
   }
