@@ -28,7 +28,7 @@ public abstract class LeadInPack {
   public final static byte[][] ENDS = {END_SINGLE, END_DOUBLE};
 
   
-  private PackType type;
+  private CdTextPackType type;
   private boolean extension;
   private int packNumber; //[00-99]
   private int sequenceNumber; //[00-255] per block
@@ -100,7 +100,7 @@ public abstract class LeadInPack {
     return start;
   }
 
-  public PackType getType() {
+  public CdTextPackType getType() {
     return type;
   }
   public boolean isExtension() {
@@ -173,7 +173,7 @@ public abstract class LeadInPack {
     }
     this.charPosition = charPosition;
   }
-  public void setPackType(PackType type) {
+  public void setPackType(CdTextPackType type) {
     this.type = type;
   }
   public void setExtension(boolean extension) {

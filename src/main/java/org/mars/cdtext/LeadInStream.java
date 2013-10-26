@@ -44,39 +44,39 @@ public class LeadInStream implements Iterable<LeadInPack> {
     return controlPacks.iterator();
   }
 
-  public String getText(PackType packType) {
+  public String getText(CdTextPackType packType) {
     return getText(packType, LeadInTextPack.BLOCK_DEFAULT);
   }
 
-  public String getText(PackType packType, int block) {
+  public String getText(CdTextPackType packType, int block) {
     return getText(LeadInTextPack.TRACK_NUMBER_UNIQUE, packType, block);
   }
 
-  public String getText(PackType packType, Locale locale) {
+  public String getText(CdTextPackType packType, Locale locale) {
     int block = getBlock(locale);
     return getText(LeadInTextPack.TRACK_NUMBER_UNIQUE, packType, block);
   }
 
-  public String getText(PackType packType, Language language) {
+  public String getText(CdTextPackType packType, Language language) {
     int block = getBlock(language);
     return getText(LeadInTextPack.TRACK_NUMBER_UNIQUE, packType, block);
   }
 
-  public String getText(int track, PackType packType) {
+  public String getText(int track, CdTextPackType packType) {
     return getText(track, packType, LeadInTextPack.BLOCK_DEFAULT);
   }
 
-  public String getText(int track, PackType packType, Language language) {
+  public String getText(int track, CdTextPackType packType, Language language) {
     int block = getBlock(language);
     return getText(track, packType, block);
   }
 
-  public String getText(int track, PackType packType, Locale locale) {
+  public String getText(int track, CdTextPackType packType, Locale locale) {
     int block = getBlock(locale);
     return getText(track, packType, block);
   }
   
-  public String getText(int track, PackType packType, int block) {
+  public String getText(int track, CdTextPackType packType, int block) {
     if(packType.isBinary()) {
       throw new IllegalArgumentException("Type requested is binary: " + packType.name());
     }
@@ -91,11 +91,11 @@ public class LeadInStream implements Iterable<LeadInPack> {
     }
   }
 
-  public byte[] getData(PackType packType) {
+  public byte[] getData(CdTextPackType packType) {
     return getData(LeadInTextPack.TRACK_NUMBER_UNIQUE, packType, LeadInTextPack.BLOCK_DEFAULT);
   }
 
-  public byte[] getData(int track, PackType packType, int block) {
+  public byte[] getData(int track, CdTextPackType packType, int block) {
     if(block < 0) { //non-existent language, see getBlockForLanguage(language)
       return null;
     }
@@ -209,7 +209,7 @@ public class LeadInStream implements Iterable<LeadInPack> {
     return bsi0.getData()[3];
   }
   
-  public int getPackCount(PackType packType) {
+  public int getPackCount(CdTextPackType packType) {
     return getCompleteBlockSize()[4 + packType.getCountIndex()];
   }
 
@@ -217,7 +217,7 @@ public class LeadInStream implements Iterable<LeadInPack> {
     if(block >= LeadInControlPack.BLOCKS_COUNT) {
       throw new IllegalArgumentException("Non-exitent block: " + block + ". Max: " + LeadInControlPack.BLOCKS_COUNT);
     }
-    return getCompleteBlockSize()[4 + PackType.values().length + block];
+    return getCompleteBlockSize()[4 + CdTextPackType.values().length + block];
   }
 
   public Language getLanguage(int block) {

@@ -7,7 +7,7 @@ import java.nio.file.StandardCopyOption;
 import java.util.Collection;
 import java.util.Locale;
 
-import org.mars.cdtext.PackType;
+import org.mars.cdtext.CdTextPackType;
 import org.mars.ddp.v20.LeadInCdTextStream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -185,7 +185,7 @@ public abstract class AbstractDdpImage {
     }
   }
 
-  public String getCdText(int trackNumber, PackType packType, Locale locale) {
+  public String getCdText(int trackNumber, CdTextPackType packType, Locale locale) {
     LeadInCdTextStream cdTextStream = getCdTextStream();
     if(cdTextStream != null) {
       return cdTextStream.getText(trackNumber, packType, locale);
@@ -195,7 +195,7 @@ public abstract class AbstractDdpImage {
     }
   }
   
-  public String getCdText(int trackNumber, PackType packType) {
+  public String getCdText(int trackNumber, CdTextPackType packType) {
     LeadInCdTextStream cdTextStream = getCdTextStream();
     if(cdTextStream != null) {
       return cdTextStream.getText(trackNumber, packType);
@@ -205,7 +205,7 @@ public abstract class AbstractDdpImage {
     }
   }
   
-  public String getCdText(PackType packType, Locale locale) {
+  public String getCdText(CdTextPackType packType, Locale locale) {
     LeadInCdTextStream cdTextStream = getCdTextStream();
     if(cdTextStream != null) {
       return cdTextStream.getText(packType, locale);
@@ -215,7 +215,7 @@ public abstract class AbstractDdpImage {
     }
   }
 
-  public String getCdText(PackType packType) {
+  public String getCdText(CdTextPackType packType) {
     LeadInCdTextStream cdTextStream = getCdTextStream();
     if(cdTextStream != null) {
       return cdTextStream.getText(packType);
@@ -240,8 +240,8 @@ public abstract class AbstractDdpImage {
         StringBuilder sb = new StringBuilder().append(String.format("%02d", trackToDump));
         
         if(withCompleteNames && getCdTextStream() != null) {
-          String trackArtist = getCdText(trackToDump, PackType.Track_Performers);
-          String trackTitle = getCdText(trackToDump, PackType.Track_Title);
+          String trackArtist = getCdText(trackToDump, CdTextPackType.Track_Performers);
+          String trackTitle = getCdText(trackToDump, CdTextPackType.Track_Title);
           sb.append(' ').append(trackArtist).append(" - ").append(trackTitle);
         }
         sb.append(".wav");
@@ -260,8 +260,8 @@ public abstract class AbstractDdpImage {
     int tracksCount = getPqStream().getTracksCount();
     sb.append("Tracks count: ").append(tracksCount).append("\n");
     
-    String albumArtist = getCdText(0, PackType.Album_Performers);
-    String albumTitle = getCdText(PackType.Album_Title);
+    String albumArtist = getCdText(0, CdTextPackType.Album_Performers);
+    String albumTitle = getCdText(CdTextPackType.Album_Title);
     sb.append("Album: ").append(albumArtist).append(" - ").append(albumTitle).append("\n");
 
     Collection<Locale> cdTextLocales = getCdTextLocales();
@@ -269,14 +269,14 @@ public abstract class AbstractDdpImage {
       for(Locale locale : cdTextLocales) {
         sb.append("Locale: ").append(locale.getDisplayLanguage()).append("\n");
         for(int t = 1; t <= tracksCount; t++) {
-          String trackArtist = getCdText(t, PackType.Track_Performers, locale);
-          String trackTitle = getCdText(t, PackType.Track_Title, locale);
+          String trackArtist = getCdText(t, CdTextPackType.Track_Performers, locale);
+          String trackTitle = getCdText(t, CdTextPackType.Track_Title, locale);
           sb.append("Track ").append(t).append(": ").append(trackArtist).append(" - ").append(trackTitle).append("\n");
         }
       }
     }
 
-    String upcEan = getCdText(PackType.UPC_EAN); //try getting it form the cd-text
+    String upcEan = getCdText(CdTextPackType.UPC_EAN); //try getting it form the cd-text
     if(upcEan == null) {
       upcEan = getDdpId().getUpcEan(); //try getting it from the image identifier as a fallback
     }

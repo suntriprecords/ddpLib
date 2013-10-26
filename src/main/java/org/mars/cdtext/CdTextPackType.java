@@ -7,7 +7,7 @@ package org.mars.cdtext;
  * @see ftp://ftp.iist.unu.edu/pub/software/linux/multimedia/cdrtools/cdrtools-2.0/cdrecord/cdtext.c
  * The MMC spec isn't clear about Genre and Disc Id's types...
  */
-public enum PackType {
+public enum CdTextPackType {
   Album_Title(0, 0x80, LeadInTextPack.class, false, true),
   Track_Title(0, 0x80, LeadInTextPack.class, false, false), //if used, one per track must be provided
   Album_Performers(1, 0x81, LeadInTextPack.class, false, true), //if used, one per track must be provided
@@ -38,7 +38,7 @@ public enum PackType {
   private boolean binary;
   private boolean unique;
   
-  private PackType(int countIndex, int id, Class<? extends LeadInPack> packClass, boolean binary, boolean unique) {
+  private CdTextPackType(int countIndex, int id, Class<? extends LeadInPack> packClass, boolean binary, boolean unique) {
     this.countIndex = countIndex;
     this.id = id;
     this.packClass = packClass;
@@ -82,8 +82,8 @@ public enum PackType {
     return LeadInControlPack.class.isAssignableFrom(packClass);
   }
 
-  public static PackType idOf(int id, boolean unique) {
-    for(PackType type : values()) {
+  public static CdTextPackType idOf(int id, boolean unique) {
+    for(CdTextPackType type : values()) {
       if(type.getId() == id && (type.isControl() || type.isUnique() == unique)) {
         return type;
       }

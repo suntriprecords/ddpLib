@@ -34,7 +34,7 @@ public class LeadInPackReader {
     int trackNumber = (trackIndicator & LeadInPack.PACK_NUMBER_MASK); //if the pack is laid over several strings, that's the track associated with the first one
     boolean extension = ((trackIndicator & LeadInPack.EXT_DATA_MASK) != 0); //extension if MSB of trackIndicator == 1 (and then I don't know what to do with it)
 
-    PackType packType = PackType.idOf(packTypeId, (trackNumber == LeadInTextPack.TRACK_NUMBER_UNIQUE));
+    CdTextPackType packType = CdTextPackType.idOf(packTypeId, (trackNumber == LeadInTextPack.TRACK_NUMBER_UNIQUE));
 
     int seqNumber = dis.readUnsignedByte();
     
