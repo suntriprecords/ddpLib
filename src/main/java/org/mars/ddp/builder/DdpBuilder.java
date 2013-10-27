@@ -8,6 +8,8 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
 
 import java.awt.BorderLayout;
 
@@ -16,17 +18,24 @@ import com.jgoodies.forms.layout.ColumnSpec;
 import com.jgoodies.forms.layout.RowSpec;
 
 import java.awt.GridBagLayout;
+
 import javax.swing.JLabel;
 import javax.swing.JTextField;
+
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
+
 import javax.swing.border.EmptyBorder;
 import javax.swing.JButton;
+
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 
 public class DdpBuilder {
 
+  private DdpTable tracksTable;
+  private DdpTableModel tableModel;
+  
   private JFrame frame;
   private JTextField textFieldTitle;
   private JTextField textFieldPerformer;
@@ -36,8 +45,19 @@ public class DdpBuilder {
 
   /**
    * Launch the application.
+   * @throws UnsupportedLookAndFeelException 
+   * @throws IllegalAccessException 
+   * @throws InstantiationException 
+   * @throws ClassNotFoundException 
    */
   public static void main(String[] args) {
+    try {
+      UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+    }
+    catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException e) {
+      e.printStackTrace();
+    }
+    
     EventQueue.invokeLater(new Runnable() {
       @Override
       public void run() {
@@ -72,7 +92,8 @@ public class DdpBuilder {
     JScrollPane scrollPane = new JScrollPane();
     frame.getContentPane().add(scrollPane, BorderLayout.CENTER);
     
-    DdpTable tracksTable = new DdpTable(new DdpTableModel());
+    tableModel = new DdpTableModel();
+    tracksTable = new DdpTable(tableModel);
     scrollPane.setViewportView(tracksTable);
     
     JPanel panelRight = new JPanel();
@@ -187,6 +208,11 @@ public class DdpBuilder {
     panelRight.add(panel, BorderLayout.CENTER);
     
     JButton btnAddTrack = new JButton("Add track");
+    btnAddTrack.addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent e) {
+        tableModel.addTrack();
+      }
+    });
     panel.add(btnAddTrack);
   }
 
