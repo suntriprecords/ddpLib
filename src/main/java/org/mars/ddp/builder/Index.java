@@ -1,5 +1,10 @@
 package org.mars.ddp.builder;
 
+/**
+ * It's mandatory on a CD to have always index 1.
+ * Index 0 is the optional preGap.
+ * Indexes [2..99] are for optional additional cue point within a track, seldomly used.
+ */
 public class Index {
   private int indexNumber;
   private int offset;

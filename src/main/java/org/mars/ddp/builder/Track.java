@@ -7,7 +7,7 @@ import java.util.Iterator;
 import java.util.List;
 
 /**
- * A track MUST have at least one index, that's why there's one created by default in the ctor
+ * A track MUST at least have one index (index 1)
  */
 public class Track {
   private Path sourceFile;
@@ -23,16 +23,7 @@ public class Track {
 
 
   public Track(int trackNumber) {
-    this(trackNumber, 0);
-  }
-
-  public Track(int trackNumber, int indexNumber) {
-    this(trackNumber, indexNumber, 0);
-  }
-
-  public Track(int trackNumber, int indexNumber, int offset) {
     this.trackNumber = trackNumber;
-    addIndex( new Index(indexNumber, offset));
   }
 
   public Path getSourceFile() {
@@ -107,6 +98,17 @@ public class Track {
     this.contentProviderOrArtistMessage = contentProviderOrArtistMessage;
   }
   
+  public void addPreGapAndIndex1() {
+    addIndex(0).setDuration(new Time(00, 02, 00));
+    addIndex(1);
+  }
+  
+  public Index addIndex(int indexNumber) {
+    Index index = new Index(indexNumber);
+    addIndex(index);
+    return index;
+  }
+
   public void addIndex(Index index) {
     if(index != null) {
       indexes.add(index);

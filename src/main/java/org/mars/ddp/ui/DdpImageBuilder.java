@@ -1,4 +1,4 @@
-package org.mars.ddp.builder;
+package org.mars.ddp.ui;
 
 import java.awt.EventQueue;
 import java.awt.GridLayout;
@@ -30,8 +30,9 @@ import javax.swing.JButton;
 
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import java.nio.file.Path;
 
-public class DdpBuilder {
+public class DdpImageBuilder {
 
   private DdpTable tracksTable;
   private DdpTableModel tableModel;
@@ -62,7 +63,7 @@ public class DdpBuilder {
       @Override
       public void run() {
         try {
-          DdpBuilder window = new DdpBuilder();
+          DdpImageBuilder window = new DdpImageBuilder();
           window.frame.setVisible(true);
         }
         catch (Exception e) {
@@ -75,7 +76,7 @@ public class DdpBuilder {
   /**
    * Create the application.
    */
-  public DdpBuilder() {
+  public DdpImageBuilder() {
     initialize();
   }
 
@@ -196,7 +197,8 @@ public class DdpBuilder {
     JButton buttonDestinationChoose = new JButton("...");
     buttonDestinationChoose.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
-        //TODO choose destination folder.
+        Path destinationDir = Utils.chooseDir(null, "Destination folder");
+        textFieldDestination.setText(destinationDir.toString());
       }
     });
     panelDestination.add(buttonDestinationChoose);

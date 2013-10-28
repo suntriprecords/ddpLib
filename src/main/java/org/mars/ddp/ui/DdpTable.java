@@ -1,15 +1,14 @@
-package org.mars.ddp.builder;
+package org.mars.ddp.ui;
 
 import javax.swing.JTable;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
-import javax.swing.table.TableModel;
 
 public class DdpTable extends JTable {
 
   private static final long serialVersionUID = 1L;
 
-  public DdpTable(TableModel dm) {
+  public DdpTable(DdpTableModel dm) {
     super(dm);
     setShowHorizontalLines(false);
     setShowVerticalLines(true);

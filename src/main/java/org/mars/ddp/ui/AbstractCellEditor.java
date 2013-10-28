@@ -1,4 +1,4 @@
-package org.mars.ddp.builder;
+package org.mars.ddp.ui;
 
 import javax.swing.DefaultCellEditor;
 import javax.swing.JTextField;

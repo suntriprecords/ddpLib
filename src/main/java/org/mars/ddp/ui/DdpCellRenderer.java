@@ -1,4 +1,4 @@
-package org.mars.ddp.builder;
+package org.mars.ddp.ui;
 
 import java.awt.Color;
 import java.awt.Component;
@@ -10,6 +10,8 @@ import javax.swing.JTable;
 import javax.swing.border.Border;
 import javax.swing.table.DefaultTableCellRenderer;
 
+import org.mars.ddp.builder.Track;
+
 public class DdpCellRenderer extends DefaultTableCellRenderer {
 
   private static final long serialVersionUID = 1L;
@@ -18,7 +20,9 @@ public class DdpCellRenderer extends DefaultTableCellRenderer {
   @Override
   public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
     JLabel component = (JLabel)super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
-    if(row% 4 < 2) { //FIXME there might be more than 2 indexes per track
+    DdpTableModel tableModel = (DdpTableModel)table.getModel();
+    Track track = tableModel.getTrackAtRow(row);
+    if(track.getTrackNumber() % 2 == 0) {
       component.setBackground(blue);
     }
     else {

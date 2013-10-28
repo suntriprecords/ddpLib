@@ -1,4 +1,4 @@
-package org.mars.ddp.builder;
+package org.mars.ddp.ui;
 
 import java.beans.BeanInfo;
 import java.beans.IntrospectionException;
@@ -9,9 +9,12 @@ import java.lang.reflect.InvocationTargetException;
 import javax.swing.table.TableCellEditor;
 
 import org.mars.cdtext.CdTextPackType;
+import org.mars.ddp.builder.Index;
+import org.mars.ddp.builder.Track;
 
 /**
- * One enum to rule them all
+ * One enum to rule them all!
+ * name() MUST be the name of a Track or Index property.
  */
 public enum TrackInfo {
   sourceFile("File", null, true, new FileCellEditor()),

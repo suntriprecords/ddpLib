@@ -1,4 +1,4 @@
-package org.mars.ddp.builder;
+package org.mars.ddp.ui;
 
 import java.awt.Color;
 import java.awt.Component;
@@ -39,14 +39,11 @@ public class FileCellEditor extends DefaultCellEditor {
 
   @Override
   public Object getCellEditorValue() {
-    System.out.println("FilecellEditor.getCellEditorValue: " + file);
       return file;
   }
 
   @Override
   public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row, int column) {
-    System.out.println("FilecellEditor at " + column + ", " + row);
-
       file = (Path)value;
       SwingUtilities.invokeLater(new Runnable() {
           @Override

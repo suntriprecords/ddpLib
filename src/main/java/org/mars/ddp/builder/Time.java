@@ -37,6 +37,10 @@ public class Time {
       String[] parts = s.split(SEPARATOR);
       
       try {
+        if(parts.length < 2 || parts.length > 3) {
+          throw new IllegalArgumentException(ILLEGAL_TIME + s);
+        }
+
         if(parts.length >= 2) {
           minutes = Integer.parseInt(parts[0]);
           seconds = Integer.parseInt(parts[1]);
@@ -78,7 +82,7 @@ public class Time {
     this.sectors = sectors;
   }
 
-  private boolean validate() {
+  public boolean validate() {
     return (minutes >= 0 && minutes < MAX_MINUTES
          && seconds >= 0 && seconds < SECONDS_PER_MINUTE
          && sectors >= 0 && sectors < DataUnits.SECTORS_PER_SECOND);

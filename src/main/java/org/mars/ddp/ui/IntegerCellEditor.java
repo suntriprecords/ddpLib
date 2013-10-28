@@ -1,4 +1,4 @@
-package org.mars.ddp.builder;
+package org.mars.ddp.ui;
 
 public class IntegerCellEditor extends AbstractCellEditor {
 
