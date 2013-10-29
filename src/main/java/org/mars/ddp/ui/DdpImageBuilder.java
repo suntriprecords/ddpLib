@@ -1,36 +1,23 @@
 package org.mars.ddp.ui;
 
+import java.awt.BorderLayout;
 import java.awt.EventQueue;
-import java.awt.GridLayout;
-import java.awt.ScrollPane;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.nio.file.Path;
 
+import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.JTable;
+import javax.swing.JTextField;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
-
-import java.awt.BorderLayout;
-
-import com.jgoodies.forms.layout.FormLayout;
-import com.jgoodies.forms.layout.ColumnSpec;
-import com.jgoodies.forms.layout.RowSpec;
-
-import java.awt.GridBagLayout;
-
-import javax.swing.JLabel;
-import javax.swing.JTextField;
-
-import java.awt.GridBagConstraints;
-import java.awt.Insets;
-
 import javax.swing.border.EmptyBorder;
-import javax.swing.JButton;
-
-import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
-import java.nio.file.Path;
 
 public class DdpImageBuilder {
 
