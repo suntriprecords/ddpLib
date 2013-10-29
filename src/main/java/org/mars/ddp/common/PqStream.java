@@ -139,7 +139,7 @@ public class PqStream<P extends AbstractPqDescriptorPacket> extends AbstractStre
     int position = getPacketCursor(track, index).getPosition();
     AbstractPqDescriptorPacket pqPacketStart = get(position);
     AbstractPqDescriptorPacket pqPacketEnd   = get(position+1);
-    int length = pqPacketEnd.getCdaCueBytes() - pqPacketStart.getCdaCueBytes();
+    int length = pqPacketEnd.getCdaCueBytes() - pqPacketStart.getCdaCueBytes(); //should be a multiple of 2352
     return length;
   }
 

@@ -59,10 +59,10 @@ public class PqStreamIterator<P extends AbstractPqDescriptorPacket> implements I
         else { //new track assuming they are ordered with indexes 0-1-0-1...
           newTrack = true; 
           trkNr = prevTrkNr + 1;
-          idxNr = 0;
+          idxNr = 0; //we'll assume there is a pregap
         }
       }
-      else if(idxNr == 0) {
+      else if(idxNr <= prevIdxNr) {
         newTrack = true; 
         trkNr = prevTrkNr + 1;
       }
@@ -73,7 +73,7 @@ public class PqStreamIterator<P extends AbstractPqDescriptorPacket> implements I
     else if(!trkNr.equals(prevTrkNr)) {
       newTrack = true; 
       if(idxNr == null) {
-        idxNr = 0;
+        idxNr = 0; //we'll assume there is a pregap
       }
     }
     else if(idxNr == null) { //it's the same track.

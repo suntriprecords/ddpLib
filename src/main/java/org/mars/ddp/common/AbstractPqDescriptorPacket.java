@@ -20,7 +20,7 @@ public abstract class AbstractPqDescriptorPacket extends AbstractPacket {
   private Integer cdaTimeHours; //Reserved
   private Integer cdaTimeMinutes;
   private Integer cdaTimeSeconds; //TODO If trackNumber is 00h and indexNumber is A0h, this field contains the Psec value for the CD
-  private Integer cdaTimeFrames; //attention, A-time frames are actually sectors (98 * 33 bytes frames)
+  private Integer cdaTimeFrames; //attention, A-time frames are actually sectors (1/75th of a second == 98*24 bytes)
   private String controlByte1; //upper byte: control for the entry. Lower byte: either 1 for a normal entry or S if Serial Copy Management System is to be used
   private String controlByte2; //Reserved
   private String isrc; //valid only for the first entry for each track number greater than 0
