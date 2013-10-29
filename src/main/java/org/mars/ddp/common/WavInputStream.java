@@ -23,16 +23,16 @@ public class WavInputStream extends InputStream implements WavConstants {
 
   private byte[] header;
   private int hPos;
-  private PcmInputStream in;
+  private RedBookInputStream in;
 
   
-  public WavInputStream(PcmInputStream in) {
+  public WavInputStream(RedBookInputStream in) {
     this.in = in;
     createCanonicalWavHeader();
   }
 
   public WavInputStream(InputStream in, int start, int length) throws IOException {
-    this( new PcmInputStream(in, start, length));
+    this( new RedBookInputStream(in, start, length));
   }
 
   private void createCanonicalWavHeader() {

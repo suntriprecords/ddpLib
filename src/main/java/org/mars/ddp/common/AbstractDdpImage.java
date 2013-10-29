@@ -87,7 +87,7 @@ public abstract class AbstractDdpImage {
 
   
   
-  public PcmInputStream openTrackStream(int i) throws IOException {
+  public RedBookInputStream openTrackStream(int i) throws IOException {
     return openTrackStream(i, false);
   }
   
@@ -95,19 +95,19 @@ public abstract class AbstractDdpImage {
    * @see http://en.wikipedia.org/wiki/Compact_Disc
    * @see http://en.wikipedia.org/wiki/Compact_Disc_subcode
    */
-  public PcmInputStream openTrackStream(int trackNumber, boolean withPreGap) throws IOException {
+  public RedBookInputStream openTrackStream(int trackNumber, boolean withPreGap) throws IOException {
     int start = getTrackStartBytes(trackNumber, withPreGap); //will raise enough errors if non-existent track 
     int length = getTrackLengthBytes(trackNumber, withPreGap); //idem 
     return openMainDataStream(start, length);
   }
 
-  public PcmInputStream openTrackStream(int trackNumber, int indexNumber) throws IOException {
+  public RedBookInputStream openTrackStream(int trackNumber, int indexNumber) throws IOException {
     int start = getTrackStartBytes(trackNumber, indexNumber); //will raise enough errors if non-existent track 
     int length = getTrackLengthBytes(trackNumber, indexNumber); //idem
     return openMainDataStream(start, length);
   }
 
-  public PcmInputStream openMainDataStream(int start, int length) throws IOException {
+  public RedBookInputStream openMainDataStream(int start, int length) throws IOException {
     MapPackable[] dataPackets = getDataMainPackets();
     if(dataPackets.length > 0) {
       Integer ofs = dataPackets[0].getStartingFileOffSet();
@@ -116,7 +116,7 @@ public abstract class AbstractDdpImage {
       }
       
       DataMainStream dms = new DataMainStream(dataPackets);
-      return new PcmInputStream(dms, start, length);
+      return new RedBookInputStream(dms, start, length);
     }
     else {
       throw new IllegalArgumentException("No DM stream where to extract data from");

@@ -9,7 +9,7 @@ import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.nio.file.StandardOpenOption;
 
-import org.mars.ddp.common.PcmInputStream;
+import org.mars.ddp.common.RedBookInputStream;
 import org.mars.ddp.common.WavConstants;
 
 public class WavFile implements WavConstants {
@@ -24,7 +24,7 @@ public class WavFile implements WavConstants {
   /**
    * Not using autoclosable resources, the stream needs to be open when this method returns...
    */
-  public PcmInputStream getPcmInputStream() throws IOException {
+  public RedBookInputStream getRedBookInputStream() throws IOException {
     InputStream is = Files.newInputStream(wavFile, StandardOpenOption.READ);
     is.skip(4+4+4);
 
@@ -34,7 +34,7 @@ public class WavFile implements WavConstants {
       String chunkId = new String(chunkBuffer, charset);
       int chunkSize = readLittleInt(is); //Little endian
       if(WavConstants.DATA_CHUNK_ID.equals(chunkId)) {
-        return new PcmInputStream(is, 0, chunkSize);
+        return new RedBookInputStream(is, 0, chunkSize);
       }
       else {
         forceSkip(is, chunkSize);
@@ -44,8 +44,8 @@ public class WavFile implements WavConstants {
   }
 
 
-  public boolean validateAudioCdFormat() {
-    return validate((short)1, (short)2, 44100, (short)16); //AudioFormat 1 is PCM (i.e Linear quantization)
+  public boolean isRedBookFormat() {
+    return isFormat((short)1, (short)2, 44100, (short)16); //AudioFormat 1 is PCM (i.e Linear quantization)
   }
   
   /**
@@ -53,7 +53,7 @@ public class WavFile implements WavConstants {
    * @see http://docs.oracle.com/javase/specs/jvms/se7/html/jvms-2.html#jvms-2.11
    * WAV chunks are bigendian, whereas the datas are little endian.
    */
-  public boolean validate(short audioFormat, short numChannels, int samplingRate, short bitsPerSample) {
+  public boolean isFormat(short audioFormat, short numChannels, int samplingRate, short bitsPerSample) {
     byte[] chunkBuffer = new byte[4];
     try(InputStream is = Files.newInputStream(wavFile, StandardOpenOption.READ)) {
 
@@ -123,7 +123,7 @@ public class WavFile implements WavConstants {
   }
   
   public static void main(String... args) throws IOException {
-    PcmInputStream pcm = new WavFile(Paths.get("D:/Temp/SUNCD30.DDP/02 Filteria - Dog Days Bliss (Album Edit).wav")).getPcmInputStream();
+    RedBookInputStream pcm = new WavFile(Paths.get("D:/Temp/SUNCD30.DDP/02 Filteria - Dog Days Bliss (Album Edit).wav")).getRedBookInputStream();
     Files.copy(pcm, Paths.get("D:/temp/plop.pcm"), StandardCopyOption.REPLACE_EXISTING);
   }
 }

@@ -4,9 +4,11 @@ import java.io.IOException;
 import java.io.InputStream;
 
 /**
+ * http://en.wikipedia.org/wiki/Red_Book_(audio_CD_standard)
  * http://en.wikipedia.org/wiki/Pulse-code_modulation
+ * http://en.wikipedia.org/wiki/WAV#Audio_CDs
  */
-public class PcmInputStream extends InputStream {
+public class RedBookInputStream extends InputStream {
 
   private InputStream in;
   private int start;
@@ -19,7 +21,7 @@ public class PcmInputStream extends InputStream {
    * @param length is WITH the CIRC/Control bytes
    * @throws IOException
    */
-  public PcmInputStream(InputStream in, int start, int length) throws IOException {
+  public RedBookInputStream(InputStream in, int start, int length) throws IOException {
     this.in = in;
     this.start = start;
     this.length = length;
