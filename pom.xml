@@ -2,7 +2,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.mars</groupId>
   <artifactId>ddplib</artifactId>
-  <version>1.0.0.Final</version>
+  <version>1.1.0.Final</version>
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
