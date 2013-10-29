@@ -44,11 +44,29 @@ public class PcmInputStream extends InputStream {
   }
 
   @Override
-  public synchronized int read() throws IOException {
+  public int read() throws IOException {
     if(pos < length) { //checking we won't hit the end of the track
       int b = in.read();
       pos++;
       return b;
+    }
+    else {
+      return -1;
+    }
+  }
+
+  @Override
+  public int read(byte[] b) throws IOException {
+    return read(b, 0, b.length);
+  }
+
+  @Override
+  public int read(byte[] b, int off, int len) throws IOException {
+    if(pos < length) {
+      len = Math.min(length-pos, len);
+      int read = in.read(b, off, len);
+      pos += read;
+      return read;
     }
     else {
       return -1;

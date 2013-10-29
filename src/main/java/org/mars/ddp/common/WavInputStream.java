@@ -17,12 +17,8 @@ import java.nio.ByteOrder;
  * Or you can call the cavalry...
  * http://download.oracle.com/javase/tutorial/sound/converters.html
  */
-public class WavInputStream extends InputStream {
+public class WavInputStream extends InputStream implements WavConstants {
 
-  private static final String DATA_CHUNK_ID = "data";
-  private static final String FORMAT_CHUNK_ID = "fmt ";
-  private static final String WAVE_FORMAT_ID = "WAVE";
-  private static final String RIFF_CHUNK_ID = "RIFF";
   private final static int CANONICAL_WAV_HEADER_LENGTH = 44;
 
   private byte[] header;
@@ -46,6 +42,8 @@ public class WavInputStream extends InputStream {
     int subChunk1Size = 16; //PCM, so 16
     int subChunk2Size = in.getLength(); //The whole data
     int chunkSize = 4 + (8 + subChunk1Size) + (8 + subChunk2Size);
+
+    bb.order(ByteOrder.BIG_ENDIAN);
     bb.put(RIFF_CHUNK_ID.getBytes());
 
     bb.order(ByteOrder.LITTLE_ENDIAN);
