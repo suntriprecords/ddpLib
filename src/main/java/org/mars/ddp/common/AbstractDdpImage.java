@@ -8,6 +8,7 @@ import java.util.Collection;
 import java.util.Locale;
 
 import org.mars.cdtext.CdTextPackType;
+import org.mars.cdtext.Language;
 import org.mars.ddp.v20.LeadInCdTextStream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -164,31 +165,30 @@ public abstract class AbstractDdpImage {
   }
 
   
+  public Collection<Language> getCdTextLanguages() {
+    LeadInCdTextStream cdTextStream = getCdTextStream();
+    if(cdTextStream != null) {
+      return cdTextStream.getAvailableLanguages();
+    }
+    else {
+      return null;
+    }
+  }
   
-  public Collection<Locale> getCdTextLocales() {
+  public Language getCdTextDefaultLanguage() {
     LeadInCdTextStream cdTextStream = getCdTextStream();
     if(cdTextStream != null) {
-      return cdTextStream.getAvailableLocales();
+      return cdTextStream.getDefaultLanguage();
     }
     else {
       return null;
     }
   }
 
-  public Locale getCdTextDefaultLocale() {
+  public String getCdText(int trackNumber, CdTextPackType packType, Language language) {
     LeadInCdTextStream cdTextStream = getCdTextStream();
     if(cdTextStream != null) {
-      return cdTextStream.getDefaultLocale();
-    }
-    else {
-      return null;
-    }
-  }
-
-  public String getCdText(int trackNumber, CdTextPackType packType, Locale locale) {
-    LeadInCdTextStream cdTextStream = getCdTextStream();
-    if(cdTextStream != null) {
-      return cdTextStream.getText(trackNumber, packType, locale);
+      return cdTextStream.getText(trackNumber, packType, language);
     }
     else {
       return null;
@@ -205,10 +205,10 @@ public abstract class AbstractDdpImage {
     }
   }
   
-  public String getCdText(CdTextPackType packType, Locale locale) {
+  public String getCdText(CdTextPackType packType, Language language) {
     LeadInCdTextStream cdTextStream = getCdTextStream();
     if(cdTextStream != null) {
-      return cdTextStream.getText(packType, locale);
+      return cdTextStream.getText(packType, language);
     }
     else {
       return null;
@@ -264,13 +264,14 @@ public abstract class AbstractDdpImage {
     String albumTitle = getCdText(CdTextPackType.Album_Title);
     sb.append("Album: ").append(albumArtist).append(" - ").append(albumTitle).append("\n");
 
-    Collection<Locale> cdTextLocales = getCdTextLocales();
+    Collection<Language> cdTextLocales = getCdTextLanguages();
     if(cdTextLocales != null) {
-      for(Locale locale : cdTextLocales) {
-        sb.append("Locale: ").append(locale.getDisplayLanguage()).append("\n");
+      for(Language language : cdTextLocales) {
+        Locale locale = language.getLocale();
+        sb.append("Locale: ").append(locale != null ? locale.getDisplayLanguage() : language.name()).append("\n");
         for(int t = 1; t <= tracksCount; t++) {
-          String trackArtist = getCdText(t, CdTextPackType.Track_Performers, locale);
-          String trackTitle = getCdText(t, CdTextPackType.Track_Title, locale);
+          String trackArtist = getCdText(t, CdTextPackType.Track_Performers, language);
+          String trackTitle = getCdText(t, CdTextPackType.Track_Title, language);
           sb.append("Track ").append(t).append(": ").append(trackArtist).append(" - ").append(trackTitle).append("\n");
         }
       }

@@ -17,5 +17,5 @@ package org.mars.cdtext;
  *  languages  0 = 9  (8 placeholders for 8 languages)
  */
 public class LeadInControlPack extends LeadInPack {
-  public final static int BLOCKS_COUNT = 8;
+  public final static int MAX_BLOCKS_COUNT = 8;
 }

@@ -4,6 +4,8 @@ package org.mars.cdtext;
  * @see http://en.wikipedia.org/wiki/CD-Text
  * @see http://www.t10.org/drafts.htm#MMC_Family
  * @see http://www.13thmonkey.org/documentation/SCSI/
+ * @see http://www.gnu.org/software/libcdio/cd-text-format.html#table_003ablock_002dpack
+ * @see http://svn.libburnia-project.org/libburn/trunk/doc/cdtext.txt
  * @see ftp://ftp.iist.unu.edu/pub/software/linux/multimedia/cdrtools/cdrtools-2.0/cdrecord/cdtext.c
  * The MMC spec isn't clear about Genre and Disc Id's types...
  */

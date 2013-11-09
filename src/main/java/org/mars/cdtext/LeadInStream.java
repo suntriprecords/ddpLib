@@ -9,7 +9,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Locale;
 
 public class LeadInStream implements Iterable<LeadInPack> {
 
@@ -52,11 +51,6 @@ public class LeadInStream implements Iterable<LeadInPack> {
     return getText(LeadInTextPack.TRACK_NUMBER_UNIQUE, packType, block);
   }
 
-  public String getText(CdTextPackType packType, Locale locale) {
-    int block = getBlock(locale);
-    return getText(LeadInTextPack.TRACK_NUMBER_UNIQUE, packType, block);
-  }
-
   public String getText(CdTextPackType packType, Language language) {
     int block = getBlock(language);
     return getText(LeadInTextPack.TRACK_NUMBER_UNIQUE, packType, block);
@@ -71,11 +65,6 @@ public class LeadInStream implements Iterable<LeadInPack> {
     return getText(track, packType, block);
   }
 
-  public String getText(int track, CdTextPackType packType, Locale locale) {
-    int block = getBlock(locale);
-    return getText(track, packType, block);
-  }
-  
   public String getText(int track, CdTextPackType packType, int block) {
     if(packType.isBinary()) {
       throw new IllegalArgumentException("Type requested is binary: " + packType.name());
@@ -214,15 +203,15 @@ public class LeadInStream implements Iterable<LeadInPack> {
   }
 
   public int getLastSeq(int block) {
-    if(block >= LeadInControlPack.BLOCKS_COUNT) {
-      throw new IllegalArgumentException("Non-exitent block: " + block + ". Max: " + LeadInControlPack.BLOCKS_COUNT);
+    if(block >= getBlocksCount()) {
+      throw new IllegalArgumentException("Non-exitent block: " + block + ". Max: " + LeadInControlPack.MAX_BLOCKS_COUNT);
     }
     return getCompleteBlockSize()[4 + CdTextPackType.values().length + block];
   }
 
   public Language getLanguage(int block) {
-    if(block >= LeadInControlPack.BLOCKS_COUNT) {
-      throw new IllegalArgumentException("Non-exitent block: " + block + ". Max: " + LeadInControlPack.BLOCKS_COUNT);
+    if(block >= getBlocksCount()) {
+      throw new IllegalArgumentException("Non-exitent block: " + block + ". Max: " + LeadInControlPack.MAX_BLOCKS_COUNT);
     }
 
     LeadInControlPack bsi2 = controlPacks.get(2); //jumping over 16 packTypes and 8 lastSeqs, that is exactly 2 blocks
@@ -232,19 +221,11 @@ public class LeadInStream implements Iterable<LeadInPack> {
   
   public int getBlock(Language language) {
     int langId = language.getId();
+    int nbBlocks = getBlocksCount();
     byte[] blockLangs = controlPacks.get(2).getData();
-    for(int i = 0; i < LeadInControlPack.BLOCKS_COUNT; i++) {
+    for(int i = 0; i < nbBlocks; i++) {
       if(blockLangs[4 + i] == langId) {
         return i;
-      }
-    }
-    return -1;
-  }
-
-  public int getBlock(Locale locale) {
-    for(Language lang : Language.values()) {
-      if(lang.getLocale().equals(locale)) {
-        return getBlock(lang);
       }
     }
     return -1;
@@ -254,14 +235,11 @@ public class LeadInStream implements Iterable<LeadInPack> {
     return getLanguage(LeadInTextPack.BLOCK_DEFAULT);
   }
   
-  public Locale getDefaultLocale() {
-    return getDefaultLanguage().getLocale();
-  }
-  
   public List<Language> getAvailableLanguages() {
     List<Language> result = new ArrayList<>();
+    int nbBlocks = getBlocksCount();
     
-    for(int b = 0; b < LeadInControlPack.BLOCKS_COUNT; b++) {
+    for(int b = 0; b < nbBlocks; b++) {
       Language lang = getLanguage(b);
       if(lang != null) {
         result.add(lang);
@@ -270,12 +248,23 @@ public class LeadInStream implements Iterable<LeadInPack> {
     return Collections.unmodifiableList(result);
   }
 
-  public List<Locale> getAvailableLocales() {
-    List<Locale> result = new ArrayList<>();
-    for(Language lang : getAvailableLanguages()) {
-      result.add(lang.getLocale());
+  public int getBlocksCount() {
+    int nbBlocks = 0;
+    LeadInControlPack bsi1 = controlPacks.get(1);
+    for(int i = 8; i < LeadInPack.DATA_LENGTH; i++) { //checking for the existence of the first 4 language blocks
+      if(bsi1.getData()[i] != 0x00) {
+        nbBlocks++;
+      }
     }
-    return Collections.unmodifiableList(result);
+    if(nbBlocks == 4) { //are there more than 4 blocks???
+      LeadInControlPack bsi2 = controlPacks.get(2);
+      for(int i = 0; i < 4; i++) { //continuing on the 3rd pack for the next 4 language blocks
+        if(bsi2.getData()[i] != 0x00) {
+          nbBlocks++;
+        }
+      }
+    }
+    return nbBlocks;
   }
 
   private final class PackIterator implements Iterator<LeadInPack> {
