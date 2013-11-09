@@ -19,7 +19,7 @@ public class LeadInStream implements Iterable<LeadInPack> {
   
   public void readAll(InputStream is) throws IOException {
     LeadInPackReader reader = new LeadInPackReader(is);
-    while(reader.available() > 0) {
+    while(reader.available() >= LeadInPack.PACKET_LENGTH) { //some DDP creators terminate the CD-TEXT stream with 0x00, so we're making sure we're not going to parse it.
       LeadInPack pack = reader.readPack();
       
       if(pack.getType().isControl()) {

@@ -22,15 +22,17 @@ public enum CdTextPackType {
   Track_Content_provider_or_Artist_Message(5, 0x85, LeadInTextPack.class, false, false), //if used, one per track must be provided
   Disc_Id(6, 0x86, LeadInTextPack.class, true, true), //could well be text, but 
   Genre_Id(7, 0x87, LeadInTextPack.class, true, true), //binary content
-  TOC(8, 0x88, LeadInTextPack.class, true, true), //binary content
-  TOC_2(9, 0x89, LeadInTextPack.class, true, true), //binary content
+  TOC(8, 0x88, LeadInTextPack.class, true, true), //binary content.
+  TOC_Alt(8, 0x88, LeadInTextPack.class, true, false), //binary content. although the TOC applies to the whole disc, it seems a TOC pack can have a track number too!
+  TOC_2(9, 0x89, LeadInTextPack.class, true, true), //binary content.
+  TOC_2_Alt(9, 0x89, LeadInTextPack.class, true, false), //binary content. although the TOC applies to the whole disc, it seems a TOC pack can have a track number too!
   Reserved_8A(10, 0x8A, LeadInTextPack.class, false, true),
   Reserved_8B(11, 0x8B, LeadInTextPack.class, false, true),
   Reserved_8C(12, 0x8C, LeadInTextPack.class, false, true),
   Reserved_for_Content_Provider_Only(13, 0x8D, LeadInTextPack.class, false, true),
   UPC_EAN(14, 0x8E, LeadInTextPack.class, false, true), //UPC/EAN is for albums
   ISRC_code(14, 0x8E, LeadInTextPack.class, false, false), //ISRC is for tracks, if provided, then one per track must be present
-  Block_Size(15, 0x8F, LeadInControlPack.class, true, false); //binary content, global, but numbered
+  Block_Size(15, 0x8F, LeadInControlPack.class, true, false); //binary content, global, but numbered [0..2]
 
   private int countIndex; //used for the block sizes index
   private int id;
