@@ -1,4 +1,4 @@
-package org.mars.ddp.common;
+package org.mars.ddp.util;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -15,12 +15,7 @@ public class RedBookInputStream extends InputStream {
   private int length; //bytes length incl CIRC+Control = 24 bytes/frame
   private int pos;
   
-  /**
-   * @param in
-   * @param start
-   * @param length is WITH the CIRC/Control bytes
-   * @throws IOException
-   */
+
   public RedBookInputStream(InputStream in, int start, int length) throws IOException {
     this.in = in;
     this.start = start;

@@ -17,6 +17,9 @@ public interface MapPackable extends Packetable, Comparable<MapPackable> {
   public Integer getIndexNumber();
   public String getIsrc();
   public String getDataStreamIdentifier();
-  public DataStreamable getDataStream();
   public Integer getStartingFileOffSet(); //only in v2.0+
+
+  public DataStreamable getDataStream();
+  public TextStreamable getTextStream();
+  public SubCodeStreamable getSubCodeStream();
 }

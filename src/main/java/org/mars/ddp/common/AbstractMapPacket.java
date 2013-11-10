@@ -105,9 +105,11 @@ public abstract class AbstractMapPacket extends AbstractPacket implements MapPac
   public DataStreamable getDataStream() {
     return dataStream;
   }
+  @Override
   public TextStreamable getTextStream() {
     return textStream;
   }
+  @Override
   public SubCodeStreamable getSubCodeStream() {
     return subCodeStream;
   }

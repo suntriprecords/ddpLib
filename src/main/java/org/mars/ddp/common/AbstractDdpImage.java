@@ -1,31 +1,15 @@
 package org.mars.ddp.common;
 
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.StandardCopyOption;
-import java.util.Collection;
-import java.util.Locale;
-
-import org.mars.cdtext.CdTextPackType;
-import org.mars.cdtext.Language;
 import org.mars.ddp.v20.LeadInCdTextStream;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Carfull to getParametrizedType calls if you change the erasure of this class
  */
 public abstract class AbstractDdpImage {
 
-  private final Logger log;
   private AbstractDdpId ddpId;
   private MapStream<? extends AbstractMapPacket> mapStream;
   
-  
-  public AbstractDdpImage() {
-    log = LoggerFactory.getLogger(getClass());
-  }
   
   public AbstractDdpId getDdpId() {
     return ddpId;
@@ -43,10 +27,6 @@ public abstract class AbstractDdpImage {
     this.mapStream = mapStreams;
   }
 
-  public void clearMapStream() {
-    getMapStream().clear();
-  }
-
   public AbstractMapPacket getSubCodePacket(SubCodeDescribable subCodeDesc) {
     return getMapStream().getSubCodePacket(subCodeDesc); 
   }
@@ -55,22 +35,22 @@ public abstract class AbstractDdpImage {
     return getMapStream().getDataStreamPackets(dataStreamType); 
   }
 
-  public AbstractMapPacket getDataStreamPacket(DataStreamTypeable dataStreamType) {
+  public MapPackable getDataStreamPacket(DataStreamTypeable dataStreamType) {
     return getMapStream().getDataStreamPacket(dataStreamType); 
   }
 
   public abstract MapPackable[] getDataMainPackets();
+  public abstract MapPackable getPqSubCodePacket();
+  public abstract MapPackable getCdTextPacket();
+
   
-  public DataMainStream getMainDataStream() {
+  public DataMainStream getDataMainStream() {
     return new DataMainStream( getDataMainPackets());
   }
   
-  public abstract AbstractMapPacket getPqSubCodePacket();
-  public abstract AbstractMapPacket getCdTextPacket();
-  
   public PqStream<?> getPqStream() {
     PqStream<?> stream = null;
-    AbstractMapPacket mapPacket = getPqSubCodePacket();
+    MapPackable mapPacket = getPqSubCodePacket();
     if(mapPacket != null) {
       stream = (PqStream<?>)mapPacket.getSubCodeStream();
     }
@@ -79,215 +59,10 @@ public abstract class AbstractDdpImage {
   
   public LeadInCdTextStream getCdTextStream() {
     LeadInCdTextStream stream = null;
-    AbstractMapPacket mapPacket = getCdTextPacket();
+    MapPackable mapPacket = getCdTextPacket();
     if(mapPacket != null) {
       stream = (LeadInCdTextStream)mapPacket.getSubCodeStream();
     }
     return stream;
-  }
-
-  
-  
-  public RedBookInputStream openTrackStream(int i) throws IOException {
-    return openTrackStream(i, false);
-  }
-  
-  /**
-   * @see http://en.wikipedia.org/wiki/Compact_Disc
-   * @see http://en.wikipedia.org/wiki/Compact_Disc_subcode
-   */
-  public RedBookInputStream openTrackStream(int trackNumber, boolean withPreGap) throws IOException {
-    int start = getTrackStartBytes(trackNumber, withPreGap); //will raise enough errors if non-existent track 
-    int length = getTrackLengthBytes(trackNumber, withPreGap); //idem 
-    return openMainDataStream(start, length);
-  }
-
-  public RedBookInputStream openTrackStream(int trackNumber, int indexNumber) throws IOException {
-    int start = getTrackStartBytes(trackNumber, indexNumber); //will raise enough errors if non-existent track 
-    int length = getTrackLengthBytes(trackNumber, indexNumber); //idem
-    return openMainDataStream(start, length);
-  }
-
-  public RedBookInputStream openMainDataStream(int start, int length) throws IOException {
-    MapPackable[] dataPackets = getDataMainPackets();
-    if(dataPackets.length > 0) {
-      Integer ofs = dataPackets[0].getStartingFileOffSet();
-      if(ofs != null) {
-        start += ofs;
-      }
-      
-      DataMainStream dms = new DataMainStream(dataPackets);
-      return new RedBookInputStream(dms, start, length);
-    }
-    else {
-      throw new IllegalArgumentException("No DM stream where to extract data from");
-    }
-  }
-
-  /**
-   * There's at least 1 track on a CD, so I'm not testing whether we have a PQ stream
-   */
-  public int getTrackStartBytes(int trackNumber, boolean withPreGap) {
-    return getPqStream().getTrackStartBytes(trackNumber, withPreGap) - getStartOffsetBytes(trackNumber);
-  }
-
-  /**
-   * There's at least 1 track on a CD, so I'm not testing whether we have a PQ stream
-   */
-  public int getTrackStartBytes(int trackNumber, int indexNumber) {
-    return getPqStream().getTrackStartBytes(trackNumber, indexNumber) - getStartOffsetBytes(trackNumber);
-  }
-
-  private int getStartOffsetBytes(int trackNumber) {
-    int offset = 0;
-    AbstractMapPacket mapPacket = getPqSubCodePacket();
-    if(mapPacket != null) {
-      Integer dss = getDataMainPackets()[0].getDataStreamStart();
-      if(dss != null) {
-        offset = dss * DataUnits.BYTES_MUSIC_PER_SECTOR;
-      }
-    }
-    return offset;
-  }
-  
-  /**
-   * There's at least 1 track on a CD, so I'm not testing whether we have a PQ stream
-   */
-  public int getTrackLengthBytes(int trackNumber, boolean withPreGap) {
-    return getPqStream().getTrackLengthBytes(trackNumber, withPreGap);
-  }
-
-  /**
-   * There's at least 1 track on a CD, so I'm not testing whether we have a PQ stream
-   */
-  public int getTrackLengthBytes(int trackNumber, int indexNumber) {
-    return getPqStream().getTrackLengthBytes(trackNumber, indexNumber);
-  }
-
-  
-  public Collection<Language> getCdTextLanguages() {
-    LeadInCdTextStream cdTextStream = getCdTextStream();
-    if(cdTextStream != null) {
-      return cdTextStream.getAvailableLanguages();
-    }
-    else {
-      return null;
-    }
-  }
-  
-  public Language getCdTextDefaultLanguage() {
-    LeadInCdTextStream cdTextStream = getCdTextStream();
-    if(cdTextStream != null) {
-      return cdTextStream.getDefaultLanguage();
-    }
-    else {
-      return null;
-    }
-  }
-
-  public String getCdText(int trackNumber, CdTextPackType packType, Language language) {
-    LeadInCdTextStream cdTextStream = getCdTextStream();
-    if(cdTextStream != null) {
-      return cdTextStream.getText(trackNumber, packType, language);
-    }
-    else {
-      return null;
-    }
-  }
-  
-  public String getCdText(int trackNumber, CdTextPackType packType) {
-    LeadInCdTextStream cdTextStream = getCdTextStream();
-    if(cdTextStream != null) {
-      return cdTextStream.getText(trackNumber, packType);
-    }
-    else {
-      return null;
-    }
-  }
-  
-  public String getCdText(CdTextPackType packType, Language language) {
-    LeadInCdTextStream cdTextStream = getCdTextStream();
-    if(cdTextStream != null) {
-      return cdTextStream.getText(packType, language);
-    }
-    else {
-      return null;
-    }
-  }
-
-  public String getCdText(CdTextPackType packType) {
-    LeadInCdTextStream cdTextStream = getCdTextStream();
-    if(cdTextStream != null) {
-      return cdTextStream.getText(packType);
-    }
-    else {
-      return null;
-    }
-  }
-  
-  
-  public void dumpTo(Path imageDir, boolean withCompleteNames) throws IOException {
-    if(!Files.isDirectory(imageDir)) {
-      throw new IOException("Not a directory: " + imageDir);
-    }
-    
-    int tracksCount = getPqStream().getTracksCount();
-    for(int trackToDump = 1; trackToDump <= tracksCount; trackToDump++) {
-      log.info("Dumping track " + trackToDump);
-      
-      try(WavInputStream wis = new WavInputStream(openTrackStream(trackToDump, false))) {
-        // Creating file name
-        StringBuilder sb = new StringBuilder().append(String.format("%02d", trackToDump));
-        
-        if(withCompleteNames && getCdTextStream() != null) {
-          String trackArtist = getCdText(trackToDump, CdTextPackType.Track_Performers);
-          String trackTitle = getCdText(trackToDump, CdTextPackType.Track_Title);
-          sb.append(' ').append(trackArtist).append(" - ").append(trackTitle);
-        }
-        sb.append(".wav");
-        Path wavFile = imageDir.resolve(sb.toString());
-  
-        Files.copy(wis,  wavFile,  StandardCopyOption.REPLACE_EXISTING);
-      }
-    }
-  }
-
-  public String getInfo() {
-    StringBuilder sb = new StringBuilder();
-    
-    sb.append("DDP Level: ").append(getDdpId().getDdpLevel()).append("\n");
-
-    int tracksCount = getPqStream().getTracksCount();
-    sb.append("Tracks count: ").append(tracksCount).append("\n");
-    
-    String albumArtist = getCdText(0, CdTextPackType.Album_Performers);
-    String albumTitle = getCdText(CdTextPackType.Album_Title);
-    sb.append("Album: ").append(albumArtist).append(" - ").append(albumTitle).append("\n");
-
-    Collection<Language> cdTextLocales = getCdTextLanguages();
-    if(cdTextLocales != null) {
-      for(Language language : cdTextLocales) {
-        Locale locale = language.getLocale();
-        sb.append("Locale: ").append(locale != null ? locale.getDisplayLanguage() : language.name()).append("\n");
-        for(int t = 1; t <= tracksCount; t++) {
-          String trackArtist = getCdText(t, CdTextPackType.Track_Performers, language);
-          String trackTitle = getCdText(t, CdTextPackType.Track_Title, language);
-          sb.append("Track ").append(t).append(": ").append(trackArtist).append(" - ").append(trackTitle).append("\n");
-        }
-      }
-    }
-
-    String upcEan = getCdText(CdTextPackType.UPC_EAN); //try getting it form the cd-text
-    if(upcEan == null) {
-      upcEan = getDdpId().getUpcEan(); //try getting it from the image identifier as a fallback
-    }
-    
-    sb.append("UPC/EAN: ").append(upcEan).append("\n");
-    return sb.toString();
-  }
-  
-  @Override
-  public String toString() {
-    return getInfo();
   }
 }

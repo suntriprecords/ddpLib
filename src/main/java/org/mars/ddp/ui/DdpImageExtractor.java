@@ -5,9 +5,11 @@ import java.nio.file.Path;
 
 import javax.swing.JOptionPane;
 
-import org.mars.ddp.DdpImageFactory;
 import org.mars.ddp.common.AbstractDdpImage;
 import org.mars.ddp.common.DdpException;
+import org.mars.ddp.util.DdpImageFactory;
+import org.mars.ddp.util.DdpInfo;
+import org.mars.ddp.util.DdpTrackDumper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -37,14 +39,14 @@ public class DdpImageExtractor {
     
     AbstractDdpImage image = DdpImageFactory.load(inputDir);
     
-    log.info(image.getInfo()); // printing cd-text
-    image.dumpTo(outputDir, fullNames); // dumping all tracks
+    log.info(new DdpInfo(image).getInfo()); // printing cd-text
+    new DdpTrackDumper(image).dumpAllTracks(outputDir, fullNames); // dumping all tracks
     
     info("Done.");
   }
   
   
-  public static Boolean fullNames() {
+  private static Boolean fullNames() {
     int result = JOptionPane.showOptionDialog(null, "Full names?", "Full names?", JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null, null, JOptionPane.YES_OPTION);
     switch (result) {
     case JOptionPane.YES_OPTION:
@@ -56,7 +58,7 @@ public class DdpImageExtractor {
     }
   }
   
-  public static void info(String message) {
+  private static void info(String message) {
     log.info(message);
     JOptionPane.showMessageDialog(null, message);
   }

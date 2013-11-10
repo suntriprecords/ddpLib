@@ -98,7 +98,7 @@ public class PqStream<P extends AbstractPqDescriptorPacket> extends AbstractStre
   }
   
   /**
-   * Attention this is without Offsets/PreGaps
+   * Attention this is without Offsets
    */
   public int getTrackStartBytes(int track, boolean withPreGap) {
     int indexStart = getStartIndex(track, withPreGap);
@@ -106,7 +106,7 @@ public class PqStream<P extends AbstractPqDescriptorPacket> extends AbstractStre
   }
 
   /**
-   * Attention this is without Offsets/PreGaps
+   * Attention this is without Offsets
    */
   public int getTrackStartBytes(int track, int index) {
     isTrackExistsOrComplain(track);

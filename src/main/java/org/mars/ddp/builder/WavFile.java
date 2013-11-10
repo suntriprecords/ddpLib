@@ -9,8 +9,8 @@ import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.nio.file.StandardOpenOption;
 
-import org.mars.ddp.common.RedBookInputStream;
 import org.mars.ddp.common.WavConstants;
+import org.mars.ddp.util.RedBookInputStream;
 
 public class WavFile implements WavConstants {
 
