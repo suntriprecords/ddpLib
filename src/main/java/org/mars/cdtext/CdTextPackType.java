@@ -4,7 +4,7 @@ package org.mars.cdtext;
  * @see http://en.wikipedia.org/wiki/CD-Text
  * @see http://www.t10.org/drafts.htm#MMC_Family
  * @see http://www.13thmonkey.org/documentation/SCSI/
- * @see http://www.gnu.org/software/libcdio/cd-text-format.html#table_003ablock_002dpack
+ * @see http://www.gnu.org/software/libcdio/cd-text-format.html
  * @see http://svn.libburnia-project.org/libburn/trunk/doc/cdtext.txt
  * @see ftp://ftp.iist.unu.edu/pub/software/linux/multimedia/cdrtools/cdrtools-2.0/cdrecord/cdtext.c
  * The MMC spec isn't clear about Genre and Disc Id's types...
@@ -34,8 +34,9 @@ public enum CdTextPackType {
   Reserved_for_Content_Provider_Only(13, 0x8D, LeadInTextPack.class, false, true),
   UPC_EAN(14, 0x8E, LeadInTextPack.class, false, true), //UPC/EAN is for albums
   ISRC_code(14, 0x8E, LeadInTextPack.class, false, false), //ISRC is for tracks, if provided, then one per track must be present
-  Block_Size(15, 0x8F, LeadInControlPack.class, true, false); //binary content, global, but numbered [0..2]
+  Block_Size(15, 0x8F, LeadInControlPack.class, true, false); //binary content, one pack of 3 per block ("track" [0..2])
 
+  
   private int countIndex; //used for the block sizes index
   private int id;
   private Class<? extends LeadInPack> packClass;

@@ -22,7 +22,8 @@ public class LeadInTextPack extends LeadInPack {
   public final static int BLOCK_MASK = 0x70;
   public final static int POSITION_MASK = 0x0F;
 
-  public final static int TRACK_NUMBER_UNIQUE = 0; //for CD-Text areas which aren't per track (album title, album performer...)
+  public final static int TRACK_NUMBER_UNIQUES = 0; //for CD-Text areas which aren't per track (album title, album performer...)
+  public final static int BLOCK_NUMBER_UNIQUES = 0; //idem
   public final static int BLOCK_DEFAULT = 0; //will point at the first language used in the CD-Text
   public final static int MAX_BLOCKS = 8; //there are maximum 8 language blocks in a CD-Text
 
