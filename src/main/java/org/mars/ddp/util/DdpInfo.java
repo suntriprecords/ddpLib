@@ -71,7 +71,7 @@ public class DdpInfo {
     return sb.toString();
   }
   
-  private String getUpcEan() {
+  public String getUpcEan() {
     String upcEan = null;
     LeadInCdTextStream cdTextStream = ddp.getCdTextStream();
     if(cdTextStream != null) {
