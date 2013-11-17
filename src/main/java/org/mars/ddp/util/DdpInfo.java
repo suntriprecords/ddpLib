@@ -27,19 +27,12 @@ public class DdpInfo {
     sb.append(getAlbumInfo());
     sb.append(getTracksInfo());
     
-    String upcEan = null;
-    LeadInCdTextStream cdTextStream = ddp.getCdTextStream();
-    if(cdTextStream != null) {
-      upcEan = cdTextStream.getTextUnique(CdTextPackType.UPC_EAN); //try getting it form the cd-text
-    }
-    if(upcEan == null) {
-      upcEan = ddp.getDdpId().getUpcEan(); //try getting it from the image identifier as a fallback
-    }
+    String upcEan = getUpcEan();
     sb.append("UPC/EAN: ").append(upcEan).append("\n");
 
     return sb.toString();
   }
-  
+
   public String getAlbumInfo() {
     StringBuilder sb = new StringBuilder();
     
@@ -76,5 +69,17 @@ public class DdpInfo {
     }
     
     return sb.toString();
+  }
+  
+  private String getUpcEan() {
+    String upcEan = null;
+    LeadInCdTextStream cdTextStream = ddp.getCdTextStream();
+    if(cdTextStream != null) {
+      upcEan = cdTextStream.getTextUnique(CdTextPackType.UPC_EAN); //try getting it from the cd-text
+    }
+    if(upcEan == null) {
+      upcEan = ddp.getDdpId().getUpcEan(); //try getting it from the image identifier as a fallback
+    }
+    return upcEan;
   }
 }
