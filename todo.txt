@@ -2,3 +2,8 @@
 - Handle Philips CD-Text
 - Implement DDP 2.10
 - generation of md5 check (MD5-Checksum.md5) or CRC32 check (CHECKSUM.TXT) check
+<MD5 on 32 hex digits> *<file>
+or for CRC32
+Comments [...]
+Version=1.01
+<file>=<crc32 on 8 hex digits> (= is not mandatory)
