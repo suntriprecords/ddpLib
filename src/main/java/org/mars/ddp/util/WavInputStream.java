@@ -10,14 +10,14 @@ import org.mars.ddp.common.WavConstants;
 
 /**
  * I understand WAV = WAV-header + PCM
- * https://ccrma.stanford.edu/courses/422/projects/WaveFormat/
- * http://www-mmsp.ece.mcgill.ca/Documents/AudioFormats/WAVE/WAVE.html
- * http://www.sonicspot.com/guide/wavefiles.html
- * http://www.blitter.com/~russtopia/MIDI/~jglatt/tech/wave.htm
- * http://en.wikipedia.org/wiki/WAV
+ * @see https://ccrma.stanford.edu/courses/422/projects/WaveFormat/
+ * @see http://www-mmsp.ece.mcgill.ca/Documents/AudioFormats/WAVE/WAVE.html
+ * @see http://www.sonicspot.com/guide/wavefiles.html
+ * @see http://www.blitter.com/~russtopia/MIDI/~jglatt/tech/wave.htm
+ * @see http://en.wikipedia.org/wiki/WAV
  * 
  * Or you can call the cavalry...
- * http://download.oracle.com/javase/tutorial/sound/converters.html
+ * @see http://download.oracle.com/javase/tutorial/sound/converters.html
  */
 public class WavInputStream extends InputStream implements WavConstants {
 
