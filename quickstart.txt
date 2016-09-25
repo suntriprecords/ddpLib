@@ -1,7 +1,7 @@
 Each second of a CD is 75 sectors.
-There are 98 frames per sector. 2 are synchonization (not on the master, that is the DDP), 96 are data + subcode.
+There are 98 frames per sector. 2 are synchronization (not on the master, that is the DDP), 96 are data + subcode.
 Each audio frame is made up of 1 byte of subcode, 2*12 bytes of data, 4 bytes of Q parity, 4 bytes of P parity.
-That's why you have 24*98=2352 bytes of *useable* data per sector.
+That's why you have 24*98=2352 bytes of *usable* data per sector.
 1 CD of 800MB ~ 340000 sectors, that is ~33.3M frames, which means we can also store ~32.6MB of subcode.
 
 The subcode in on a separate file on the master.
