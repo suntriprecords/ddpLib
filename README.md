@@ -3,8 +3,8 @@ A DDP (Disc Description Protocol) image manipulation lib
 
 DDP masters are used in the CD replication industry: https://en.wikipedia.org/wiki/Disc_Description_Protocol
 
-It was initiated in 2011 as part of the Suntrip Records systems with the goal to extract the label's CD masters perfectly. It was not really tested with DVDs, and very little with other CD specs (CDi, CD-Text, etc)
-Further work was added in 2013 to try to build a DDP writer + its UI (something similar to Sonoris' DDP Creator for example) but it was never completed.
+It was initiated in 2011 as part of the Suntrip Records systems with the goal to extract the label's CD masters perfectly. It was never finised/tested with DVDs, and very little with other CD specs (CDi, CD-Text etc). The lib seems to work correctly with CD+G (old-style Karaoke) although it's hard to know since only specific/professional softwares handle subcode correctly even nowadays.
+Further work was added in 2013 to try to build a DDP writer + its UI (something similar to Sonoris' DDP Creator for example) but it was never completed due to lack of time.
 
 ## Specs
 This lib aims at being compliant with the DCA spec v1.01, 2.0 and 2.10, but doesn not support v2.10 as of today (2016-09-25)
@@ -22,14 +22,14 @@ The lib requires Java 7.
 - Psec for trackNumber is 00h and indexNumber is A0h
 - Handle Philips CD-Text
 - Implement DDP 2.10
-- DDP Builder
-- generation of md5 check (MD5-Checksum.md5) or CRC32 check (CHECKSUM.TXT) check
-    Format:
-        <MD5 on 32 hex digits> *<file>
-        or for CRC32
-        Comments [...]
-        Version=1.01
-        <file>=<crc32 on 8 hex digits> (= is not mandatory)
+- Complete DDP Builder + UI
+- generation of md5 check (MD5-Checksum.md5) or CRC32 (CHECKSUM.TXT) check  
+    Format proposal:  
+        \<MD5 on 32 hex digits\> *\<file\>  
+        or for CRC32  
+        Comments [...]  
+        Version=1.01  
+        \<file\>=\<crc32 on 8 hex digits\> (= is not mandatory)  
 
 
 ## Reminders
