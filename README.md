@@ -7,7 +7,7 @@ It was initiated in 2011 as part of the Suntrip Records systems with the goal to
 Further work was added in 2013 to try to build a DDP writer + its UI (something similar to Sonoris' DDP Creator for example) but it was never completed due to lack of time.
 
 ## Specs
-This lib aims at being compliant with the DCA spec v1.01, 2.0 and 2.10, but doesn not support v2.10 as of today (2016-09-25)
+This lib aims at being compliant with the DCA spec v1.01, 2.0 and 2.10, but does not support v2.10 as of today (2016-09-25)
 To obtain a license and the specs, just apply to DCA (Doug Carson & Associates, Inc). It's free. http://www.dcainc.com/products/ddplicense/
 The CD-Text logic implements a part of the SCSI MMC-3 spec (see http://www.t10.org/drafts.htm) is also inspired by Linux' cdrtools code (but has less bugs)
 The lib requires Java 7.
