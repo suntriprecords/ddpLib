@@ -103,7 +103,7 @@ public class WavInputStream extends InputStream implements WavConstants {
   @Override
   public synchronized int read() throws IOException {
     if(hPos < header.length) {
-      return header[hPos++];
+      return header[hPos++] & 0xFF;
     }
     else {
       return in.read();
