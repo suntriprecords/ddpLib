@@ -3,7 +3,7 @@ A DDP (Disc Description Protocol) image manipulation lib
 
 DDP masters are used in the CD replication industry: https://en.wikipedia.org/wiki/Disc_Description_Protocol
 
-It was initiated in 2011 as part of the Suntrip Records systems with the goal to extract the label's CD masters perfectly. It was never finised/tested with DVDs, and very little with other CD specs (CDi, CD-Text etc). The lib seems to work correctly with CD+G (old-style Karaoke) although it's hard to know since only specific/professional softwares handle subcode correctly even nowadays.
+It was initiated in 2011 as part of the Suntrip Records systems with the goal to extract the label's CD masters perfectly. It was never finished/tested with DVDs, and very little with other CD specs (CDi, CD-Text etc). The lib seems to work correctly with CD+G (old-style Karaoke) although it's hard to know since only specific/professional softwares handle subcode correctly even nowadays.
 Further work was added in 2013 to try to build a DDP writer + its UI (something similar to Sonoris' DDP Creator for example) but it was never completed due to lack of time.
 
 ## Specs
@@ -25,7 +25,7 @@ The lib requires Java 7.
 - Complete DDP Builder + UI
 - generation of md5 check (MD5-Checksum.md5) or CRC32 (CHECKSUM.TXT) check  
     Format proposal:  
-        \<MD5 on 32 hex digits\> *\<file\>  
+        \<MD5 on 32 hex digits\> \*\<file\>  
         or for CRC32  
         Comments [...]  
         Version=1.01  
@@ -35,11 +35,11 @@ The lib requires Java 7.
 ## Reminders
 Each second of a CD is 75 sectors.
 There are 98 frames per sector. 2 are synchronization (not on the master, that is the DDP), 96 are data + subcode.
-Each audio frame is made up of 1 byte of subcode, 2*12 bytes of data, 4 bytes of Q parity, 4 bytes of P parity.
-That's why you have 24*98=2352 bytes of *usable* data per sector.
+Each audio frame is made up of 1 byte of subcode, 2\*12 bytes of data, 4 bytes of Q parity, 4 bytes of P parity.
+That's why you have 24\*98=2352 bytes of *usable* data per sector.
 1 CD of 800MB ~ 340000 sectors, that is ~33.3M frames, which means we can also store ~32.6MB of subcode.
 
 The subcode in on a separate file on the master.
-Each subcode byte is 8 bits PQRSTUVW (or WVUTSRQP depending on the SUB layout). They are arranged in 4 packs of 24 bytes across each sector (4*24=96).
+Each subcode byte is 8 bits PQRSTUVW (or WVUTSRQP depending on the SUB layout). They are arranged in 4 packs of 24 bytes across each sector (4\*24=96).
 Each pack is 1 byte of mode item, 1 byte of instruction, 2 bytes of Q parity, 16 bytes of data, 4 bytes of P parity.
 There seems to be a particular case when SSM=8 (Complete 2352 with R-W) where the interleaved subcode may be 4 times 24 or 18 bytes per sector. The 18-byte variant has no parity.
