@@ -13,7 +13,7 @@ The CD-Text logic implements a part of the SCSI MMC-3 spec (see http://www.t10.o
 The lib requires Java 7+.
 
 ## How-to
-- Extract a DDP image: Build a the jar and run with java -jar, or run the class com.suntriprecords.ddp.ui.DdpImageExtractor
+- Extract a DDP image: Build a the (uber)jar and run with java -jar, or run the class com.suntriprecords.ddp.ui.DdpImageExtractor
 - Get DDP image info to display : new DdpInfo(image).getInfo() (or getAlbumInfo() or getTracksInfo() depending on the requested level of detail)
 - Extract DDP: AbstractDdpImage image = DdpImageFactory.load(inputDir); and new DdpTrackDumper(image).dumpAllTracks(outputDir, true/false);
 
