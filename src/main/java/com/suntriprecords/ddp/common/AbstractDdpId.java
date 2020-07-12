@@ -18,13 +18,6 @@ public abstract class AbstractDdpId extends AbstractPacket implements GenericStr
   private String msl; //Reserved
   private Integer mediaNumber; //null when only a single input media of any type is used
   private String masterId; //null when not used or when Master ID is not known
-  private Character bookSpecifier; //null, indicating the CD conforms to the Red, Yellow or Green book
-  private String type; //CD: standard CD
-  private Integer numberSides; //Reserved for DV
-  private Integer currentSide; //Reserved for DV
-  private Integer numberLayers; //Reserved for DV
-  private Integer currentLayer; //Reserved for DVD
-  private Character directionOfTranslation; //Reserved for DVD
   private String userText; //can be used for any purpose. information not placed onto CD
 
   public AbstractDdpId(URL streamUrl) {
@@ -58,27 +51,6 @@ public abstract class AbstractDdpId extends AbstractPacket implements GenericStr
   public String getMasterId() {
     return masterId;
   }
-  public Character getBookSpecifier() {
-    return bookSpecifier;
-  }
-  public String getType() {
-    return type;
-  }
-  public Integer getNumberSides() {
-    return numberSides;
-  }
-  public Integer getCurrentSide() {
-    return currentSide;
-  }
-  public Integer getNumberLayers() {
-    return numberLayers;
-  }
-  public Integer getCurrentLayer() {
-    return currentLayer;
-  }
-  public Character getDirectionOfTranslation() {
-    return directionOfTranslation;
-  }
   public String getUserText() {
     return userText;
   }
@@ -99,27 +71,6 @@ public abstract class AbstractDdpId extends AbstractPacket implements GenericStr
   }
   public void setMasterId(String masterId) {
     this.masterId = masterId;
-  }
-  public void setBookSpecifier(Character bookSpecifier) {
-    this.bookSpecifier = bookSpecifier;
-  }
-  public void setType(String type) {
-    this.type = type;
-  }
-  public void setNumberSides(Integer numberSides) {
-    this.numberSides = numberSides;
-  }
-  public void setCurrentSide(Integer currentSide) {
-    this.currentSide = currentSide;
-  }
-  public void setNumberLayers(Integer numberLayers) {
-    this.numberLayers = numberLayers;
-  }
-  public void setCurrentLayer(Integer currentLayer) {
-    this.currentLayer = currentLayer;
-  }
-  public void setDirectionOfTranslation(Character directionOfTranslation) {
-    this.directionOfTranslation = directionOfTranslation;
   }
   public void setUserText(String userText) {
     this.userText = userText;
