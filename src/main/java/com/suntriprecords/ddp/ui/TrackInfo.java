@@ -40,7 +40,7 @@ public enum TrackInfo {
   private static PropertyDescriptor[] trackProperties;
   private static PropertyDescriptor[] indexProperties;
   
-  private TrackInfo(String columnName, CdTextPackType packType, boolean trackProperty, TableCellEditor cellEditor) {
+  TrackInfo(String columnName, CdTextPackType packType, boolean trackProperty, TableCellEditor cellEditor) {
     this.columnName = columnName;
     this.packType = packType;
     this.trackProperty = trackProperty;

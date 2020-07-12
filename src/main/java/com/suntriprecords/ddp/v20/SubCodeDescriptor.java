@@ -23,7 +23,7 @@ public enum SubCodeDescriptor implements SubCodeDescribable {
   private String id;
   private Class<? extends Loader<? extends SubCodeStreamable>> loaderClass;
   
-  private SubCodeDescriptor(String id, Class<? extends Loader<? extends SubCodeStreamable>> loaderClass) {
+  SubCodeDescriptor(String id, Class<? extends Loader<? extends SubCodeStreamable>> loaderClass) {
     this.id = id;
     this.loaderClass = loaderClass;
   }
@@ -38,7 +38,7 @@ public enum SubCodeDescriptor implements SubCodeDescribable {
     return loaderClass;
   }
   
-  public static SubCodeDescriptor idOf(String id) {
+  public static SubCodeDescriptor fromId(String id) {
     for(SubCodeDescriptor mode : values()) {
       if(mode.getId().equals(id)) {
         return mode;

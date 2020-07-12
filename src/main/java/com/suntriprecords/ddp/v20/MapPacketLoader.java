@@ -36,7 +36,7 @@ public class MapPacketLoader extends AbstractMapPacketLoader<MapPacket> {
   @Override
   public DataStreamType readDataStreamType() throws IOException {
     String id = readString(2, true);
-    DataStreamType type = DataStreamType.idOf(id);
+    DataStreamType type = DataStreamType.fromId(id);
     return type;
   }
 
@@ -46,7 +46,7 @@ public class MapPacketLoader extends AbstractMapPacketLoader<MapPacket> {
 
     String id = readString(8, true);
     if(id != null) {
-      sub = SubCodeDescriptor.idOf(id);
+      sub = SubCodeDescriptor.fromId(id);
     }
     return sub;
   }
@@ -56,7 +56,7 @@ public class MapPacketLoader extends AbstractMapPacketLoader<MapPacket> {
     SourceStorageMode ssm = null;
     Integer id = readIntFromString(1);
     if(id != null) {
-      ssm = SourceStorageMode.idOf(id);
+      ssm = SourceStorageMode.fromId(id);
     }
     return ssm;
   }
@@ -64,7 +64,7 @@ public class MapPacketLoader extends AbstractMapPacketLoader<MapPacket> {
   @Override
   public TextStreamTypeable getTextStreamType(DataStreamTypeable dst) throws IOException {
     if(dst.getType() == DataStreamTypeable.TYPE_TEXT) {
-      return TextStreamType.idOf(dst.getId());
+      return TextStreamType.fromId(dst.getId());
     }
     else {
       return null;

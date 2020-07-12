@@ -59,7 +59,7 @@ public class LeadInBlock implements Iterable<LeadInPack> {
   public CharacterCoding getCharCode() {
     LeadInControlPack bsi0 = controlPacks.get(0);
     int ccId = bsi0.getData()[0];
-    return CharacterCoding.idOf(ccId);
+    return CharacterCoding.fromId(ccId);
   }
   
   public int getFirstTrack() {
@@ -92,7 +92,7 @@ public class LeadInBlock implements Iterable<LeadInPack> {
   public Language getLanguage(int block) {
     LeadInControlPack bsi2 = controlPacks.get(2); //jumping over 16 packTypes and 8 lastSeqs, that is exactly 2 blocks
     int langId = bsi2.getData()[4 + block];
-    return Language.idOf(langId);
+    return Language.fromId(langId);
   }
 
   public int getBlock(Language language) {

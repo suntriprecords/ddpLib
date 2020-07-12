@@ -18,7 +18,7 @@ public enum DataStreamType implements DataStreamTypeable {
   private String id;
   private String type;
   
-  private DataStreamType(String id, String type) {
+  DataStreamType(String id, String type) {
     this.id = id;
     this.type = type;
   }
@@ -33,7 +33,7 @@ public enum DataStreamType implements DataStreamTypeable {
     return type;
   }
   
-  public static DataStreamType idOf(String id) {
+  public static DataStreamType fromId(String id) {
     for(DataStreamType type : values()) {
       if(type.getId().equals(id)) {
         return type;

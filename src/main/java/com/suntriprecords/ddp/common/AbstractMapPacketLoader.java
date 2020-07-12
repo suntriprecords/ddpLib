@@ -41,7 +41,7 @@ public abstract class AbstractMapPacketLoader<P extends AbstractMapPacket> exten
     
     String cdm = readString(2, true);
     if(cdm != null) {
-      CDMode cdMode = CDMode.idOf(cdm);
+      CDMode cdMode = CDMode.fromId(cdm);
       mapPacket.setCdMode(cdMode);
     }
     

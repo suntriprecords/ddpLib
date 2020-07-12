@@ -38,7 +38,7 @@ public enum Genre {
 
   private int id;
   
-  private Genre(int id) {
+  Genre(int id) {
     this.id = id;
   }
 
@@ -46,7 +46,7 @@ public enum Genre {
     return id;
   }
   
-  public static Genre idOf(int id) {
+  public static Genre fromId(int id) {
     for(Genre genre : values()) {
       if(genre.getId() == id) {
         return genre;

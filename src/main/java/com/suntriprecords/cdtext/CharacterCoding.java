@@ -25,7 +25,7 @@ public enum CharacterCoding {
   private Charset cs;
   private int bytesPerChar;
   
-  private CharacterCoding(int id, Charset cs, int bytesPerChar) {
+  CharacterCoding(int id, Charset cs, int bytesPerChar) {
     this.id = id;
     this.cs = cs;
     this.bytesPerChar = bytesPerChar;
@@ -43,7 +43,7 @@ public enum CharacterCoding {
     return bytesPerChar;
   }
 
-  public static CharacterCoding idOf(int id) {
+  public static CharacterCoding fromId(int id) {
     for(CharacterCoding cc : values()) {
       if(cc.getId() == id) {
         return cc;

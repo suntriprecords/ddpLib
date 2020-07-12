@@ -6,7 +6,7 @@ public enum SubCodePackSize {
   
   private int size;
   
-  private SubCodePackSize(int size) {
+  SubCodePackSize(int size) {
     this.size = size;
   }
   

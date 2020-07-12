@@ -11,7 +11,7 @@ public enum DdpLevel {
   private String id;
   private Class<? extends AbstractDdpImageLoader> loaderClass;
   
-  private DdpLevel(String id, Class<? extends AbstractDdpImageLoader> loaderClass) {
+  DdpLevel(String id, Class<? extends AbstractDdpImageLoader> loaderClass) {
     this.id = id;
     this.loaderClass = loaderClass;
   }

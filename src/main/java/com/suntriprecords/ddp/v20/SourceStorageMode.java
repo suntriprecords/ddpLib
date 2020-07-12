@@ -19,7 +19,7 @@ public enum SourceStorageMode implements SourceStorageModable {
   private int id;
   private Class<? extends Loader<? extends DataStreamable>> loaderClass;
   
-  private SourceStorageMode(int id, Class<? extends Loader<? extends DataStreamable>> loaderClass) {
+  SourceStorageMode(int id, Class<? extends Loader<? extends DataStreamable>> loaderClass) {
     this.id = id;
     this.loaderClass = loaderClass;
   }
@@ -35,7 +35,7 @@ public enum SourceStorageMode implements SourceStorageModable {
     return loaderClass;
   }
 
-  public static SourceStorageMode idOf(int id) {
+  public static SourceStorageMode fromId(int id) {
     for(SourceStorageMode mode : values()) {
       if(mode.getId() == id) {
         return mode;

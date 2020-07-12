@@ -43,7 +43,7 @@ public enum CdTextPackType {
   private boolean binary;
   private boolean unique;
   
-  private CdTextPackType(int countIndex, int id, Class<? extends LeadInPack> packClass, boolean binary, boolean unique) {
+  CdTextPackType(int countIndex, int id, Class<? extends LeadInPack> packClass, boolean binary, boolean unique) {
     this.countIndex = countIndex;
     this.id = id;
     this.packClass = packClass;
@@ -84,7 +84,7 @@ public enum CdTextPackType {
     return LeadInControlPack.class.isAssignableFrom(packClass);
   }
 
-  public static CdTextPackType idOf(int id, boolean unique) {
+  public static CdTextPackType fromId(int id, boolean unique) {
     for(CdTextPackType type : values()) {
       if(type.getId() == id && (type.isControl() || type.isUnique() == unique)) {
         return type;

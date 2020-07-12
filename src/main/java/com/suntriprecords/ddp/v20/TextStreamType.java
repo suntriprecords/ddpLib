@@ -15,7 +15,7 @@ public enum TextStreamType implements TextStreamTypeable {
   private String id;
   private Class<? extends Loader<? extends TextStreamable>> loaderClass;
   
-  private TextStreamType(String id, Class<? extends Loader<? extends TextStreamable>> loaderClass) {
+  TextStreamType(String id, Class<? extends Loader<? extends TextStreamable>> loaderClass) {
     this.id = id;
     this.loaderClass = loaderClass;
   }
@@ -30,7 +30,7 @@ public enum TextStreamType implements TextStreamTypeable {
     return loaderClass;
   }
   
-  public static TextStreamType idOf(String id) {
+  public static TextStreamType fromId(String id) {
     for(TextStreamType type : values()) {
       if(type.equals(id)) {
         return type;

@@ -15,7 +15,7 @@ public enum CDMode {
   
   private String id;
   
-  private CDMode(String id) {
+  CDMode(String id) {
     this.id = id;
   }
 
@@ -23,7 +23,7 @@ public enum CDMode {
     return id;
   }
   
-  public static CDMode idOf(String id) {
+  public static CDMode fromId(String id) {
     for(CDMode mode : values()) {
       if(mode.getId().equals(id)) {
         return mode;

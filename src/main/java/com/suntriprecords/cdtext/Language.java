@@ -115,7 +115,7 @@ public enum Language {
   private Locale locale;
   
 
-  private Language(int id, Locale locale) {
+  Language(int id, Locale locale) {
     this.id = id;
     this.locale = locale;
   }
@@ -128,7 +128,7 @@ public enum Language {
     return locale;
   }
 
-  public static Language idOf(int id) {
+  public static Language fromId(int id) {
     for(Language lang : values()) {
       if(lang.getId() == id) {
         return lang;
@@ -137,7 +137,7 @@ public enum Language {
     throw new IllegalArgumentException(Integer.toString(id));
   }
 
-  public static Language languageOf(Locale locale) {
+  public static Language fromLocale(Locale locale) {
     for(Language lang : values()) {
       if(lang.getLocale().equals(locale)) {
         return lang;
